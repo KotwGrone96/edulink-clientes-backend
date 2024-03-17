@@ -21,4 +21,23 @@ export default class TiInfoService {
 			return null;
 		}
 	}
+
+	async update(ti_info) {
+		const { id, name, lastname, phone, email } = ti_info;
+		try {
+			const edit_tiInfo = await TiInfo.update(
+				{
+					name,
+					lastname,
+					phone,
+					email,
+					updated_at: timeZoneLima(),
+				},
+				{ where: { id, deleted_at: null } }
+			);
+			return edit_tiInfo;
+		} catch (error) {
+			return null;
+		}
+	}
 }

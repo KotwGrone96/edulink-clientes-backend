@@ -38,6 +38,10 @@ export const loadModels = (sequelize) => {
 			company_anniversary: {
 				type: DataTypes.STRING,
 			},
+			ruc: {
+				type: DataTypes.STRING,
+				allowNull: true,
+			},
 			sales_manager: {
 				type: DataTypes.STRING,
 			},

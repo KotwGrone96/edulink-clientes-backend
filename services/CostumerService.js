@@ -17,6 +17,7 @@ export default class CostumerService {
 				'province',
 				'company_anniversary',
 				'sales_manager',
+				'ruc',
 				'created_at',
 			],
 			include: [
@@ -61,6 +62,7 @@ export default class CostumerService {
 				'province',
 				'company_anniversary',
 				'sales_manager',
+				'ruc',
 				'created_at',
 			],
 			include: [
@@ -104,6 +106,7 @@ export default class CostumerService {
 				'address',
 				'province',
 				'company_anniversary',
+				'ruc',
 				'sales_manager',
 				'created_at',
 			],
@@ -146,6 +149,7 @@ export default class CostumerService {
 			province,
 			company_anniversary,
 			sales_manager,
+			ruc,
 		} = costumer;
 		const new_costumer = Costumer.build({
 			name,
@@ -156,6 +160,7 @@ export default class CostumerService {
 			province,
 			company_anniversary,
 			sales_manager,
+			ruc,
 			created_at: timeZoneLima(),
 		});
 		try {
@@ -166,7 +171,7 @@ export default class CostumerService {
 		}
 	}
 
-	async edit(costumer) {
+	async update(costumer) {
 		const {
 			id,
 			name,
@@ -177,6 +182,7 @@ export default class CostumerService {
 			province,
 			company_anniversary,
 			sales_manager,
+			ruc,
 		} = costumer;
 		try {
 			const edit_costumer = await Costumer.update(
@@ -189,11 +195,28 @@ export default class CostumerService {
 					province,
 					company_anniversary,
 					sales_manager,
+					ruc,
 					updated_at: timeZoneLima(),
 				},
 				{ where: { id, deleted_at: null } }
 			);
 			return edit_costumer;
+		} catch (error) {
+			return null;
+		}
+	}
+
+	async delete(id) {
+		const time = timeZoneLima();
+		try {
+			const user_deleted = await Costumer.update(
+				{
+					deleted_at: time,
+					updated_at: time,
+				},
+				{ where: { id } }
+			);
+			return user_deleted;
 		} catch (error) {
 			return null;
 		}

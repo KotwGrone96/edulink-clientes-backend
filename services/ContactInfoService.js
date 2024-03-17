@@ -40,8 +40,8 @@ export default class ContactInfoService {
 		return contacsInfo;
 	}
 
-	async edit(contact_info) {
-		const { id, name, lastname, phone, email, rol, costumer_id } = contact_info;
+	async update(contact_info) {
+		const { id, name, lastname, phone, email, rol } = contact_info;
 		try {
 			const edit_contactInfo = await ContacInfo.update(
 				{
@@ -50,7 +50,6 @@ export default class ContactInfoService {
 					phone,
 					email,
 					rol,
-					costumer_id,
 					updated_at: timeZoneLima(),
 				},
 				{ where: { id, deleted_at: null } }

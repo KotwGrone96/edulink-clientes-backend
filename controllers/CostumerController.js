@@ -41,7 +41,7 @@ export default class CostumerController {
 			'email' in req.body == false ||
 			'address' in req.body == false ||
 			'province' in req.body == false ||
-			//'company_anniversary' in req.body == false ||
+			'ruc' in req.body == false ||
 			'sales_manager' in req.body == false
 		) {
 			return res.json({
@@ -112,6 +112,73 @@ export default class CostumerController {
 			ok: true,
 			message: 'Cliente creado correctamente',
 			costumer: res_costumer,
+		});
+	}
+
+	async update(req, res) {
+		if (
+			'id' in req.body == false ||
+			'name' in req.body == false ||
+			'domain' in req.body == false ||
+			'phone' in req.body == false ||
+			'email' in req.body == false ||
+			'address' in req.body == false ||
+			'province' in req.body == false ||
+			'ruc' in req.body == false ||
+			'sales_manager' in req.body == false
+		) {
+			return res.json({
+				ok: false,
+				message: 'Faltan datos por enviar',
+			});
+		}
+		const costumer_updated = await this.costumerService.update(req.body);
+		if (!costumer_updated) {
+			return res.json({
+				ok: false,
+				message: 'Error al actualizar cliente',
+			});
+		}
+		if ('contactInfo' in req.body) {
+			const contactInfo_updated = await this.contactInfoService.update(
+				req.body['contactInfo']
+			);
+			if (!contactInfo_updated) {
+				return res.json({
+					ok: false,
+					message: 'Error al actualizar información de contacto',
+				});
+			}
+		}
+		if ('tiInfo' in req.body) {
+			const tiInfo_updated = await this.tiInfoService.update(
+				req.body['tiInfo']
+			);
+			if (!tiInfo_updated) {
+				return res.json({
+					ok: false,
+					message: 'Error al actualizar información de TI',
+				});
+			}
+		}
+		return res.json({
+			ok: true,
+			message: 'Cliente actualizado',
+		});
+	}
+
+	async delete(req, res) {
+		const { id } = req.params;
+		const del_user = await this.costumerService.delete(id);
+		if (!del_user) {
+			return res.json({
+				ok: false,
+				message: 'Error al eliminar el cliente',
+			});
+		}
+		return res.json({
+			ok: true,
+			message: 'Cliente eliminado',
 		});
 	}
 }

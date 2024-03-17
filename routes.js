@@ -38,6 +38,12 @@ router.get('/api/costumer/all', validateToken, (req, res) =>
 router.post('/api/costumer/create', validateToken, (req, res) =>
 	costumerController.create(req, res)
 );
+router.put('/api/costumer/update', validateToken, (req, res) =>
+	costumerController.update(req, res)
+);
+router.delete('/api/costumer/delete/:id', validateToken, (req, res) =>
+	costumerController.delete(req, res)
+);
 
 //USERS
 router.get('/api/users/all', validateToken, (req, res) =>
