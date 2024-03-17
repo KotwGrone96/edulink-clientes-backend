@@ -3,12 +3,17 @@ import CostumerController from './controllers/CostumerController.js';
 import CostumerService from './services/CostumerService.js';
 import ContactInfoService from './services/ContactInfoService.js';
 import TiInfoService from './services/TiInfoService.js';
+import UserController from './controllers/UserController.js';
+import UserService from './services/UserService.js';
+import UserRolesService from './services/UserRolesService.js';
 import { validateToken } from './middleware/Auth.js';
 
 //SERVICES
 const costumerService = new CostumerService();
 const contactInfoService = new ContactInfoService();
 const tiInfoService = new TiInfoService();
+const userService = new UserService();
+const userRolesService = new UserRolesService();
 
 //CONTROLLERS
 const costumerController = new CostumerController(
@@ -16,6 +21,8 @@ const costumerController = new CostumerController(
 	contactInfoService,
 	tiInfoService
 );
+
+const userController = new UserController(userService, userRolesService);
 
 const router = Router();
 
@@ -30,6 +37,17 @@ router.get('/api/costumer/all', validateToken, (req, res) =>
 );
 router.post('/api/costumer/create', validateToken, (req, res) =>
 	costumerController.create(req, res)
+);
+
+//USERS
+router.get('/api/users/all', validateToken, (req, res) =>
+	userController.findAll(req, res)
+);
+router.get('/api/users/roles/:id', validateToken, (req, res) =>
+	userController.getRoles(req, res)
+);
+router.post('/api/users/validate', validateToken, (req, res) =>
+	userController.validateUser(req, res)
 );
 
 export { router };
