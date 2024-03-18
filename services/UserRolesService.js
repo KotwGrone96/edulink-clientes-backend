@@ -33,4 +33,21 @@ export default class UserRolesService {
 		});
 		return userRoles;
 	}
+
+	async getRoleByName(name) {
+		const rol = await Roles.findOne({
+			where: { name, deleted_at: null },
+		});
+		return rol;
+	}
+
+	async updateRole(user_id, rol_id) {
+		const rol_updated = await UserRoles.update(
+			{
+				rol_id,
+			},
+			{ where: { user_id, deleted_at: null } }
+		);
+		return rol_updated;
+	}
 }

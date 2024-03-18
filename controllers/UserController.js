@@ -73,4 +73,45 @@ export default class UserController {
 			roles,
 		});
 	}
+
+	async delete(req, res) {
+		const { id } = req.params;
+		const del_user = await this.userService.delete(id);
+		if (!del_user) {
+			return res.json({
+				ok: false,
+				message: 'Error al eliminar el usuario',
+			});
+		}
+		return res.json({
+			ok: true,
+			message: 'Usuario eliminado',
+		});
+	}
+
+	async updateRole(req, res) {
+		const rol = await this.userRolesService.getRoleByName(req.body.rolname);
+		if (!rol) {
+			return res.json({
+				ok: false,
+				message: 'No se encontró el rol',
+			});
+		}
+
+		const rol_updated = await this.userRolesService.updateRole(
+			req.body.user_id,
+			rol.id
+		);
+
+		if (!rol_updated) {
+			return res.json({
+				ok: false,
+				message: 'Error al actualizar el rol',
+			});
+		}
+		return res.json({
+			ok: true,
+			message: 'Rol actualizado',
+		});
+	}
 }

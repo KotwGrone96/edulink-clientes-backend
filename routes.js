@@ -55,5 +55,11 @@ router.get('/api/users/roles/:id', validateToken, (req, res) =>
 router.post('/api/users/validate', validateToken, (req, res) =>
 	userController.validateUser(req, res)
 );
+router.put('/api/users/updateRol', validateToken, (req, res) =>
+	userController.updateRole(req, res)
+);
+router.delete('/api/users/delete/:id', validateToken, (req, res) =>
+	userController.delete(req, res)
+);
 
 export { router };
