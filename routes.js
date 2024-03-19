@@ -6,6 +6,8 @@ import TiInfoService from './services/TiInfoService.js';
 import UserController from './controllers/UserController.js';
 import UserService from './services/UserService.js';
 import UserRolesService from './services/UserRolesService.js';
+import SellerController from './controllers/SellerController.js';
+import SellerService from './services/SellerService.js';
 import { validateToken } from './middleware/Auth.js';
 
 //SERVICES
@@ -14,6 +16,7 @@ const contactInfoService = new ContactInfoService();
 const tiInfoService = new TiInfoService();
 const userService = new UserService();
 const userRolesService = new UserRolesService();
+const sellerService = new SellerService();
 
 //CONTROLLERS
 const costumerController = new CostumerController(
@@ -23,6 +26,7 @@ const costumerController = new CostumerController(
 );
 
 const userController = new UserController(userService, userRolesService);
+const sellerController = new SellerController(sellerService);
 
 const router = Router();
 
@@ -60,6 +64,21 @@ router.put('/api/users/updateRol', validateToken, (req, res) =>
 );
 router.delete('/api/users/delete/:id', validateToken, (req, res) =>
 	userController.delete(req, res)
+);
+
+//SELLERS
+router.get('/api/sellers/all', validateToken, (req, res) =>
+	sellerController.findAll(req, res)
+);
+
+router.post('/api/sellers/create', validateToken, (req, res) =>
+	sellerController.create(req, res)
+);
+router.put('/api/sellers/update', validateToken, (req, res) =>
+	sellerController.update(req, res)
+);
+router.delete('/api/sellers/delete/:id', validateToken, (req, res) =>
+	sellerController.delete(req, res)
 );
 
 export { router };

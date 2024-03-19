@@ -5,6 +5,7 @@ import TiInfo from './models/tiInfo.model.js';
 import User from './models/user.model.js';
 import Roles from './models/roles.model.js';
 import UserRoles from './models/userRoles.model.js';
+import Seller from './models/seller.model.js';
 
 export const loadModels = (sequelize) => {
 	//COSTUMER
@@ -250,6 +251,35 @@ export const loadModels = (sequelize) => {
 		{
 			sequelize,
 			tableName: 'user_roles',
+		}
+	);
+
+	Seller.init(
+		{
+			id: {
+				type: DataTypes.INTEGER,
+				primaryKey: true,
+				autoIncrement: true,
+			},
+			name: {
+				type: DataTypes.STRING,
+				unique: true,
+			},
+			created_at: {
+				type: DataTypes.DATE,
+			},
+			updated_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+			deleted_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+		},
+		{
+			sequelize,
+			tableName: 'sellers',
 		}
 	);
 
