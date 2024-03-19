@@ -59,13 +59,16 @@ export default class CostumerController {
 
 		const { domain } = req.body;
 
-		const alreadyExist = await this.costumerService.findOneByDomain(domain);
-		if (alreadyExist) {
-			return res.json({
-				ok: false,
-				message: 'Este dominio ya fue registrado',
-			});
+		if (domain != '') {
+			const alreadyExist = await this.costumerService.findOneByDomain(domain);
+			if (alreadyExist) {
+				return res.json({
+					ok: false,
+					message: 'Este dominio ya fue registrado',
+				});
+			}
 		}
+
 		const new_costumer = await this.costumerService.create(req.body);
 		if (!new_costumer) {
 			return res.json({
