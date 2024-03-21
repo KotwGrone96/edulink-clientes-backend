@@ -10,7 +10,7 @@ const main = async () => {
 		const connection = await createConnectionDB(env);
 		if (!connection)
 			throw new Error('No se ha podido conectar a base de datos');
-		loadModels(connection);
+		await loadModels(connection);
 
 		const webServer = createWebServer();
 

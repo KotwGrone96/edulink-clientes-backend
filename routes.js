@@ -9,6 +9,8 @@ import UserRolesService from './services/UserRolesService.js';
 import SellerController from './controllers/SellerController.js';
 import SellerService from './services/SellerService.js';
 import { validateToken } from './middleware/Auth.js';
+import AreaController from './controllers/AreaController.js';
+import AreaService from './services/AreaService.js';
 
 //SERVICES
 const costumerService = new CostumerService();
@@ -17,6 +19,7 @@ const tiInfoService = new TiInfoService();
 const userService = new UserService();
 const userRolesService = new UserRolesService();
 const sellerService = new SellerService();
+const areaService = new AreaService();
 
 //CONTROLLERS
 const costumerController = new CostumerController(
@@ -27,27 +30,51 @@ const costumerController = new CostumerController(
 
 const userController = new UserController(userService, userRolesService);
 const sellerController = new SellerController(sellerService);
+const areaController = new AreaController(areaService);
 
 const router = Router();
 
 //*** API ***//
 
+//AREAS
+router.get('/api/areas/all', validateToken, (req, res) =>
+	areaController.findAll(req, res)
+);
+router.get('/api/areas/:id', validateToken, (req, res) =>
+	areaController.findOne(req, res)
+);
+router.post('/api/areas/create', validateToken, (req, res) =>
+	areaController.create(req, res)
+);
+router.post('/api/areas/assign', validateToken, (req, res) =>
+	areaController.assign(req, res)
+);
+router.put('/api/areas/update', validateToken, (req, res) =>
+	areaController.update(req, res)
+);
+router.put('/api/areas/updateRelation', validateToken, (req, res) =>
+	areaController.updateRelation(req, res)
+);
+router.delete('/api/areas/delete/:id', validateToken, (req, res) =>
+	areaController.delete(req, res)
+);
+
 //COSTUMERS
-router.get('/api/costumer/find/:id', validateToken, (req, res) =>
-	costumerController.findOne(req, res)
-);
-router.get('/api/costumer/all', validateToken, (req, res) =>
-	costumerController.findAll(req, res)
-);
-router.post('/api/costumer/create', validateToken, (req, res) =>
-	costumerController.create(req, res)
-);
-router.put('/api/costumer/update', validateToken, (req, res) =>
-	costumerController.update(req, res)
-);
-router.delete('/api/costumer/delete/:id', validateToken, (req, res) =>
-	costumerController.delete(req, res)
-);
+// router.get('/api/costumer/find/:id', validateToken, (req, res) =>
+// 	costumerController.findOne(req, res)
+// );
+// router.get('/api/costumer/all', validateToken, (req, res) =>
+// 	costumerController.findAll(req, res)
+// );
+// router.post('/api/costumer/create', validateToken, (req, res) =>
+// 	costumerController.create(req, res)
+// );
+// router.put('/api/costumer/update', validateToken, (req, res) =>
+// 	costumerController.update(req, res)
+// );
+// router.delete('/api/costumer/delete/:id', validateToken, (req, res) =>
+// 	costumerController.delete(req, res)
+// );
 
 //USERS
 router.get('/api/users/all', validateToken, (req, res) =>
@@ -67,18 +94,18 @@ router.delete('/api/users/delete/:id', validateToken, (req, res) =>
 );
 
 //SELLERS
-router.get('/api/sellers/all', validateToken, (req, res) =>
-	sellerController.findAll(req, res)
-);
+// router.get('/api/sellers/all', validateToken, (req, res) =>
+// 	sellerController.findAll(req, res)
+// );
 
-router.post('/api/sellers/create', validateToken, (req, res) =>
-	sellerController.create(req, res)
-);
-router.put('/api/sellers/update', validateToken, (req, res) =>
-	sellerController.update(req, res)
-);
-router.delete('/api/sellers/delete/:id', validateToken, (req, res) =>
-	sellerController.delete(req, res)
-);
+// router.post('/api/sellers/create', validateToken, (req, res) =>
+// 	sellerController.create(req, res)
+// );
+// router.put('/api/sellers/update', validateToken, (req, res) =>
+// 	sellerController.update(req, res)
+// );
+// router.delete('/api/sellers/delete/:id', validateToken, (req, res) =>
+// 	sellerController.delete(req, res)
+// );
 
 export { router };

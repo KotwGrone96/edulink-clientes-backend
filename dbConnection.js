@@ -25,7 +25,7 @@ export const createConnectionDB = async (env) => {
 						timestamps: false,
 					},
 					logging: false,
-			  }
+				}
 			: devConfig
 	);
 	try {
