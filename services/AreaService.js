@@ -2,6 +2,8 @@ import Area from '../models/area.model.js';
 import { timeZoneLima } from '../timezone.js';
 import UserArea from '../models/userArea.model.js';
 import User from '../models/user.model.js';
+import { createReadStream } from 'fs';
+import csv from 'csv-parser';
 
 export default class AreaService {
 	async create(area) {
@@ -75,13 +77,26 @@ export default class AreaService {
 	}
 
 	async update(area) {
-		const { id, name } = area;
+		const { id, name, state } = area;
 		const update_area = await Area.update(
 			{
 				name,
+				state,
 				updated_at: timeZoneLima(),
 			},
 			{ where: { id, deleted_at: null } }
+		);
+		return update_area[0];
+	}
+
+	async updateNyName(area) {
+		const { name, state } = area;
+		const update_area = await Area.update(
+			{
+				state,
+				updated_at: timeZoneLima(),
+			},
+			{ where: { name, deleted_at: null } }
 		);
 		return update_area[0];
 	}
@@ -120,5 +135,32 @@ export default class AreaService {
 			{ where: { area_id } }
 		);
 		return update_area[0];
+	}
+
+	convertCSVinObject(buffer_file) {
+		return new Promise((resolve, reject) => {
+			const result = [];
+			createReadStream(buffer_file, 'utf8')
+				.pipe(csv())
+				.on('data', (chuck) => {
+					result.push(chuck);
+				})
+				.on('end', () => {
+					return resolve(result);
+				})
+				.on('error', () => {
+					return reject(null);
+				});
+		});
+	}
+
+	async bulkCreate(data) {
+		const time = timeZoneLima();
+
+		data.forEach((c) => {
+			c['created_at'] = time;
+		});
+		const areas = await Area.bulkCreate(data);
+		return areas;
 	}
 }

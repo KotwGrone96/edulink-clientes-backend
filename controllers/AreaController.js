@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 export default class AreaController {
 	areaService;
 	constructor(areaService) {
@@ -199,5 +201,86 @@ export default class AreaController {
 				error,
 			});
 		}
+	}
+
+	async handleCsvFile(req, res) {
+		if (!req.file) {
+			return res.status(400).json({
+				ok: false,
+				message: 'No se ha proporcionado ningún archivo CSV',
+			});
+		}
+
+		if (req.file['mimetype'].includes('csv') === false) {
+			return res.json({
+				ok: false,
+				message: 'El archivo ingresado no es un CSV',
+			});
+		}
+
+		const storeCSV = await this.areaService.convertCSVinObject(
+			req.file['path']
+		);
+
+		if (!storeCSV) {
+			return res.json({
+				ok: false,
+				message: 'Error al cargar el archivo CSV',
+			});
+		}
+		if (storeCSV.length == 0) {
+			return res.json({
+				ok: false,
+				message: 'No hay registros para agregar',
+			});
+		}
+		const columns = Object.keys(storeCSV[0]);
+
+		if (columns.includes('name') && columns.includes('state')) {
+			const current_areas = await this.areaService.findAll();
+
+			const to_update_list = [];
+			const to_create_list = [];
+
+			storeCSV.forEach((c) => {
+				let founded = false;
+				const name = c.name;
+				current_areas.forEach((c2) => {
+					if (name == c2.name) {
+						to_update_list.push(c);
+						founded = true;
+					}
+				});
+				if (!founded) {
+					to_create_list.push(c);
+				}
+			});
+			let created_list = [];
+			if (to_create_list.length > 0) {
+				const areas = await this.areaService.bulkCreate(to_create_list);
+				created_list = areas;
+			}
+			if (to_update_list.length > 0) {
+				to_update_list.forEach(async (u) => {
+					await this.areaService.updateNyName(u);
+				});
+			}
+
+			fs.unlinkSync(req.file['path']);
+
+			return res.json({
+				ok: true,
+				message: 'Áreas importadas correctamente',
+				updated_list: to_update_list,
+				created_list,
+			});
+		}
+
+		fs.unlinkSync(req.file['path']);
+
+		return res.json({
+			ok: false,
+			message: 'Faltan columnas en el CSV o no tienen el nombre correcto',
+		});
 	}
 }

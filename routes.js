@@ -11,6 +11,9 @@ import SellerService from './services/SellerService.js';
 import { validateToken } from './middleware/Auth.js';
 import AreaController from './controllers/AreaController.js';
 import AreaService from './services/AreaService.js';
+import multer from 'multer';
+import { extname, join } from 'path';
+import { cwd } from 'process';
 
 //SERVICES
 const costumerService = new CostumerService();
@@ -34,6 +37,17 @@ const areaController = new AreaController(areaService);
 
 const router = Router();
 
+const storage = multer.diskStorage({
+	destination: (req, file, cb) => {
+		cb(null, join(cwd(), 'temp', 'csv-uploads'));
+	},
+	filename: (req, file, cb) => {
+		cb(null, Date.now() + extname(file.originalname));
+	},
+});
+
+const upload = multer({ storage: storage });
+
 //*** API ***//
 
 //AREAS
@@ -48,6 +62,12 @@ router.post('/api/areas/create', validateToken, (req, res) =>
 );
 router.post('/api/areas/assign', validateToken, (req, res) =>
 	areaController.assign(req, res)
+);
+router.post(
+	'/api/areas/csv',
+	validateToken,
+	upload.single('csvFile'),
+	(req, res) => areaController.handleCsvFile(req, res)
 );
 router.put('/api/areas/update', validateToken, (req, res) =>
 	areaController.update(req, res)
