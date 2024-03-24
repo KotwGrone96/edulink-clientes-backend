@@ -14,6 +14,7 @@ import AreaService from './services/AreaService.js';
 import multer from 'multer';
 import { extname, join } from 'path';
 import { cwd } from 'process';
+// import { Worker } from 'worker_threads';
 
 //SERVICES
 const costumerService = new CostumerService();
@@ -31,7 +32,11 @@ const costumerController = new CostumerController(
 	tiInfoService
 );
 
-const userController = new UserController(userService, userRolesService);
+const userController = new UserController(
+	userService,
+	userRolesService,
+	areaService
+);
 const sellerController = new SellerController(sellerService);
 const areaController = new AreaController(areaService);
 
@@ -102,6 +107,15 @@ router.get('/api/users/all', validateToken, (req, res) =>
 );
 router.get('/api/users/roles/:id', validateToken, (req, res) =>
 	userController.getRoles(req, res)
+);
+router.post('/api/users/create', validateToken, (req, res) =>
+	userController.create(req, res)
+);
+router.post(
+	'/api/users/csv',
+	validateToken,
+	upload.single('csvFile'),
+	(req, res) => userController.handleCsvFile(req, res)
 );
 router.post('/api/users/validate', validateToken, (req, res) =>
 	userController.validateUser(req, res)

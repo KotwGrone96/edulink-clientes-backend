@@ -61,6 +61,7 @@ export const loadModels = async (sequelize) => {
 			dni: {
 				type: DataTypes.STRING,
 				unique: true,
+				allowNull: true,
 			},
 
 			address: {
@@ -77,6 +78,10 @@ export const loadModels = async (sequelize) => {
 			},
 			phone: {
 				type: DataTypes.STRING,
+				allowNull: true,
+			},
+			state: {
+				type: DataTypes.STRING(20),
 				allowNull: true,
 			},
 			created_at: {

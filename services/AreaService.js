@@ -111,6 +111,15 @@ export default class AreaService {
 		);
 		return update_area[0];
 	}
+	async updateOrCreateUserArea(area_id, user_id) {
+		const exist = await UserArea.findOne({ where: { user_id } });
+		if (exist) {
+			const updt = await exist.update({ area_id });
+			return updt;
+		}
+		const new_user_area = await this.assign(area_id, user_id);
+		return new_user_area;
+	}
 
 	async delete(id) {
 		const time = timeZoneLima();
@@ -161,6 +170,14 @@ export default class AreaService {
 			c['created_at'] = time;
 		});
 		const areas = await Area.bulkCreate(data);
+		return areas;
+	}
+
+	async getAllAreas() {
+		const areas = await Area.findAll({
+			where: { deleted_at: null },
+			attributes: ['id', 'name'],
+		});
 		return areas;
 	}
 }
