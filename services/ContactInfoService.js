@@ -1,5 +1,8 @@
 import ContacInfo from '../models/contactInfo.model.js';
 import { timeZoneLima } from '../timezone.js';
+import { createReadStream } from 'fs';
+import csv from 'csv-parser';
+import Costumer from '../models/costumer.model.js';
 
 export default class ContactInfoService {
 	async create(contact_info) {
@@ -23,21 +26,28 @@ export default class ContactInfoService {
 		}
 	}
 
-	async findOneByEmail(email) {
-		const contactInfo = await ContacInfo.findOne({
-			where: { email, deleted_at: null },
+	async findAll(where) {
+		const contactInfos = await ContacInfo.findAll({
+			where,
+			include: [
+				{
+					model: Costumer,
+				},
+			],
 		});
-		return contactInfo;
+		return contactInfos;
 	}
 
-	async findAllByCostumerId(costumer_id) {
-		const contacsInfo = await ContacInfo.findAll({
-			where: {
-				costumer_id,
-				deleted_at: null,
-			},
+	async findOne(where) {
+		const contactInfo = await ContacInfo.findOne({
+			where,
+			include: [
+				{
+					model: Costumer,
+				},
+			],
 		});
-		return contacsInfo;
+		return contactInfo;
 	}
 
 	async update(contact_info) {
@@ -58,5 +68,53 @@ export default class ContactInfoService {
 		} catch (error) {
 			return null;
 		}
+	}
+
+	async delete(id) {
+		const time = timeZoneLima();
+		const update_area = await ContacInfo.update(
+			{
+				updated_at: time,
+				deleted_at: time,
+			},
+			{ where: { id } }
+		);
+		return update_area[0];
+	}
+
+	convertCSVinObject(buffer_file) {
+		return new Promise((resolve, reject) => {
+			const result = [];
+			createReadStream(buffer_file, 'utf8')
+				.pipe(csv())
+				.on('data', (chuck) => {
+					result.push(chuck);
+				})
+				.on('end', () => {
+					return resolve(result);
+				})
+				.on('error', () => {
+					return reject(null);
+				});
+		});
+	}
+
+	async updateOrCreateContact(data) {
+		const { name, lastname, phone, email, rol, costumer_id } = data;
+		const exist = await ContacInfo.findOne({
+			where: { email, costumer_id, deleted_at: null },
+		});
+		if (exist) {
+			const updt = await exist.update({
+				name,
+				lastname,
+				phone,
+				rol,
+				updated_at: timeZoneLima(),
+			});
+			return updt;
+		}
+		const new_contact = await this.create(data);
+		return new_contact;
 	}
 }

@@ -5,6 +5,8 @@ import Roles from '../models/roles.model.js';
 import UserGid from '../models/userGID.model.js';
 import { createReadStream } from 'fs';
 import csv from 'csv-parser';
+import UserArea from '../models/userArea.model.js';
+import Area from '../models/area.model.js';
 export default class UserService {
 	async findOneByGID(gid) {
 		const user = await UserGid.findOne({
@@ -15,9 +17,41 @@ export default class UserService {
 	}
 
 	async findOneByEmail(email) {
+		try {
+			const user = await User.findOne({
+				where: { deleted_at: null, email },
+				include: [
+					{
+						model: UserRoles,
+						attributes: ['id', 'user_id', 'rol_id'],
+						include: [
+							{
+								model: Roles,
+								attributes: ['name'],
+							},
+						],
+					},
+				],
+			});
+
+			return user;
+		} catch (error) {
+			return null;
+		}
+	}
+
+	async findOneByDNI(dni) {
 		const user = await User.findOne({
-			where: { deleted_at: null, email },
-			attributes: ['id', 'email', 'state'],
+			where: { deleted_at: null, dni },
+			attributes: ['id', 'dni', 'state'],
+		});
+		return user;
+	}
+
+	async findAll(where, attributes) {
+		const users = await User.findAll({
+			where,
+			attributes,
 			include: [
 				{
 					model: UserRoles,
@@ -29,46 +63,9 @@ export default class UserService {
 						},
 					],
 				},
-			],
-		});
-
-		return user;
-	}
-
-	async findOneByDNI(dni) {
-		const user = await User.findOne({
-			where: { deleted_at: null, dni },
-			attributes: ['id', 'dni', 'state'],
-		});
-		return user;
-	}
-
-	async findAll() {
-		const users = await User.findAll({
-			where: { deleted_at: null },
-			attributes: [
-				'id',
-				'name',
-				'lastname',
-				'email',
-				'phone',
-				'address',
-				'dni',
-				'province',
-				'country',
-				'state',
-				'created_at',
-			],
-			include: [
 				{
-					model: UserRoles,
-					attributes: ['id', 'user_id', 'rol_id'],
-					include: [
-						{
-							model: Roles,
-							attributes: ['name'],
-						},
-					],
+					model: UserArea,
+					include: [{ model: Area }],
 				},
 			],
 		});
@@ -99,12 +96,12 @@ export default class UserService {
 			name,
 			lastname,
 			email,
-			dni,
-			phone,
-			address,
-			province,
-			country,
-			state,
+			dni: dni ? dni : null,
+			phone: phone ? phone : null,
+			address: address ? address : null,
+			province: province ? province : null,
+			country: country ? country : null,
+			state: state ? state : 'ACTIVE',
 			created_at: timeZoneLima(),
 		});
 
@@ -134,12 +131,12 @@ export default class UserService {
 				name,
 				lastname,
 				email,
-				dni,
-				phone,
-				address,
-				province,
-				country,
-				state,
+				dni: dni ? dni : null,
+				phone: phone ? phone : null,
+				address: address ? address : null,
+				province: province ? province : null,
+				country: country ? country : null,
+				state: state ? state : 'ACTIVE',
 				updated_at: timeZoneLima(),
 			},
 			{ where: { id } }
@@ -163,12 +160,12 @@ export default class UserService {
 			{
 				name,
 				lastname,
-				dni,
-				phone,
-				address,
-				province,
-				country,
-				state,
+				dni: dni ? dni : null,
+				phone: phone ? phone : null,
+				address: address ? address : null,
+				province: province ? province : null,
+				country: country ? country : null,
+				state: state ? state : 'ACTIVE',
 				updated_at: timeZoneLima(),
 			},
 			{ where: { email } }

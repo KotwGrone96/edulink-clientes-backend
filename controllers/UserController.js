@@ -149,7 +149,19 @@ export default class UserController {
 	}
 
 	async findAll(req, res) {
-		const users = await this.userService.findAll();
+		const users = await this.userService.findAll({ deleted_at: null }, [
+			'id',
+			'name',
+			'lastname',
+			'email',
+			'phone',
+			'address',
+			'dni',
+			'province',
+			'country',
+			'state',
+			'created_at',
+		]);
 		return res.json({
 			ok: true,
 			message: 'Todos los usuarios',
@@ -189,17 +201,17 @@ export default class UserController {
 	}
 
 	async updateRole(req, res) {
-		// const rol = await this.userRolesService.getRoleByName(req.body.rolname);
-		// if (!rol) {
-		// 	return res.json({
-		// 		ok: false,
-		// 		message: 'No se encontró el rol',
-		// 	});
-		// }
+		const rol = await this.userRolesService.getRoleByName(req.body.rolname);
+		if (!rol) {
+			return res.json({
+				ok: false,
+				message: 'No se encontró el rol',
+			});
+		}
 
 		const rol_updated = await this.userRolesService.updateRole(
 			req.body.user_id,
-			req.body.rol_id
+			rol.id
 		);
 
 		if (!rol_updated) {
@@ -213,6 +225,27 @@ export default class UserController {
 			message: 'Rol actualizado',
 		});
 	}
+
+	async update(req, res) {
+		if (
+			'name' in req.body == false ||
+			'lastname' in req.body == false ||
+			'email' in req.body == false
+		) {
+			return res.json({
+				ok: false,
+				message: 'Faltan datos por enviar',
+			});
+		}
+
+		await this.userService.update(req.body);
+
+		return res.json({
+			ok: true,
+			message: 'Usuario actualizado',
+		});
+	}
+
 	async handleCsvFile(req, res) {
 		if (!req.file) {
 			return res.status(400).json({
@@ -259,7 +292,22 @@ export default class UserController {
 			columns.includes('rol') &&
 			columns.includes('area')
 		) {
-			const current_users = await this.userService.findAll();
+			const current_users = await this.userService.findAll(
+				{ deleted_at: null },
+				[
+					'id',
+					'name',
+					'lastname',
+					'email',
+					'phone',
+					'address',
+					'dni',
+					'province',
+					'country',
+					'state',
+					'created_at',
+				]
+			);
 
 			const current_roles = await this.userRolesService.getAllRoles();
 			const current_roleNames = current_roles.map((cr) => cr.name);
@@ -274,7 +322,11 @@ export default class UserController {
 			let cause = null;
 
 			for (const c of storeCSV) {
-				if (c.name.length == 0 || c.lastname.length == 0 || c.name.email == 0) {
+				if (
+					c.name.length == 0 ||
+					c.lastname.length == 0 ||
+					c.email.length == 0
+				) {
 					withError = true;
 					userError = c;
 					cause = 'Faltan datos principales';
@@ -353,8 +405,8 @@ export default class UserController {
 
 			worker.on('message', (data) => {
 				const { created_users, updated_users } = data;
-				console.log('Usuario creados: ' + created_users);
-				console.log('Usuario actualizados: ' + updated_users);
+				console.log('Usuarios creados: ' + created_users);
+				console.log('Usuarios actualizados: ' + updated_users);
 			});
 
 			worker.on('exit', () => {

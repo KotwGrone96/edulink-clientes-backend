@@ -57,7 +57,7 @@ const updateUsersWorker = async (workerData) => {
 			});
 		}
 	} catch (error) {
-		console.error('Ha ocurrido un error al iniciar la aplicación');
+		console.error('Ha ocurrido un error al iniciar el worker de usuarios');
 		console.error(error);
 		process.exit(0);
 	}

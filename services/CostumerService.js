@@ -1,7 +1,11 @@
-import ContacInfo from '../models/contactInfo.model.js';
+//import ContacInfo from '../models/contactInfo.model.js';
 import Costumer from '../models/costumer.model.js';
-import TiInfo from '../models/tiInfo.model.js';
+//import TiInfo from '../models/tiInfo.model.js';
 import { timeZoneLima } from '../timezone.js';
+import { createReadStream } from 'fs';
+import csv from 'csv-parser';
+import UserCostumer from '../models/userCostumer.model.js';
+import User from '../models/user.model.js';
 
 export default class CostumerService {
 	async findOneById(id) {
@@ -20,31 +24,31 @@ export default class CostumerService {
 				'ruc',
 				'created_at',
 			],
-			include: [
-				{
-					model: ContacInfo,
-					attributes: [
-						'id',
-						'name',
-						'lastname',
-						'phone',
-						'email',
-						'rol',
-						'created_at',
-					],
-				},
-				{
-					model: TiInfo,
-					attributes: [
-						'id',
-						'name',
-						'lastname',
-						'phone',
-						'email',
-						'created_at',
-					],
-				},
-			],
+			// include: [
+			// 	{
+			// 		model: ContacInfo,
+			// 		attributes: [
+			// 			'id',
+			// 			'name',
+			// 			'lastname',
+			// 			'phone',
+			// 			'email',
+			// 			'rol',
+			// 			'created_at',
+			// 		],
+			// 	},
+			// 	{
+			// 		model: TiInfo,
+			// 		attributes: [
+			// 			'id',
+			// 			'name',
+			// 			'lastname',
+			// 			'phone',
+			// 			'email',
+			// 			'created_at',
+			// 		],
+			// 	},
+			// ],
 		});
 		return costumer;
 	}
@@ -65,73 +69,53 @@ export default class CostumerService {
 				'ruc',
 				'created_at',
 			],
-			include: [
-				{
-					model: ContacInfo,
-					attributes: [
-						'id',
-						'name',
-						'lastname',
-						'phone',
-						'email',
-						'rol',
-						'created_at',
-					],
-				},
-				{
-					model: TiInfo,
-					attributes: [
-						'id',
-						'name',
-						'lastname',
-						'phone',
-						'email',
-						'created_at',
-					],
-				},
-			],
+			// include: [
+			// 	{
+			// 		model: ContacInfo,
+			// 		attributes: [
+			// 			'id',
+			// 			'name',
+			// 			'lastname',
+			// 			'phone',
+			// 			'email',
+			// 			'rol',
+			// 			'created_at',
+			// 		],
+			// 	},
+			// 	{
+			// 		model: TiInfo,
+			// 		attributes: [
+			// 			'id',
+			// 			'name',
+			// 			'lastname',
+			// 			'phone',
+			// 			'email',
+			// 			'created_at',
+			// 		],
+			// 	},
+			// ],
 		});
 		return costumer;
 	}
 
-	async findAll() {
+	async findOne(where, attributes) {
+		const costumer = await Costumer.findOne({ where, attributes });
+		return costumer;
+	}
+
+	async findAll(where, attributes) {
 		const costumers = await Costumer.findAll({
-			where: { deleted_at: null },
-			attributes: [
-				'id',
-				'name',
-				'domain',
-				'phone',
-				'email',
-				'address',
-				'province',
-				'company_anniversary',
-				'ruc',
-				'sales_manager',
-				'created_at',
-			],
+			where,
+			attributes,
 			include: [
 				{
-					model: ContacInfo,
-					attributes: [
-						'id',
-						'name',
-						'lastname',
-						'phone',
-						'email',
-						'rol',
-						'created_at',
-					],
-				},
-				{
-					model: TiInfo,
-					attributes: [
-						'id',
-						'name',
-						'lastname',
-						'phone',
-						'email',
-						'created_at',
+					model: UserCostumer,
+					attributes: ['user_id'],
+					include: [
+						{
+							model: User,
+							attributes: ['name', 'lastname', 'email'],
+						},
 					],
 				},
 			],
@@ -142,25 +126,29 @@ export default class CostumerService {
 	async create(costumer) {
 		const {
 			name,
+			ruc_type,
+			ruc,
 			domain,
-			phone,
 			email,
+			phone,
 			address,
 			province,
+			country,
+			state,
 			company_anniversary,
-			sales_manager,
-			ruc,
 		} = costumer;
 		const new_costumer = Costumer.build({
 			name,
-			domain,
-			phone,
-			email,
-			address,
-			province,
-			company_anniversary,
-			sales_manager,
+			ruc_type,
 			ruc,
+			domain: domain ? domain : null,
+			email: email ? email : null,
+			phone: phone ? phone : null,
+			address: address ? address : null,
+			province: province ? province : null,
+			country: country ? country : null,
+			state: state ? state : 'ACTIVE',
+			company_anniversary: company_anniversary ? company_anniversary : null,
 			created_at: timeZoneLima(),
 		});
 		try {
@@ -175,30 +163,71 @@ export default class CostumerService {
 		const {
 			id,
 			name,
+			ruc_type,
+			ruc,
 			domain,
-			phone,
 			email,
+			phone,
 			address,
 			province,
+			country,
+			state,
 			company_anniversary,
-			sales_manager,
-			ruc,
 		} = costumer;
 		try {
 			const edit_costumer = await Costumer.update(
 				{
 					name,
-					domain,
-					phone,
-					email,
-					address,
-					province,
-					company_anniversary,
-					sales_manager,
+					ruc_type,
 					ruc,
+					domain: domain ? domain : null,
+					email: email ? email : null,
+					phone: phone ? phone : null,
+					address: address ? address : null,
+					province: province ? province : null,
+					country: country ? country : null,
+					state: state ? state : 'ACTIVE',
+					company_anniversary: company_anniversary ? company_anniversary : null,
 					updated_at: timeZoneLima(),
 				},
 				{ where: { id, deleted_at: null } }
+			);
+			return edit_costumer;
+		} catch (error) {
+			return null;
+		}
+	}
+
+	async updateByRuc(costumer) {
+		const {
+			name,
+			ruc_type,
+			ruc,
+			domain,
+			email,
+			phone,
+			address,
+			province,
+			country,
+			state,
+			company_anniversary,
+		} = costumer;
+		try {
+			const edit_costumer = await Costumer.update(
+				{
+					name,
+					ruc_type,
+					domain: domain ? domain : null,
+					email: email ? email : null,
+					phone: phone ? phone : null,
+					address: address ? address : null,
+					province: province ? province : null,
+					country: country ? country : null,
+					state: state ? state : 'ACTIVE',
+					company_anniversary: company_anniversary ? company_anniversary : null,
+					updated_at: timeZoneLima(),
+				},
+				{ where: { ruc, deleted_at: null } }
 			);
 			return edit_costumer;
 		} catch (error) {
@@ -220,5 +249,32 @@ export default class CostumerService {
 		} catch (error) {
 			return null;
 		}
+	}
+
+	async convertCSVinObject(buffer_file) {
+		return new Promise((resolve, reject) => {
+			const result = [];
+			createReadStream(buffer_file, 'utf8')
+				.pipe(csv())
+				.on('data', (chuck) => {
+					result.push(chuck);
+				})
+				.on('end', () => {
+					return resolve(result);
+				})
+				.on('error', () => {
+					return reject(null);
+				});
+		});
+	}
+
+	async bulkCreate(data) {
+		const time = timeZoneLima();
+
+		data.forEach((c) => {
+			c['created_at'] = time;
+		});
+		const costumers = await Costumer.bulkCreate(data);
+		return costumers;
 	}
 }

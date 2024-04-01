@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
-//import Costumer from './models/costumer.model.js';
-// import ContacInfo from './models/contactInfo.model.js';
+import Costumer from './models/costumer.model.js';
+import ContacInfo from './models/contactInfo.model.js';
 // import TiInfo from './models/tiInfo.model.js';
 import User from './models/user.model.js';
 import Roles from './models/roles.model.js';
@@ -9,6 +9,7 @@ import UserRoles from './models/userRoles.model.js';
 import Area from './models/area.model.js';
 import UserGid from './models/userGID.model.js';
 import UserArea from './models/userArea.model.js';
+import UserCostumer from './models/userCostumer.model.js';
 
 export const loadModels = async (sequelize) => {
 	//AREA
@@ -236,100 +237,147 @@ export const loadModels = async (sequelize) => {
 		}
 	);
 
-	// //COSTUMER
-	// Costumer.init(
-	// 	{
-	// 		id: {
-	// 			type: DataTypes.INTEGER,
-	// 			primaryKey: true,
-	// 			autoIncrement: true,
-	// 		},
-	// 		name: {
-	// 			type: DataTypes.STRING,
-	// 		},
-	// 		domain: {
-	// 			type: DataTypes.STRING,
-	// 		},
-	// 		phone: {
-	// 			type: DataTypes.STRING,
-	// 		},
-	// 		email: {
-	// 			type: DataTypes.STRING,
-	// 		},
-	// 		address: {
-	// 			type: DataTypes.STRING,
-	// 			allowNull: true,
-	// 		},
-	// 		province: {
-	// 			type: DataTypes.STRING,
-	// 			allowNull: true,
-	// 		},
-	// 		company_anniversary: {
-	// 			type: DataTypes.STRING,
-	// 		},
-	// 		ruc: {
-	// 			type: DataTypes.STRING,
-	// 			allowNull: true,
-	// 		},
-	// 		sales_manager: {
-	// 			type: DataTypes.STRING,
-	// 		},
-	// 		created_at: {
-	// 			type: DataTypes.DATE,
-	// 		},
-	// 		updated_at: {
-	// 			type: DataTypes.DATE,
-	// 			allowNull: true,
-	// 		},
-	// 		deleted_at: {
-	// 			type: DataTypes.DATE,
-	// 			allowNull: true,
-	// 		},
-	// 	},
-	// 	{ sequelize, tableName: 'costumers' }
-	// );
+	//COSTUMER
+	Costumer.init(
+		{
+			id: {
+				type: DataTypes.INTEGER,
+				primaryKey: true,
+				autoIncrement: true,
+			},
+			name: {
+				type: DataTypes.STRING,
+			},
+			ruc_type: {
+				type: DataTypes.STRING(10),
+			},
+			ruc: {
+				type: DataTypes.STRING,
+				unique: true,
+			},
+			domain: {
+				type: DataTypes.STRING,
+				allowNull: true,
+			},
+			email: {
+				type: DataTypes.STRING,
+				allowNull: true,
+			},
+			phone: {
+				type: DataTypes.STRING,
+				allowNull: true,
+			},
+			address: {
+				type: DataTypes.STRING,
+				allowNull: true,
+			},
+			province: {
+				type: DataTypes.STRING,
+				allowNull: true,
+			},
+			country: {
+				type: DataTypes.STRING,
+				allowNull: true,
+			},
+			company_anniversary: {
+				type: DataTypes.STRING,
+			},
 
-	// //CONTACT INFO
-	// ContacInfo.init(
-	// 	{
-	// 		id: {
-	// 			type: DataTypes.INTEGER,
-	// 			primaryKey: true,
-	// 			autoIncrement: true,
-	// 		},
-	// 		name: {
-	// 			type: DataTypes.STRING,
-	// 		},
-	// 		lastname: {
-	// 			type: DataTypes.STRING,
-	// 		},
-	// 		phone: {
-	// 			type: DataTypes.STRING,
-	// 		},
-	// 		email: {
-	// 			type: DataTypes.STRING,
-	// 		},
-	// 		rol: {
-	// 			type: DataTypes.STRING,
-	// 			allowNull: true,
-	// 		},
-	// 		costumer_id: {
-	// 			type: DataTypes.INTEGER,
-	// 		},
-	// 		created_at: {
-	// 			type: DataTypes.DATE,
-	// 		},
-	// 		updated_at: {
-	// 			type: DataTypes.DATE,
-	// 			allowNull: true,
-	// 		},
-	// 		deleted_at: {
-	// 			type: DataTypes.DATE,
-	// 			allowNull: true,
-	// 		},
-	// 	},
-	// 	{ sequelize, tableName: 'costumers_contac_info' }
-	// );
+			state: {
+				type: DataTypes.STRING(20),
+			},
+			created_at: {
+				type: DataTypes.DATE,
+			},
+			updated_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+			deleted_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+		},
+		{ sequelize, tableName: 'costumers' }
+	);
+
+	//USERS COSTUMERS
+	UserCostumer.init(
+		{
+			id: {
+				type: DataTypes.INTEGER,
+				primaryKey: true,
+				autoIncrement: true,
+			},
+			user_id: {
+				type: DataTypes.INTEGER,
+				references: {
+					model: User,
+					key: 'id',
+				},
+			},
+			costumer_id: {
+				type: DataTypes.INTEGER,
+				references: {
+					model: Costumer,
+					key: 'id',
+				},
+			},
+			created_at: {
+				type: DataTypes.DATE,
+			},
+			updated_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+			deleted_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+		},
+		{ sequelize, tableName: 'users_costumers' }
+	);
+
+	//CONTACT INFO
+	ContacInfo.init(
+		{
+			id: {
+				type: DataTypes.INTEGER,
+				primaryKey: true,
+				autoIncrement: true,
+			},
+			name: {
+				type: DataTypes.STRING,
+			},
+			lastname: {
+				type: DataTypes.STRING,
+			},
+			phone: {
+				type: DataTypes.STRING,
+			},
+			email: {
+				type: DataTypes.STRING,
+			},
+			rol: {
+				type: DataTypes.STRING,
+			},
+			costumer_id: {
+				type: DataTypes.INTEGER,
+			},
+			created_at: {
+				type: DataTypes.DATE,
+			},
+			updated_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+			deleted_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+		},
+		{ sequelize, tableName: 'costumers_contac_info' }
+	);
 
 	// //TI INFO
 	// TiInfo.init(
@@ -417,9 +465,18 @@ export const loadModels = async (sequelize) => {
 		foreignKey: 'user_id',
 	});
 
-	// if (process.env.NODE_ENV !== 'production') {
-	// 	console.log('Sincronizando BD de desarrollo');
+	User.hasMany(UserCostumer, { foreignKey: 'user_id' });
+	UserCostumer.belongsTo(User, { foreignKey: 'user_id' });
+
+	Costumer.hasMany(UserCostumer, { foreignKey: 'costumer_id' });
+	UserCostumer.belongsTo(Costumer, { foreignKey: 'costumer_id' });
+
+	Costumer.hasMany(ContacInfo, { foreignKey: 'costumer_id' });
+	ContacInfo.belongsTo(Costumer, { foreignKey: 'costumer_id' });
+
+	// if (process.env.NODE_ENV === 'production') {
+	// 	console.log('Sincronizando BD de producción');
 	// 	await sequelize.sync({ alter: true });
-	// 	console.log('BD de desarrollo sincronizada');
+	// 	console.log('BD de producción sincronizada');
 	// }
 };

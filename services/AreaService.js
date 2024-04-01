@@ -71,6 +71,11 @@ export default class AreaService {
 			},
 			include: {
 				model: UserArea,
+				include: [
+					{
+						model: User,
+					},
+				],
 			},
 		});
 		return areas;
