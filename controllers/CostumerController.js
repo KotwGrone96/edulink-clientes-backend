@@ -595,4 +595,62 @@ export default class CostumerController {
 			message: 'Faltan columnas en el CSV o no tienen el nombre correcto',
 		});
 	}
+
+	async assignManagers(req, res) {
+		if ('usersCostumers' in req.body == false) {
+			return res.json({ ok: false, message: 'No se han enviado usuarios' });
+		}
+		if (req.body['usersCostumers'].length === 0) {
+			return res.json({ ok: false, message: 'No se han enviado usuarios' });
+		}
+
+		try {
+			const data = req.body['usersCostumers'];
+			data.forEach(async (d) => {
+				const { user_id, costumer_id } = d;
+				await this.userCostumerService.updateOrCreateUserCostumer(
+					user_id,
+					costumer_id
+				);
+			});
+			return res.json({
+				ok: true,
+				message: 'Encargados asignados',
+			});
+		} catch (error) {
+			return res.json({
+				ok: true,
+				message: 'Ha ocurrido un error en el servidor',
+				error,
+			});
+		}
+	}
+
+	async deleteManager(req, res) {
+		if ('user_id' in req.body == false || 'costumer_id' in req.body == false) {
+			return res.json({
+				ok: false,
+				message: 'Faltan datos por enviar',
+			});
+		}
+
+		try {
+			const del_manager = await this.userCostumerService.delete(
+				req.body['user_id'],
+				req.body['costumer_id']
+			);
+
+			return res.json({
+				ok: true,
+				message: 'Encargado retirado',
+				del_manager,
+			});
+		} catch (error) {
+			return res.json({
+				ok: true,
+				message: 'Ha ocurrido un error en el servidor',
+				error,
+			});
+		}
+	}
 }

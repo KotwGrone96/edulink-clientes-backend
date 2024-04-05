@@ -151,11 +151,17 @@ router.post(
 	upload.single('csvFile'),
 	(req, res) => costumerController.assignManagerCSV(req, res)
 );
+router.post('/api/costumer/assignManagers', validateToken, (req, res) =>
+	costumerController.assignManagers(req, res)
+);
 router.put('/api/costumer/update', validateToken, (req, res) =>
 	costumerController.update(req, res)
 );
 router.delete('/api/costumer/delete/:id', validateToken, (req, res) =>
 	costumerController.delete(req, res)
+);
+router.delete('/api/costumer/deleteManager', validateToken, (req, res) =>
+	costumerController.deleteManager(req, res)
 );
 
 //CONTACT INFO COSTUMERS
