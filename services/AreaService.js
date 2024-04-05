@@ -119,7 +119,7 @@ export default class AreaService {
 	async updateOrCreateUserArea(area_id, user_id) {
 		const exist = await UserArea.findOne({ where: { user_id } });
 		if (exist) {
-			const updt = await exist.update({ area_id });
+			const updt = await exist.update({ area_id, updated_at: timeZoneLima() });
 			return updt;
 		}
 		const new_user_area = await this.assign(area_id, user_id);

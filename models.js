@@ -10,6 +10,8 @@ import Area from './models/area.model.js';
 import UserGid from './models/userGID.model.js';
 import UserArea from './models/userArea.model.js';
 import UserCostumer from './models/userCostumer.model.js';
+import Oportunity from './models/oportunity.model.js';
+import SalesClosed from './models/salesClosed.model.js';
 
 export const loadModels = async (sequelize) => {
 	//AREA
@@ -379,6 +381,135 @@ export const loadModels = async (sequelize) => {
 		{ sequelize, tableName: 'costumers_contac_info' }
 	);
 
+	// OPOTUNIDADES
+	Oportunity.init(
+		{
+			id: {
+				type: DataTypes.INTEGER,
+				primaryKey: true,
+				autoIncrement: true,
+			},
+			name: {
+				type: DataTypes.STRING,
+				allowNull: false,
+			},
+			description: {
+				type: DataTypes.STRING,
+				allowNull: false,
+			},
+			user_id: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+			},
+			costumer_id: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+			},
+			sales_closed_id: {
+				type: DataTypes.INTEGER,
+				allowNull: true,
+			},
+			start_date: {
+				type: DataTypes.DATE,
+				allowNull: false,
+			},
+			end_date: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+			state: {
+				type: DataTypes.STRING(10),
+				allowNull: false,
+			},
+			ammount: {
+				type: DataTypes.STRING(50),
+				allowNull: true,
+			},
+			currency: {
+				type: DataTypes.STRING(10),
+				allowNull: true,
+			},
+			notes: {
+				type: DataTypes.STRING,
+				allowNull: true,
+			},
+			created_at: {
+				type: DataTypes.DATE,
+			},
+			updated_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+			deleted_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+		},
+		{ sequelize, tableName: 'oportunities' }
+	);
+
+	SalesClosed.init(
+		{
+			id: {
+				type: DataTypes.INTEGER,
+				autoIncrement: true,
+				primaryKey: true,
+			},
+			cost_center: {
+				type: DataTypes.STRING,
+				allowNull: false,
+			},
+			purchase_order: {
+				type: DataTypes.STRING,
+				allowNull: false,
+			},
+			invoice_name: {
+				type: DataTypes.STRING,
+				allowNull: false,
+				unique: true,
+			},
+			oportunity_id: {
+				type: DataTypes.INTEGER,
+			},
+			user_id: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+			},
+			costumer_id: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+			},
+			sale_close_date: {
+				type: DataTypes.DATE,
+				allowNull: false,
+			},
+			ammount: {
+				type: DataTypes.STRING(50),
+				allowNull: true,
+			},
+			currency: {
+				type: DataTypes.STRING(10),
+				allowNull: false,
+			},
+			notes: {
+				type: DataTypes.STRING,
+				allowNull: true,
+			},
+			created_at: {
+				type: DataTypes.DATE,
+			},
+			updated_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+			deleted_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+		},
+		{ sequelize, tableName: 'sales_closed' }
+	);
+
 	// //TI INFO
 	// TiInfo.init(
 	// 	{
@@ -474,9 +605,27 @@ export const loadModels = async (sequelize) => {
 	Costumer.hasMany(ContacInfo, { foreignKey: 'costumer_id' });
 	ContacInfo.belongsTo(Costumer, { foreignKey: 'costumer_id' });
 
-	// if (process.env.NODE_ENV === 'production') {
-	// 	console.log('Sincronizando BD de producción');
+	User.hasMany(Oportunity, { foreignKey: 'user_id' });
+	Oportunity.belongsTo(User, { foreignKey: 'user_id' });
+
+	Costumer.hasMany(Oportunity, { foreignKey: 'costumer_id' });
+	Oportunity.belongsTo(Costumer, { foreignKey: 'costumer_id' });
+
+	User.hasMany(SalesClosed, { foreignKey: 'user_id' });
+	SalesClosed.belongsTo(User, { foreignKey: 'user_id' });
+
+	Costumer.hasMany(SalesClosed, { foreignKey: 'costumer_id' });
+	SalesClosed.belongsTo(Costumer, { foreignKey: 'costumer_id' });
+
+	Oportunity.hasOne(SalesClosed, { foreignKey: 'oportunity_id' });
+	SalesClosed.belongsTo(Oportunity, { foreignKey: 'oportunity_id' });
+
+	SalesClosed.hasOne(Oportunity, { foreignKey: 'sales_closed_id' });
+	Oportunity.belongsTo(SalesClosed, { foreignKey: 'sales_closed_id' });
+
+	// if (process.env.NODE_ENV !== 'production') {
+	// 	console.log('Sincronizando BD de desarrollo');
 	// 	await sequelize.sync({ alter: true });
-	// 	console.log('BD de producción sincronizada');
+	// 	console.log('BD de desarrollo sincronizada');
 	// }
 };

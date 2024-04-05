@@ -1,33 +1,31 @@
 import { Sequelize } from 'sequelize';
 
-const devConfig = {
-	host: '127.0.0.1',
-	username: 'root',
-	password: '',
-	database: 'nelsonga_edulink',
-	dialect: 'mysql',
-	define: {
-		timestamps: false,
-	},
-	logging: false,
-};
+// const devConfig = {
+// 	host: env.DB_HOST,
+// 	username: env.DB_USER,
+// 	password: env.DB_PASS,
+// 	database: env.DB_NAME,
+// 	dialect: 'mysql',
+// 	define: {
+// 		timestamps: false,
+// 	},
+// 	logging: false,
+// };
 
 export const createConnectionDB = async (env) => {
-	const sequelize = new Sequelize(
-		process.env.NODE_ENV === 'production'
-			? {
-					host: env.DB_HOST,
-					username: env.DB_USER,
-					password: env.DB_PASS,
-					database: env.DB_NAME,
-					dialect: 'mysql',
-					define: {
-						timestamps: false,
-					},
-					logging: false,
-				}
-			: devConfig
-	);
+	const sequelize = new Sequelize({
+		host: env.DB_HOST,
+		username: env.DB_USER,
+		password: env.DB_PASS,
+		database:
+			process.env.NODE_ENV === 'production' ? env.DB_NAME : env.DB_NAME_DEV,
+		dialect: 'mysql',
+		define: {
+			timestamps: false,
+		},
+		logging: false,
+		timezone: '-05:00',
+	});
 	try {
 		await sequelize.authenticate();
 		console.log('Conexión a base de datos exitosa');

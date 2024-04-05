@@ -164,7 +164,7 @@ export default class AreaController {
 				});
 			}
 
-			await this.areaService.updateRelation(area_id, user_id);
+			await this.areaService.updateOrCreateUserArea(area_id, user_id);
 			return res.json({
 				ok: true,
 				message: 'Área actualizada correctamente',

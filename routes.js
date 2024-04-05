@@ -6,12 +6,16 @@ import ContactInfoService from './services/ContactInfoService.js';
 import UserController from './controllers/UserController.js';
 import UserService from './services/UserService.js';
 import UserRolesService from './services/UserRolesService.js';
+import OportunityService from './services/OportunityService.js';
+import SaleClosedService from './services/SaleClosedService.js';
 // import SellerController from './controllers/SellerController.js';
 // import SellerService from './services/SellerService.js';
 import { validateToken } from './middleware/Auth.js';
 import AreaController from './controllers/AreaController.js';
 import AreaService from './services/AreaService.js';
 import UserCostumerService from './services/UserCostumerService.js';
+import OportunityController from './controllers/OportunityController.js';
+import SaleClosedController from './controllers/SaleClosedController.js';
 import multer from 'multer';
 import { extname, join } from 'path';
 import { cwd } from 'process';
@@ -23,6 +27,8 @@ const userService = new UserService();
 const userRolesService = new UserRolesService();
 const areaService = new AreaService();
 const userCostumerService = new UserCostumerService();
+const oportunityService = new OportunityService();
+const saleClosedService = new SaleClosedService();
 
 //CONTROLLERS
 const costumerController = new CostumerController(
@@ -41,6 +47,13 @@ const areaController = new AreaController(areaService);
 const contactInfoController = new ContactInfoController(
 	contactInfoService,
 	costumerService
+);
+
+const oportunityController = new OportunityController(oportunityService);
+
+const saleClosedController = new SaleClosedController(
+	saleClosedService,
+	oportunityService
 );
 
 const router = Router();
@@ -166,19 +179,56 @@ router.delete('/api/contactInfo/delete/:id', validateToken, (req, res) =>
 	contactInfoController.delete(req, res)
 );
 
-//SELLERS
-// router.get('/api/sellers/all', validateToken, (req, res) =>
-// 	sellerController.findAll(req, res)
-// );
+// OPORTUNITIES
+router.get('/api/oportunity/all', validateToken, (req, res) =>
+	oportunityController.findAll(req, res)
+);
+router.get('/api/oportunity/all/:costumer_id', validateToken, (req, res) =>
+	oportunityController.findAll(req, res)
+);
 
-// router.post('/api/sellers/create', validateToken, (req, res) =>
-// 	sellerController.create(req, res)
-// );
-// router.put('/api/sellers/update', validateToken, (req, res) =>
-// 	sellerController.update(req, res)
-// );
-// router.delete('/api/sellers/delete/:id', validateToken, (req, res) =>
-// 	sellerController.delete(req, res)
-// );
+router.get('/api/oportunity/find/:id', validateToken, (req, res) =>
+	oportunityController.findOne(req, res)
+);
+
+router.post('/api/oportunity/create', validateToken, (req, res) =>
+	oportunityController.create(req, res)
+);
+
+router.put('/api/oportunity/update', validateToken, (req, res) =>
+	oportunityController.update(req, res)
+);
+
+router.put('/api/oportunity/updateToSaleClosed', validateToken, (req, res) =>
+	oportunityController.updateToSaleClosed(req, res)
+);
+
+router.delete('/api/oportunity/delete/:id', validateToken, (req, res) =>
+	oportunityController.delete(req, res)
+);
+
+// SALES CLOSED
+router.get('/api/saleClosed/all', validateToken, (req, res) =>
+	saleClosedController.findAll(req, res)
+);
+router.get('/api/saleClosed/all/:costumer_id', validateToken, (req, res) =>
+	saleClosedController.findAll(req, res)
+);
+
+router.get('/api/saleClosed/find/:id', validateToken, (req, res) =>
+	saleClosedController.findOne(req, res)
+);
+
+router.post('/api/saleClosed/create', validateToken, (req, res) =>
+	saleClosedController.create(req, res)
+);
+
+router.put('/api/saleClosed/update', validateToken, (req, res) =>
+	saleClosedController.update(req, res)
+);
+
+router.delete('/api/saleClosed/delete/:id', validateToken, (req, res) =>
+	saleClosedController.delete(req, res)
+);
 
 export { router };
