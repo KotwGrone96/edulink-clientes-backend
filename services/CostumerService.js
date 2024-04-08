@@ -277,4 +277,53 @@ export default class CostumerService {
 		const costumers = await Costumer.bulkCreate(data);
 		return costumers;
 	}
+
+	async updateOrCreate(costumer) {
+		const {
+			name,
+			ruc_type,
+			ruc,
+			domain,
+			email,
+			phone,
+			address,
+			province,
+			country,
+			company_anniversary,
+			state,
+		} = costumer;
+		const exist = await Costumer.findOne({ where: { ruc } });
+		if (exist) {
+			const updated = await exist.update({
+				name,
+				ruc_type,
+				domain,
+				email,
+				phone,
+				address,
+				province,
+				country,
+				company_anniversary,
+				state,
+				updated_at: timeZoneLima(),
+			});
+			return updated;
+		}
+		const new_costumer = Costumer.build({
+			name,
+			ruc_type,
+			ruc,
+			domain,
+			email,
+			phone,
+			address,
+			province,
+			country,
+			company_anniversary,
+			state,
+			created_at: timeZoneLima(),
+		});
+		const n_costumer = await new_costumer.save();
+		return n_costumer;
+	}
 }

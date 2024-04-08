@@ -16,6 +16,7 @@ export default class OportunityService {
 			ammount,
 			notes,
 			currency,
+			cost_center,
 		} = oportunity;
 
 		const new_oportunity = Oportunity.build({
@@ -28,6 +29,7 @@ export default class OportunityService {
 			ammount,
 			notes,
 			currency,
+			cost_center,
 			created_at: timeZoneLima(),
 		});
 
@@ -88,6 +90,7 @@ export default class OportunityService {
 			ammount,
 			notes,
 			currency,
+			cost_center,
 		} = oportunity;
 
 		const updt_oportunity = await Oportunity.update(
@@ -103,6 +106,7 @@ export default class OportunityService {
 				ammount,
 				notes,
 				currency,
+				cost_center,
 				updated_at: timeZoneLima(),
 			},
 			{ where }

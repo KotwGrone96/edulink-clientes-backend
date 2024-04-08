@@ -222,13 +222,6 @@ export default class CostumerController {
 			columns.includes('company_anniversary') &&
 			columns.includes('state')
 		) {
-			const current_costumers = await this.costumerService.findAll(
-				{ deleted_at: null },
-				['id', 'ruc']
-			);
-
-			const to_update_list = [];
-			const to_create_list = [];
 			let withError = false;
 			let costumerError = null;
 			let cause = null;
@@ -240,23 +233,6 @@ export default class CostumerController {
 					cause = 'Faltan datos principales';
 					break;
 				}
-
-				// if (c.rol.length != 0 && current_roleNames.includes(c.rol) == false) {
-				// 	withError = true;
-				// 	costumerError = c;
-				// 	cause = 'El rol no existe';
-				// 	break;
-				// }
-
-				// if (c.area.length != 0 && current_areaNames.includes(c.area) == false) {
-				// 	withError = true;
-				// 	costumerError = c;
-				// 	cause = 'El área no existe';
-				// 	break;
-				// }
-
-				let founded = false;
-				const ruc = c.ruc;
 				c.domain = c.domain.length == 0 ? null : c.domain;
 				c.email = c.email.length == 0 ? null : c.email;
 				c.phone = c.phone.length == 0 ? null : c.phone;
@@ -266,18 +242,14 @@ export default class CostumerController {
 				c.company_anniversary =
 					c.company_anniversary.length == 0 ? null : c.company_anniversary;
 				c.state = c.state.length == 0 ? 'ACTIVE' : c.state;
+			}
 
-				for (const c2 of current_costumers) {
-					if (ruc == c2.ruc) {
-						to_update_list.push(c);
-						founded = true;
-						break;
-					}
-				}
+			const rucs_from_csv = storeCSV.map((c) => c.ruc);
+			const no_dups_rucs = [...new Set(rucs_from_csv)];
 
-				if (!founded) {
-					to_create_list.push(c);
-				}
+			if (no_dups_rucs.length != rucs_from_csv.length) {
+				withError = true;
+				cause = 'Hay RUCs o DNIs duplicados en el archivo CSV';
 			}
 
 			if (withError) {
@@ -292,8 +264,7 @@ export default class CostumerController {
 
 			const worker = new Worker(this.updateCostumersWorkerPath, {
 				workerData: {
-					to_update_list,
-					to_create_list,
+					data: storeCSV,
 				},
 			});
 
@@ -312,109 +283,6 @@ export default class CostumerController {
 				fs.unlinkSync(req.file['path']);
 				console.log('Clientes importados exitosamente');
 			});
-
-			// const current_users = await this.costumerService.findAll();
-
-			// const current_roles = await this.userRolesService.getAllRoles();
-			// const current_roleNames = current_roles.map((cr) => cr.name);
-
-			// const current_areas = await this.areaService.getAllAreas();
-			// const current_areaNames = current_areas.map((ca) => ca.name);
-
-			// const to_update_list = [];
-			// const to_create_list = [];
-			// let withError = false;
-			// let userError = null;
-			// let cause = null;
-
-			// for (const c of storeCSV) {
-			// 	if (c.name.length == 0 || c.lastname.length == 0 || c.name.email == 0) {
-			// 		withError = true;
-			// 		userError = c;
-			// 		cause = 'Faltan datos principales';
-			// 		break;
-			// 	}
-
-			// 	if (c.rol.length != 0 && current_roleNames.includes(c.rol) == false) {
-			// 		withError = true;
-			// 		userError = c;
-			// 		cause = 'El rol no existe';
-			// 		break;
-			// 	}
-
-			// 	if (c.area.length != 0 && current_areaNames.includes(c.area) == false) {
-			// 		withError = true;
-			// 		userError = c;
-			// 		cause = 'El área no existe';
-			// 		break;
-			// 	}
-
-			// 	let founded = false;
-			// 	const email = c.email;
-			// 	c.state = c.state.length == 0 ? 'ACTIVE' : c.state;
-			// 	c.dni = c.dni.length == 0 ? null : c.dni;
-			// 	c.phone = c.phone.length == 0 ? null : c.phone;
-			// 	c.address = c.address.length == 0 ? null : c.address;
-			// 	c.province = c.province.length == 0 ? null : c.province;
-			// 	c.country = c.country.length == 0 ? null : c.country;
-			// 	c.rol = c.rol.length == 0 ? 'USER' : c.rol;
-			// 	c.area = c.area.length == 0 ? 'N/A' : c.area;
-
-			// 	for (const c2 of current_users) {
-			// 		if (email == c2.email) {
-			// 			to_update_list.push(c);
-			// 			founded = true;
-			// 			break;
-			// 		}
-			// 	}
-
-			// 	if (!founded) {
-			// 		to_create_list.push(c);
-			// 	}
-			// }
-
-			// if (withError) {
-			// 	fs.unlinkSync(req.file['path']);
-			// 	return res.json({
-			// 		ok: false,
-			// 		message: 'Hay errores en el contenido del archivo CSV',
-			// 		userError,
-			// 		cause,
-			// 	});
-			// }
-
-			// const all_roles = current_roles.map((e) => {
-			// 	return { id: e.id, name: e.name };
-			// });
-
-			// const all_areas = current_areas.map((e) => {
-			// 	return { id: e.id, name: e.name };
-			// });
-
-			// const worker = new Worker(this.updateCostumersWorkerPath, {
-			// 	workerData: {
-			// 		to_update_list,
-			// 		to_create_list,
-			// 		all_roles,
-			// 		all_areas,
-			// 	},
-			// });
-
-			// worker.on('error', (err) => {
-			// 	console.log('ERROR EN EL WORKER');
-			// 	console.log(err);
-			// });
-
-			// worker.on('message', (data) => {
-			// 	const { created_users, updated_users } = data;
-			// 	console.log('Usuario creados: ' + created_users);
-			// 	console.log('Usuario actualizados: ' + updated_users);
-			// });
-
-			// worker.on('exit', () => {
-			// 	fs.unlinkSync(req.file['path']);
-			// 	console.log('Usuarios importados exitosamente');
-			// });
 
 			return res.json({
 				ok: true,

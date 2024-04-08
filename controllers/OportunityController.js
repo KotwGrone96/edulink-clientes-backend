@@ -12,6 +12,7 @@ export default class OportunityController {
 			'user_id' in req.body == false ||
 			'costumer_id' in req.body == false ||
 			'start_date' in req.body == false ||
+			'cost_center' in req.body == false ||
 			'state' in req.body == false
 		) {
 			return res.json({
@@ -57,6 +58,7 @@ export default class OportunityController {
 				'ammount',
 				'notes',
 				'currency',
+				'cost_center',
 			]);
 
 			return res.json({
@@ -93,6 +95,7 @@ export default class OportunityController {
 					'ammount',
 					'notes',
 					'currency',
+					'cost_center',
 				]
 			);
 
@@ -119,6 +122,7 @@ export default class OportunityController {
 			'user_id' in req.body == false ||
 			'costumer_id' in req.body == false ||
 			'start_date' in req.body == false ||
+			'cost_center' in req.body == false ||
 			'state' in req.body == false
 		) {
 			return res.json({
@@ -175,6 +179,7 @@ export default class OportunityController {
 			'sales_closed_id' in req.body == false ||
 			'start_date' in req.body == false ||
 			'end_date' in req.body == false ||
+			'cost_center' in req.body == false ||
 			'state' in req.body == false
 		) {
 			return res.json({

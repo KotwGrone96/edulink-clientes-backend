@@ -429,6 +429,10 @@ export const loadModels = async (sequelize) => {
 				type: DataTypes.STRING(10),
 				allowNull: true,
 			},
+			cost_center: {
+				type: DataTypes.STRING,
+				allowNull: false,
+			},
 			notes: {
 				type: DataTypes.STRING,
 				allowNull: true,
