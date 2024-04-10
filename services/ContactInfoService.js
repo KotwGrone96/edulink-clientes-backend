@@ -52,22 +52,18 @@ export default class ContactInfoService {
 
 	async update(contact_info) {
 		const { id, name, lastname, phone, email, rol } = contact_info;
-		try {
-			const edit_contactInfo = await ContacInfo.update(
-				{
-					name,
-					lastname,
-					phone,
-					email,
-					rol,
-					updated_at: timeZoneLima(),
-				},
-				{ where: { id, deleted_at: null } }
-			);
-			return edit_contactInfo;
-		} catch (error) {
-			return null;
-		}
+		const edit_contactInfo = await ContacInfo.update(
+			{
+				name,
+				lastname,
+				phone,
+				email,
+				rol,
+				updated_at: timeZoneLima(),
+			},
+			{ where: { id, deleted_at: null } }
+		);
+		return edit_contactInfo;
 	}
 
 	async delete(id) {

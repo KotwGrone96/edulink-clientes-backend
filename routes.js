@@ -19,6 +19,7 @@ import SaleClosedController from './controllers/SaleClosedController.js';
 import multer from 'multer';
 import { extname, join } from 'path';
 import { cwd } from 'process';
+import webpush from './core/webPush.js';
 
 //SERVICES
 const costumerService = new CostumerService();
@@ -34,7 +35,8 @@ const saleClosedService = new SaleClosedService();
 const costumerController = new CostumerController(
 	costumerService,
 	userCostumerService,
-	userService
+	userService,
+	webpush
 );
 
 const userController = new UserController(
@@ -46,7 +48,8 @@ const areaController = new AreaController(areaService);
 
 const contactInfoController = new ContactInfoController(
 	contactInfoService,
-	costumerService
+	costumerService,
+	webpush
 );
 
 const oportunityController = new OportunityController(oportunityService);
@@ -174,6 +177,10 @@ router.post('/api/contactInfo/create', validateToken, (req, res) =>
 	contactInfoController.create(req, res)
 );
 
+router.put('/api/contactInfo/update', validateToken, (req, res) =>
+	contactInfoController.update(req, res)
+);
+
 router.post(
 	'/api/contactInfo/csv',
 	validateToken,
@@ -236,5 +243,20 @@ router.put('/api/saleClosed/update', validateToken, (req, res) =>
 router.delete('/api/saleClosed/delete/:id', validateToken, (req, res) =>
 	saleClosedController.delete(req, res)
 );
+
+//TEST
+router.post('/api/notification', async (req, res) => {
+	try {
+		const payload = {
+			title: 'Mi notificación',
+			message: 'Hola edulink!!!',
+		};
+
+		await webpush.sendNotification(req.body, JSON.stringify(payload));
+	} catch (error) {
+		console.log(error);
+		return res.json({ ok: false, message: 'Error en el servidor' });
+	}
+});
 
 export { router };

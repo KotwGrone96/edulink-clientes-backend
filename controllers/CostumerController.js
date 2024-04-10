@@ -9,7 +9,8 @@ export default class CostumerController {
 	userService;
 	updateCostumersWorkerPath;
 	updateUserCostumersWorkerPath;
-	constructor(costumerService, userCostumerService, userService) {
+	webpush;
+	constructor(costumerService, userCostumerService, userService, webpush) {
 		this.costumerService = costumerService;
 		this.userCostumerService = userCostumerService;
 		this.userService = userService;
@@ -23,6 +24,7 @@ export default class CostumerController {
 			'workers',
 			'updateUserCostumers.js'
 		);
+		this.webpush = webpush;
 	}
 
 	async findOne(req, res) {
@@ -279,9 +281,39 @@ export default class CostumerController {
 				console.log('Clientes actualizados: ' + updated_users);
 			});
 
-			worker.on('exit', () => {
+			worker.on('exit', async (exitCode) => {
+				if (exitCode != 0) {
+					fs.unlinkSync(req.file['path']);
+					console.log('Código de salida ===> ', exitCode);
+					if ('subscription' in req.body) {
+						const subscription = await JSON.parse(req.body['subscription']);
+
+						await this.webpush.sendNotification(
+							subscription,
+							JSON.stringify({
+								ok: false,
+								message:
+									'Error en el servidor, no se ha podido importar a los clientes',
+								title: 'EDULINK - CSV DE CLIENTES',
+							})
+						);
+					}
+					return;
+				}
 				fs.unlinkSync(req.file['path']);
 				console.log('Clientes importados exitosamente');
+				if ('subscription' in req.body) {
+					const subscription = await JSON.parse(req.body['subscription']);
+
+					await this.webpush.sendNotification(
+						subscription,
+						JSON.stringify({
+							ok: true,
+							message: 'CSV de clientes importado exitosamente',
+							title: 'EDULINK - CSV DE CLIENTES',
+						})
+					);
+				}
 			});
 
 			return res.json({
@@ -448,13 +480,13 @@ export default class CostumerController {
 
 			worker.on('exit', () => {
 				fs.unlinkSync(req.file['path']);
-				console.log('Encargados de clientes importados exitosamente');
+				console.log('Comerciales de clientes importados exitosamente');
 			});
 
 			return res.json({
 				ok: true,
 				message:
-					'Importando a los encargados de los clientes, le avisaremos cuando el proceso termine',
+					'Importando a los comerciales de los clientes, le avisaremos cuando el proceso termine',
 			});
 		}
 		fs.unlinkSync(req.file['path']);
@@ -483,7 +515,7 @@ export default class CostumerController {
 			});
 			return res.json({
 				ok: true,
-				message: 'Encargados asignados',
+				message: 'Comerciales asignados',
 			});
 		} catch (error) {
 			return res.json({
@@ -510,7 +542,7 @@ export default class CostumerController {
 
 			return res.json({
 				ok: true,
-				message: 'Encargado retirado',
+				message: 'Comercial retirado',
 				del_manager,
 			});
 		} catch (error) {

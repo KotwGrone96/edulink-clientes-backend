@@ -7,10 +7,12 @@ export default class ContactInfoController {
 	contactInfoService;
 	costumerService;
 	updateContactWorkerPath;
-	constructor(contactInfoService, costumerService) {
+	webpush;
+	constructor(contactInfoService, costumerService, webpush) {
 		this.contactInfoService = contactInfoService;
 		this.costumerService = costumerService;
 		this.updateContactWorkerPath = join(cwd(), 'workers', 'updateContacts.js');
+		this.webpush = webpush;
 	}
 
 	async create(req, res) {
@@ -28,10 +30,11 @@ export default class ContactInfoController {
 			});
 		}
 
-		const { email } = req.body;
+		const { email, costumer_id } = req.body;
 
 		const alreadyExist = await this.contactInfoService.findOne({
 			email,
+			costumer_id,
 			deleted_at: null,
 		});
 		if (alreadyExist) {
@@ -215,9 +218,39 @@ export default class ContactInfoController {
 				console.log(data);
 			});
 
-			worker.on('exit', () => {
+			worker.on('exit', async (exitCode) => {
+				if (exitCode != 0) {
+					fs.unlinkSync(req.file['path']);
+					console.log('Código de salida ===> ', exitCode);
+					if ('subscription' in req.body) {
+						const subscription = await JSON.parse(req.body['subscription']);
+
+						await this.webpush.sendNotification(
+							subscription,
+							JSON.stringify({
+								ok: false,
+								message:
+									'Error en el servidor, no se ha podido importar a los contactos de los clientes',
+								title: 'EDULINK - CSV DE CONTACTOS DE CLIENTES',
+							})
+						);
+					}
+					return;
+				}
 				fs.unlinkSync(req.file['path']);
-				console.log('Contactos importados exitosamente');
+				console.log('Clientes importados exitosamente');
+				if ('subscription' in req.body) {
+					const subscription = await JSON.parse(req.body['subscription']);
+
+					await this.webpush.sendNotification(
+						subscription,
+						JSON.stringify({
+							ok: true,
+							message: 'CSV de contacto de clientes importado exitosamente',
+							title: 'EDULINK - CSV DE CONTACTOS DE CLIENTES',
+						})
+					);
+				}
 			});
 
 			return res.json({
@@ -232,5 +265,36 @@ export default class ContactInfoController {
 			ok: false,
 			message: 'Faltan columnas en el CSV o no tienen el nombre correcto',
 		});
+	}
+
+	async update(req, res) {
+		if (
+			'name' in req.body == false ||
+			'lastname' in req.body == false ||
+			'phone' in req.body == false ||
+			'email' in req.body == false ||
+			'rol' in req.body == false ||
+			'id' in req.body == false
+		) {
+			return res.json({
+				ok: false,
+				message: 'Faltan datos por enviar',
+			});
+		}
+
+		try {
+			const rows = await this.contactInfoService.update(req.body);
+			return res.json({
+				ok: true,
+				message: 'Contacto actualizado',
+				rows,
+			});
+		} catch (error) {
+			return res.json({
+				ok: false,
+				message: 'Hubo un error en el servidor',
+				error,
+			});
+		}
 	}
 }
