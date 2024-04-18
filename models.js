@@ -12,6 +12,10 @@ import UserArea from './models/userArea.model.js';
 import UserCostumer from './models/userCostumer.model.js';
 import Oportunity from './models/oportunity.model.js';
 import SalesClosed from './models/salesClosed.model.js';
+import Sale from './models/sale.model.js';
+import CostCenter from './models/costCenter.model.js';
+import ProductSelled from './models/productSelled.model.js';
+
 
 export const loadModels = async (sequelize) => {
 	//AREA
@@ -284,9 +288,14 @@ export const loadModels = async (sequelize) => {
 			company_anniversary: {
 				type: DataTypes.STRING,
 			},
-
+			manager_id: {
+				type: DataTypes.INTEGER,
+			},
 			state: {
 				type: DataTypes.STRING(20),
+			},
+			type: {
+				type: DataTypes.STRING(20), //*** LEAD || COSTUMER ***//
 			},
 			created_at: {
 				type: DataTypes.DATE,
@@ -514,6 +523,181 @@ export const loadModels = async (sequelize) => {
 		{ sequelize, tableName: 'sales_closed' }
 	);
 
+	// VENTA
+	Sale.init(
+		{
+			id: {
+				type: DataTypes.UUID,
+				defaultValue:DataTypes.UUIDV4,
+				unique: true,
+				primaryKey: true,
+			},
+			name:{
+				type:DataTypes.STRING(100),
+				allowNull:false
+			},
+			costumer_id: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+			},
+			user_id: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+			},
+			start_date: {
+				type: DataTypes.DATE,
+				allowNull: false,
+			},
+			end_date: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+			state: {
+				type: DataTypes.STRING(10),
+				allowNull: false,
+			},
+			type: {
+				type: DataTypes.STRING(10), //*** OPORTUNITY || SALE ***//
+				allowNull: false,
+			},
+			ammount: {
+				type: DataTypes.STRING(50),
+				allowNull: true,
+			},
+			currency: {
+				type: DataTypes.STRING(10),
+				allowNull: false,
+			},
+			description: {
+				type: DataTypes.STRING,
+				allowNull: false,
+			},
+			notes: {
+				type: DataTypes.STRING,
+				allowNull: true,
+			},
+			created_at: {
+				type: DataTypes.DATE,
+				allowNull: false,
+			},
+			updated_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+			deleted_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+		},
+		{ sequelize, tableName: 'sales' }
+	);
+
+	// CENTRO DE COSTOS
+	CostCenter.init(
+		{
+			id: {
+				type: DataTypes.UUID,
+				defaultValue:DataTypes.UUIDV4,
+				unique: true,
+				primaryKey: true,
+			},
+			user_id: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+			},
+			sale_id: {
+				type: DataTypes.UUID,
+				allowNull:false
+			},
+			final_costumer: {
+				type: DataTypes.STRING,
+				allowNull: true,
+			},
+			purchase_order_name: {
+				type: DataTypes.STRING,
+				allowNull: true,
+			},
+			costumer_contact: {
+				type: DataTypes.STRING,
+				allowNull: true,
+			},
+			phone_or_email: {
+				type: DataTypes.STRING,
+				allowNull: true,
+			},
+			currency: {
+				type: DataTypes.STRING(10),
+				allowNull: false,
+			},
+			type_of_payment: {
+				type: DataTypes.STRING,
+				allowNull: false,
+			},
+			date_of_send: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+			created_at: {
+				type: DataTypes.DATE,
+				allowNull: false,
+			},
+			updated_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+			deleted_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+		},
+		{ sequelize, tableName: 'costs_center' }
+	);
+
+	ProductSelled.init(
+		{
+			id: {
+				type: DataTypes.UUID,
+				defaultValue:DataTypes.UUIDV4,
+				unique: true,
+				primaryKey: true,
+			},
+			cost_center_id: {
+				type: DataTypes.UUID,
+			},
+			part_number: {
+				type: DataTypes.STRING(100),
+			},
+			name: {
+				type: DataTypes.STRING,
+				allowNull: false,
+			},
+			quantity: {
+				type: DataTypes.STRING(50),
+				allowNull: false,
+			},
+			price: {
+				type: DataTypes.STRING(50),
+				allowNull: false,
+			},
+			type: {
+				type: DataTypes.STRING(50), //*** MAIN || EXTRA || THIRD ***//
+			},
+			created_at: {
+				type: DataTypes.DATE,
+				allowNull: false,
+			},
+			updated_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+			deleted_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+		},
+		{ sequelize, tableName: 'products_selled' }
+	);
+
 	// //TI INFO
 	// TiInfo.init(
 	// 	{
@@ -626,6 +810,26 @@ export const loadModels = async (sequelize) => {
 
 	SalesClosed.hasOne(Oportunity, { foreignKey: 'sales_closed_id' });
 	Oportunity.belongsTo(SalesClosed, { foreignKey: 'sales_closed_id' });
+
+	//TODO *** COMERCIAL PRINCIPAL ***/
+	User.hasOne(Costumer, { foreignKey: 'manager_id' });
+	Costumer.belongsTo(User, { foreignKey: 'manager_id' });
+
+	//TODO *** VENTAS POR USUARIO ***/
+	User.hasMany(Sale, { foreignKey: 'user_id' });
+	Sale.belongsTo(User, { foreignKey: 'user_id' });
+
+	//TODO *** VENTAS POR CLIENTE ***/
+	Costumer.hasMany(Sale, { foreignKey: 'costumer_id' });
+	Sale.belongsTo(Costumer, { foreignKey: 'costumer_id' });
+
+	//TODO *** CENTROS DE COSTOS ***/
+	Sale.hasMany(CostCenter, { foreignKey: 'sale_id' });
+	CostCenter.belongsTo(Sale, { foreignKey: 'sale_id' });
+
+	//TODO *** PRODUCTOS ***/
+	CostCenter.hasMany(ProductSelled, { foreignKey: 'cost_center_id' });
+	ProductSelled.belongsTo(CostCenter, { foreignKey: 'cost_center_id' });
 
 	// if (process.env.NODE_ENV !== 'production') {
 	// 	console.log('Sincronizando BD de desarrollo');

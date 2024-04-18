@@ -6,6 +6,7 @@ import { createReadStream } from 'fs';
 import csv from 'csv-parser';
 import UserCostumer from '../models/userCostumer.model.js';
 import User from '../models/user.model.js';
+import Sale from '../models/sale.model.js';
 
 export default class CostumerService {
 	async findOneById(id) {
@@ -99,7 +100,21 @@ export default class CostumerService {
 	}
 
 	async findOne(where, attributes) {
-		const costumer = await Costumer.findOne({ where, attributes });
+		const costumer = await Costumer.findOne({ where, attributes,include: [
+			{
+				model: UserCostumer,
+				attributes: ['user_id'],
+				include: [
+					{
+						model: User,
+						attributes: ['name', 'lastname', 'email'],
+					},
+				],
+			},
+			{
+				model:User,
+			}
+		], });
 		return costumer;
 	}
 
@@ -118,6 +133,12 @@ export default class CostumerService {
 						},
 					],
 				},
+				{
+					model:User,
+				},
+				{
+					model:Sale
+				}
 			],
 		});
 		return costumers;
@@ -136,27 +157,27 @@ export default class CostumerService {
 			country,
 			state,
 			company_anniversary,
+			manager_id,
+			type,
 		} = costumer;
 		const new_costumer = Costumer.build({
 			name,
 			ruc_type,
 			ruc,
-			domain: domain ? domain : null,
-			email: email ? email : null,
-			phone: phone ? phone : null,
-			address: address ? address : null,
-			province: province ? province : null,
-			country: country ? country : null,
-			state: state ? state : 'ACTIVE',
-			company_anniversary: company_anniversary ? company_anniversary : null,
+			domain,
+			email,
+			phone,
+			address,
+			province,
+			country,
+			state,
+			company_anniversary,
+			manager_id,
+			type,
 			created_at: timeZoneLima(),
 		});
-		try {
-			const n_costumer = await new_costumer.save();
-			return n_costumer;
-		} catch (error) {
-			return null;
-		}
+		const n_costumer = await new_costumer.save();
+		return n_costumer;
 	}
 
 	async update(costumer) {
@@ -173,29 +194,30 @@ export default class CostumerService {
 			country,
 			state,
 			company_anniversary,
+			manager_id,
+			type
 		} = costumer;
-		try {
-			const edit_costumer = await Costumer.update(
-				{
-					name,
-					ruc_type,
-					ruc,
-					domain: domain ? domain : null,
-					email: email ? email : null,
-					phone: phone ? phone : null,
-					address: address ? address : null,
-					province: province ? province : null,
-					country: country ? country : null,
-					state: state ? state : 'ACTIVE',
-					company_anniversary: company_anniversary ? company_anniversary : null,
-					updated_at: timeZoneLima(),
-				},
-				{ where: { id, deleted_at: null } }
-			);
-			return edit_costumer;
-		} catch (error) {
-			return null;
-		}
+		const edit_costumer = await Costumer.update(
+			{
+				name,
+				ruc_type,
+				ruc,
+				domain,
+				email,
+				phone,
+				address,
+				province,
+				country,
+				state,
+				company_anniversary,
+				manager_id,
+				type,
+				updated_at: timeZoneLima(),
+			},
+			{ where: { id, deleted_at: null } }
+		);
+		return edit_costumer;
+
 	}
 
 	async updateByRuc(costumer) {
@@ -237,18 +259,14 @@ export default class CostumerService {
 
 	async delete(id) {
 		const time = timeZoneLima();
-		try {
-			const user_deleted = await Costumer.update(
-				{
-					deleted_at: time,
-					updated_at: time,
-				},
-				{ where: { id } }
-			);
-			return user_deleted;
-		} catch (error) {
-			return null;
-		}
+		const user_deleted = await Costumer.update(
+			{
+				deleted_at: time,
+				updated_at: time,
+			},
+			{ where: { id } }
+		);
+		return user_deleted;
 	}
 
 	async convertCSVinObject(buffer_file) {
@@ -291,6 +309,8 @@ export default class CostumerService {
 			country,
 			company_anniversary,
 			state,
+			manager_id,
+			type
 		} = costumer;
 		const exist = await Costumer.findOne({ where: { ruc } });
 		if (exist) {
@@ -305,6 +325,8 @@ export default class CostumerService {
 				country,
 				company_anniversary,
 				state,
+				manager_id,
+				type,
 				updated_at: timeZoneLima(),
 			});
 			return updated;
@@ -321,6 +343,8 @@ export default class CostumerService {
 			country,
 			company_anniversary,
 			state,
+			manager_id,
+			type,
 			created_at: timeZoneLima(),
 		});
 		const n_costumer = await new_costumer.save();

@@ -48,6 +48,34 @@ export default class UserService {
 		return user;
 	}
 
+	async findOne(where, attributes){
+		const user = await User.findOne({
+			where,
+			attributes,
+			include: [
+				{
+					model: UserRoles,
+					attributes: ['id', 'user_id', 'rol_id'],
+					include: [
+						{
+							model: Roles,
+							attributes: ['name'],
+						},
+					],
+				},
+				{
+					model: UserArea,
+					include: [
+						{ 
+							model: Area
+						}
+					],
+				},
+			],
+		});
+		return user;
+	}
+
 	async findAll(where, attributes) {
 		const users = await User.findAll({
 			where,

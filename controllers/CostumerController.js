@@ -48,6 +48,8 @@ export default class CostumerController {
 				'created_at',
 				'country',
 				'state',
+				'manager_id',
+				'type'
 			]
 		);
 		if (!costumer) {
@@ -78,6 +80,8 @@ export default class CostumerController {
 			'created_at',
 			'country',
 			'state',
+			'manager_id',
+			'type'
 		]);
 		return res.json({
 			ok: true,
@@ -90,7 +94,10 @@ export default class CostumerController {
 		if (
 			'name' in req.body == false ||
 			'ruc_type' in req.body == false ||
-			'ruc' in req.body == false
+			'ruc' in req.body == false ||
+			'manager_id' in req.body == false ||
+			'type' in req.body == false 
+
 		) {
 			return res.json({
 				ok: false,
@@ -98,43 +105,55 @@ export default class CostumerController {
 			});
 		}
 
-		const exist = await this.costumerService.findOne(
-			{
-				deleted_at: null,
-				ruc: req.body.ruc,
-			},
-			['ruc']
-		);
+		try {
+			const exist = await this.costumerService.findOne(
+				{
+					deleted_at: null,
+					ruc: req.body.ruc,
+				},
+				['ruc']
+			);
+	
+			if (exist) {
+				return res.json({
+					ok: false,
+					message: 'Este ruc ya fue registrado',
+				});
+			}
 
-		if (exist) {
+			const exist_user = await this.userService.findOne({deleted_at:null,id:req.body['manager_id']},['id'])
+
+			if (!exist_user) {
+				return res.json({
+					ok: false,
+					message: 'El comercial asignado no existe',
+				});
+			}
+			
+			const new_costumer = await this.costumerService.create(req.body);
+			
+			if ('UserCostumers' in req.body && req.body['UserCostumers'] != null) {
+				const data = [];
+				req.body['UserCostumers'].forEach((user_id) => {
+					const obj = { user_id: '', costumer_id: '' };
+					obj.user_id = user_id;
+					obj.costumer_id = new_costumer.id;
+					data.push(obj);
+				});
+				await this.userCostumerService.bulkCreate(data);
+			}
+			return res.json({
+				ok: true,
+				message: 'Cliente creado correctamente',
+				costumer: new_costumer,
+			});
+		} catch (error) {
 			return res.json({
 				ok: false,
-				message: 'Este ruc ya fue registrado',
+				message: 'Error al crear el cliente',
+				error,
 			});
 		}
-		const new_costumer = await this.costumerService.create(req.body);
-		if (!new_costumer) {
-			return res.json({
-				ok: false,
-				message: 'Error al crear cliente nuevo',
-			});
-		}
-
-		if ('sales_manager' in req.body) {
-			const data = [];
-			req.body['sales_manager'].forEach((user_id) => {
-				const obj = { user_id: '', costumer_id: '' };
-				obj.user_id = user_id;
-				obj.costumer_id = new_costumer.id;
-				data.push(obj);
-			});
-			await this.userCostumerService.bulkCreate(data);
-		}
-		return res.json({
-			ok: true,
-			message: 'Cliente creado correctamente',
-			costumer: new_costumer,
-		});
 	}
 
 	async update(req, res) {
@@ -142,40 +161,47 @@ export default class CostumerController {
 			'id' in req.body == false ||
 			'name' in req.body == false ||
 			'ruc_type' in req.body == false ||
-			'ruc' in req.body == false
+			'ruc' in req.body == false ||
+			'manager_id' in req.body == false ||
+			'type' in req.body == false 
 		) {
 			return res.json({
 				ok: false,
 				message: 'Faltan datos por enviar',
 			});
 		}
-		const costumer_updated = await this.costumerService.update(req.body);
-		if (!costumer_updated) {
-			return res.json({
-				ok: false,
-				message: 'Error al actualizar cliente',
-			});
-		}
-
+		try {
+			await this.costumerService.update(req.body);
+	
 		return res.json({
 			ok: true,
 			message: 'Cliente actualizado',
 		});
+		} catch (error) {
+			return res.json({
+				ok: false,
+				message: 'Error al actualizar cliente',
+				error
+			});
+		}
 	}
 
 	async delete(req, res) {
 		const { id } = req.params;
-		const del_user = await this.costumerService.delete(id);
-		if (!del_user) {
-			return res.json({
-				ok: false,
-				message: 'Error al eliminar el cliente',
-			});
-		}
+		
+		try {
+			await this.costumerService.delete(id);
 		return res.json({
 			ok: true,
 			message: 'Cliente eliminado',
 		});
+		} catch (error) {
+			return res.json({
+				ok: false,
+				message: 'Error al eliminar el cliente',
+				error
+			});
+		}
 	}
 
 	async handleCsvFile(req, res) {
@@ -222,29 +248,13 @@ export default class CostumerController {
 			columns.includes('province') &&
 			columns.includes('country') &&
 			columns.includes('company_anniversary') &&
-			columns.includes('state')
+			columns.includes('state') &&
+			columns.includes('type') &&
+			columns.includes('manager') 
 		) {
 			let withError = false;
 			let costumerError = null;
 			let cause = null;
-
-			for (const c of storeCSV) {
-				if (c.name.length == 0 || c.ruc_type.length == 0 || c.ruc.length == 0) {
-					withError = true;
-					costumerError = c;
-					cause = 'Faltan datos principales';
-					break;
-				}
-				c.domain = c.domain.length == 0 ? null : c.domain;
-				c.email = c.email.length == 0 ? null : c.email;
-				c.phone = c.phone.length == 0 ? null : c.phone;
-				c.address = c.address.length == 0 ? null : c.address;
-				c.province = c.province.length == 0 ? null : c.province;
-				c.country = c.country.length == 0 ? null : c.country;
-				c.company_anniversary =
-					c.company_anniversary.length == 0 ? null : c.company_anniversary;
-				c.state = c.state.length == 0 ? 'ACTIVE' : c.state;
-			}
 
 			const rucs_from_csv = storeCSV.map((c) => c.ruc);
 			const no_dups_rucs = [...new Set(rucs_from_csv)];
@@ -254,13 +264,46 @@ export default class CostumerController {
 				cause = 'Hay RUCs o DNIs duplicados en el archivo CSV';
 			}
 
+			const all_users = await this.userService.findAll({deleted_at:null},['id','email'])
+
+			for (const c of storeCSV) {
+				if (c.name.length == 0 || c.ruc_type.length == 0 || c.ruc.length == 0 || c.manager.length == 0) {
+					withError = true;
+					costumerError = c;
+					cause = 'Faltan datos principales';
+					break;
+				}
+				const manager = all_users.find(u=>u.email=== c.manager)
+
+				if(!manager){
+					withError = true;
+					costumerError = c;
+					cause = `El correo de usuario ${c.manager} no existe`;
+					break;
+				}
+
+				c.domain = c.domain.length == 0 ? null : c.domain;
+				c.email = c.email.length == 0 ? null : c.email;
+				c.phone = c.phone.length == 0 ? null : c.phone;
+				c.address = c.address.length == 0 ? null : c.address;
+				c.province = c.province.length == 0 ? null : c.province;
+				c.country = c.country.length == 0 ? null : c.country;
+				c.company_anniversary =
+					c.company_anniversary.length == 0 ? null : c.company_anniversary;
+				c.state = c.state.length == 0 ? 'ACTIVE' : c.state;
+				c.type = c.type.length == 0 ? 'LEAD' : c.type;
+				c['manager_id'] = manager.id
+			}
+
+			
+
 			if (withError) {
 				fs.unlinkSync(req.file['path']);
 				return res.json({
 					ok: false,
-					message: 'Hay errores en el contenido del archivo CSV',
+					message: cause,
 					costumerError,
-					cause,
+					
 				});
 			}
 
