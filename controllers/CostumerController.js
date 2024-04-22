@@ -66,7 +66,11 @@ export default class CostumerController {
 	}
 
 	async findAll(req, res) {
-		const costumers = await this.costumerService.findAll({ deleted_at: null }, [
+		const where = { deleted_at:null }
+		if('type' in req.query){
+			where['type'] = req.query['type'];
+		}
+		const costumers = await this.costumerService.findAll(where, [
 			'id',
 			'name',
 			'domain',

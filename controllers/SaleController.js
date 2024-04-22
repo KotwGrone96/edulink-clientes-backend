@@ -139,11 +139,16 @@ export default class SaleController{
     }
     
     async findAll(req,res){
+
+        const where = { deleted_at:null }
+
+        if('costumer_id' in req.query){
+            where['costumer_id'] = req.query['costumer_id']
+        }
+
         try {
             const sales = await this.saleService.findAll(
-                {
-                    deleted_at:null
-                },
+                where,
                 ['id',
                 'costumer_id',
                 'user_id',
@@ -155,6 +160,7 @@ export default class SaleController{
                 'currency',
                 'description',
                 'notes',
+                'name',
                 'created_at']
             )
             
@@ -191,6 +197,7 @@ export default class SaleController{
                 'currency',
                 'description',
                 'notes',
+                'name',
                 'created_at']
             )
             

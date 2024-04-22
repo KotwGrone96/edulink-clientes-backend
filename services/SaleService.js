@@ -78,9 +78,6 @@ export default class SaleService{
                     model:User
                 },
                 {
-                    model:Costumer
-                },
-                {
                     model:CostCenter
                 }
             ]
