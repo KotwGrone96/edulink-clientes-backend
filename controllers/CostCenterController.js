@@ -3,11 +3,13 @@ export default class CostCenterController {
     costCenterService;
     saleService;
     userService;
+    productSelledService;
 
-    constructor(costCenterService,saleService,userService){
+    constructor(costCenterService,saleService,userService,productSelledService){
         this.costCenterService = costCenterService
         this.saleSerivce = saleService
         this.userService = userService
+        this.productSelledService = productSelledService
     }
 
     async validatePermission(payload){
@@ -65,8 +67,10 @@ export default class CostCenterController {
         if(
             'user_id' in req.body === false||
             'sale_id' in req.body === false||
+            'costumer_id' in req.body === false||
             'currency' in req.body === false||
-            'type_of_payment' in req.body === false
+            'comission' in req.body === false||
+            'products' in req.body === false
         ){
             return res.json({
                 ok:false,
@@ -80,8 +84,21 @@ export default class CostCenterController {
         }
         //TODO ********************************* //
 
+        if(req.body['products'].length === 0){
+            return res.json({
+                ok:false,
+                message:'Debe agregar al menos 1 producto'
+            })
+        }
+
         try {
             const costCenter = await this.costCenterService.create(req.body);
+
+            req.body['products'].forEach(async(pd)=>{
+                pd['cost_center_id'] = costCenter['id'];
+                await this.productSelledService.create(pd);
+            })
+
             return res.json({
                 ok:true,
                 message:'Creado correctamente',
@@ -143,6 +160,7 @@ export default class CostCenterController {
                     'id',
                     'user_id',
                     'sale_id',
+                    'costumer_id',
                     'final_costumer',
                     'purchase_order_name',
                     'costumer_contact',
@@ -150,6 +168,10 @@ export default class CostCenterController {
                     'currency',
                     'type_of_payment',
                     'date_of_send',
+                    'max_date_of_costumer_attention',
+                    'max_date_of_provider_attention',
+                    'comission',
+                    'state',
                     'created_at'
                 ])
             return res.json({
@@ -176,6 +198,7 @@ export default class CostCenterController {
                     'id',
                     'user_id',
                     'sale_id',
+                    'costumer_id',
                     'final_costumer',
                     'purchase_order_name',
                     'costumer_contact',
@@ -183,6 +206,10 @@ export default class CostCenterController {
                     'currency',
                     'type_of_payment',
                     'date_of_send',
+                    'max_date_of_costumer_attention',
+                    'max_date_of_provider_attention',
+                    'comission',
+                    'state',
                     'created_at'
                 ])
             return res.json({

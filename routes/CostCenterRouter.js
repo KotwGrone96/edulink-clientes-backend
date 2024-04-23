@@ -1,15 +1,9 @@
 import { Router } from "express";
-import CostCenterService from "../services/CostCenterService.js";
-import SaleService from "../services/SaleService.js";
-import UserService from "../services/UserService.js";
 import CostCenterController from "../controllers/CostCenterController.js";
 import { validateToken } from "../middleware/Auth.js";
+import { costCenterService,saleService,userService,productSelledService } from "../core/services.js";
 
-const costCenterService = new CostCenterService()
-const saleService = new SaleService()
-const userService = new UserService()
-
-const costCenterController = new CostCenterController(costCenterService,saleService,userService)
+const costCenterController = new CostCenterController(costCenterService,saleService,userService,productSelledService)
 
 const router = Router();
 

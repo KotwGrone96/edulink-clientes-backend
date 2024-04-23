@@ -1,13 +1,7 @@
 import { Router } from "express";
-import SaleService from './../services/SaleService.js'
 import SaleController from './../controllers/SaleController.js'
-import CostumerService from "../services/CostumerService.js";
-import UserService from "../services/UserService.js";
 import { validateToken } from "../middleware/Auth.js";
-
-const saleService = new SaleService()
-const costumerService = new CostumerService()
-const userService = new UserService()
+import { saleService,costumerService,userService } from "../core/services.js";
 
 const saleController = new SaleController(saleService,costumerService,userService)
 

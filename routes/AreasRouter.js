@@ -1,13 +1,11 @@
 import { Router } from "express";
-import AreaService from "../services/AreaService.js";
 import AreaController from "../controllers/AreaController.js";
 import { validateToken } from "../middleware/Auth.js";
 import multer from "multer";
 import { extname, join } from 'path';
 import { cwd } from 'process';
+import { areaService } from "../core/services.js";
 
-
-const areaService = new AreaService();
 const areaController = new AreaController(areaService);
 
 const router = Router();

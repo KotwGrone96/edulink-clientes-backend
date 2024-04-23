@@ -1,18 +1,11 @@
 import { Router } from "express";
-import CostumerService from "../services/CostumerService.js";
-import UserCostumerService from "../services/UserCostumerService.js";
-import UserService from "../services/UserService.js";
 import webpush from "../core/webPush.js";
 import multer from 'multer';
 import { extname, join } from 'path';
 import { cwd } from 'process';
 import { validateToken } from "../middleware/Auth.js";
-
 import CostumerController from "../controllers/CostumerController.js";
-
-const costumerService = new CostumerService();
-const userCostumerService = new UserCostumerService();
-const userService = new UserService();
+import { costumerService,userCostumerService,userService } from "../core/services.js";
 
 const costumerController = new CostumerController(
 	costumerService,

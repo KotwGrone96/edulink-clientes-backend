@@ -609,21 +609,21 @@ export const loadModels = async (sequelize) => {
 				type: DataTypes.UUID,
 				allowNull:false
 			},
+			costumer_id:{
+				type: DataTypes.INTEGER,
+				allowNull:false
+			},
 			final_costumer: {
 				type: DataTypes.STRING,
-				allowNull: true,
 			},
 			purchase_order_name: {
 				type: DataTypes.STRING,
-				allowNull: true,
 			},
 			costumer_contact: {
 				type: DataTypes.STRING,
-				allowNull: true,
 			},
 			phone_or_email: {
 				type: DataTypes.STRING,
-				allowNull: true,
 			},
 			currency: {
 				type: DataTypes.STRING(10),
@@ -631,11 +631,22 @@ export const loadModels = async (sequelize) => {
 			},
 			type_of_payment: {
 				type: DataTypes.STRING,
-				allowNull: false,
+			},
+			comission:{
+				type: DataTypes.STRING(10)
+			},
+			state:{
+				type: DataTypes.STRING(50),
+				allowNull:false
 			},
 			date_of_send: {
 				type: DataTypes.DATE,
-				allowNull: true,
+			},
+			max_date_of_costumer_attention:{
+				type: DataTypes.DATE
+			},
+			max_date_of_provider_attention:{
+				type: DataTypes.DATE
 			},
 			created_at: {
 				type: DataTypes.DATE,
@@ -663,6 +674,7 @@ export const loadModels = async (sequelize) => {
 			},
 			cost_center_id: {
 				type: DataTypes.UUID,
+				allowNull:false
 			},
 			part_number: {
 				type: DataTypes.STRING(100),
@@ -675,12 +687,25 @@ export const loadModels = async (sequelize) => {
 				type: DataTypes.STRING(50),
 				allowNull: false,
 			},
-			price: {
+			purchase_price: {
+				type: DataTypes.STRING(50),
+				allowNull: false,
+			},
+			sale_price: {
 				type: DataTypes.STRING(50),
 				allowNull: false,
 			},
 			type: {
 				type: DataTypes.STRING(50), //*** MAIN || EXTRA || THIRD ***//
+				allowNull:false
+			},
+			provider:{
+				type: DataTypes.STRING(100),
+				allowNull:true
+			},
+			porcentage:{
+				type: DataTypes.STRING(50),
+				allowNull:true
 			},
 			created_at: {
 				type: DataTypes.DATE,
@@ -822,6 +847,14 @@ export const loadModels = async (sequelize) => {
 	//TODO *** VENTAS POR CLIENTE ***/
 	Costumer.hasMany(Sale, { foreignKey: 'costumer_id' });
 	Sale.belongsTo(Costumer, { foreignKey: 'costumer_id' });
+
+	//TODO *** VENTAS POR CENTROS DE COSTOS ***/
+	Costumer.hasMany(CostCenter, { foreignKey: 'costumer_id' });
+	CostCenter.belongsTo(Costumer, { foreignKey: 'costumer_id' });
+
+	//TODO *** USUARIOS POR CENTROS DE COSTOS***/
+	User.hasMany(CostCenter, { foreignKey: 'user_id' });
+	CostCenter.belongsTo(User, { foreignKey: 'user_id' });
 
 	//TODO *** CENTROS DE COSTOS ***/
 	Sale.hasMany(CostCenter, { foreignKey: 'sale_id' });

@@ -1,4 +1,5 @@
 import CostCenter from "../models/costCenter.model.js";
+import ProductSelled from "../models/productSelled.model.js";
 import Sale from "../models/sale.model.js";
 import User from "../models/user.model.js";
 import { timeZoneLima } from "../timezone.js";
@@ -8,24 +9,36 @@ export default class CostCenterService{
     async create(costCenter){
         const { 
             user_id,
-            sale_id, 
-            final_costumer, 
-            purchase_order_name, 
-            costumer_contact,
-            phone_or_email,
-            currency,
-            type_of_payment
-        } = costCenter;
-
-        const newCostCenter = CostCenter.build({
-            user_id,
-            sale_id, 
+            sale_id,
+            costumer_id, 
             final_costumer, 
             purchase_order_name, 
             costumer_contact,
             phone_or_email,
             currency,
             type_of_payment,
+            date_of_send,
+            max_date_of_costumer_attention,
+            max_date_of_provider_attention,
+            comission,
+            state
+        } = costCenter;
+
+        const newCostCenter = CostCenter.build({
+            user_id,
+            sale_id,
+            costumer_id, 
+            final_costumer, 
+            purchase_order_name, 
+            costumer_contact,
+            phone_or_email,
+            currency,
+            type_of_payment,
+            date_of_send,
+            max_date_of_costumer_attention,
+            max_date_of_provider_attention,
+            comission,
+            state,
             created_at:timeZoneLima()
         });
 
@@ -36,24 +49,36 @@ export default class CostCenterService{
     async update(costCenter,where){
         const { 
             user_id,
-            sale_id, 
-            final_costumer, 
-            purchase_order_name, 
-            costumer_contact,
-            phone_or_email,
-            currency,
-            type_of_payment
-        } = costCenter;
-
-        const updt_costCenter = await CostCenter.update({
-            user_id,
-            sale_id, 
+            sale_id,
+            costumer_id, 
             final_costumer, 
             purchase_order_name, 
             costumer_contact,
             phone_or_email,
             currency,
             type_of_payment,
+            date_of_send,
+            max_date_of_costumer_attention,
+            max_date_of_provider_attention,
+            comission,
+            state
+        } = costCenter;
+
+        const updt_costCenter = await CostCenter.update({
+            user_id,
+            sale_id,
+            costumer_id, 
+            final_costumer, 
+            purchase_order_name, 
+            costumer_contact,
+            phone_or_email,
+            currency,
+            type_of_payment,
+            date_of_send,
+            max_date_of_costumer_attention,
+            max_date_of_provider_attention,
+            comission,
+            state,
             updated_at:timeZoneLima()
         },{ where })
         
@@ -82,11 +107,21 @@ export default class CostCenterService{
             attributes,
             include:[
                 {
-                    model:User,
-
+                    model:Sale,
+                    
                 },
                 {
-                    model:Sale
+                    model:User,
+                    attributes:[
+                        'id',
+                        'name',
+                        'lastname',
+                        'email',
+                        'state'
+                    ]
+                },
+                {
+                    model:ProductSelled
                 }
             ]
         });

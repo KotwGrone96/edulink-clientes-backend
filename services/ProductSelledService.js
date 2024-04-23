@@ -11,7 +11,11 @@ export default class ProductSelledService{
             name,
             quantity,
             price,
-            type
+            purchase_price,
+            sale_price,
+            type,
+            provider,
+            porcentage
         } = productSelled;
 
         const newProductSelled = ProductSelled.build({
@@ -20,7 +24,11 @@ export default class ProductSelledService{
             name,
             quantity,
             price,
+            purchase_price,
+            sale_price,
             type,
+            provider,
+            porcentage,
             created_at:timeZoneLima()
         });
         const n_productSelled = await newProductSelled.save();
@@ -35,7 +43,11 @@ export default class ProductSelledService{
             name,
             quantity,
             price,
-            type
+            purchase_price,
+            sale_price,
+            type,
+            provider,
+            porcentage
         } = productSelled;
         const updt_productSelled = await ProductSelled.update({
             cost_center_id,
@@ -43,7 +55,11 @@ export default class ProductSelledService{
             name,
             quantity,
             price,
+            purchase_price,
+            sale_price,
             type,
+            provider,
+            porcentage,
             updated_at:timeZoneLima()
         },{ where });
 

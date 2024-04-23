@@ -1,16 +1,11 @@
 import { Router } from "express";
-import ContactInfoService from "../services/ContactInfoService.js";
 import ContactInfoController from "../controllers/ContactInfoController.js";
-import CostumerService from "../services/CostumerService.js";
 import webpush from "../core/webPush.js";
 import { validateToken } from "../middleware/Auth.js";
 import multer from 'multer';
 import { extname, join } from 'path';
 import { cwd } from 'process';
-
-const contactInfoService = new ContactInfoService();
-const costumerService = new CostumerService();
-
+import { contactInfoService,costumerService } from "../core/services.js";
 
 const contactInfoController = new ContactInfoController(
 	contactInfoService,

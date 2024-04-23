@@ -1,17 +1,10 @@
 import { Router } from "express";
-import UserService from "../services/UserService.js";
-import UserRolesService from "../services/UserRolesService.js";
-import AreaService from "../services/AreaService.js";
 import UserController from "../controllers/UserController.js";
 import { validateToken } from "../middleware/Auth.js";
 import multer from "multer";
 import { extname, join } from 'path';
 import { cwd } from 'process';
-
-const userService = new UserService();
-const userRolesService = new UserRolesService();
-const areaService = new AreaService();
-
+import { userService,userRolesService,areaService } from "../core/services.js";
 
 const userController = new UserController(
 	userService,
