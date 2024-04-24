@@ -94,6 +94,28 @@ export default class CostumerController {
 		});
 	}
 
+	async findAllSimpleInfo(req, res) {
+		const where = { deleted_at:null }
+		if('type' in req.query){
+			where['type'] = req.query['type'];
+		}
+		const costumers = await this.costumerService.findAllSimpleInfo(where, [
+			'id',
+			'name',
+			'ruc',
+			'ruc_type',
+			'created_at',
+			'state',
+			'manager_id',
+			'type'
+		]);
+		return res.json({
+			ok: true,
+			message: 'Todos los clientes',
+			costumers,
+		});
+	}
+
 	async create(req, res) {
 		if (
 			'name' in req.body == false ||

@@ -144,6 +144,20 @@ export default class CostumerService {
 		return costumers;
 	}
 
+	async findAllSimpleInfo(where, attributes) {
+		const costumers = await Costumer.findAll({
+			where,
+			attributes,
+			include: [
+				{
+					model: UserCostumer,
+					attributes: ['user_id'],
+				}
+			]
+		});
+		return costumers;
+	}
+
 	async create(costumer) {
 		const {
 			name,
