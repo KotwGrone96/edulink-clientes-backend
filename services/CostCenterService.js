@@ -1,5 +1,6 @@
 import CostCenter from "../models/costCenter.model.js";
 import ProductSelled from "../models/productSelled.model.js";
+import Costumer from '../models/costumer.model.js'
 import Sale from "../models/sale.model.js";
 import User from "../models/user.model.js";
 import { timeZoneLima } from "../timezone.js";
@@ -95,8 +96,16 @@ export default class CostCenterService{
                 },
                 {
                     model:Sale
+                },
+                {
+                    model:ProductSelled
+                },
+
+                {
+                    model:Costumer
                 }
-            ]
+            ],
+            order:[['created_at','DESC']]
         });
 
         return costsCenters;
@@ -122,6 +131,9 @@ export default class CostCenterService{
                 },
                 {
                     model:ProductSelled
+                },
+                {
+                    model:Costumer
                 }
             ]
         });

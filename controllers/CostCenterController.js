@@ -190,7 +190,7 @@ export default class CostCenterController {
 
     async findOne(req,res){
         try {
-            const costsCenters = await this.costCenterService.findOne(
+            const costCenter = await this.costCenterService.findOne(
                 {
                     deleted_at:null,
                     id:req.params['id']
@@ -215,7 +215,7 @@ export default class CostCenterController {
             return res.json({
                 ok:true,
                 message:'Centro de costos',
-                costsCenters
+                costCenter
             })
         } catch (error) {
             return res.json({
