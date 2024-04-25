@@ -113,6 +113,9 @@ export default class CostumerService {
 			},
 			{
 				model:User,
+			},
+			{
+				model:Sale
 			}
 		], });
 		return costumer;
