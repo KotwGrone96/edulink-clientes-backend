@@ -1,11 +1,9 @@
 import { DataTypes } from 'sequelize';
 import Costumer from './models/costumer.model.js';
 import ContacInfo from './models/contactInfo.model.js';
-// import TiInfo from './models/tiInfo.model.js';
 import User from './models/user.model.js';
 import Roles from './models/roles.model.js';
 import UserRoles from './models/userRoles.model.js';
-// import Seller from './models/seller.model.js';
 import Area from './models/area.model.js';
 import UserGid from './models/userGID.model.js';
 import UserArea from './models/userArea.model.js';
@@ -723,73 +721,7 @@ export const loadModels = async (sequelize) => {
 		{ sequelize, tableName: 'products_selled' }
 	);
 
-	// //TI INFO
-	// TiInfo.init(
-	// 	{
-	// 		id: {
-	// 			type: DataTypes.INTEGER,
-	// 			primaryKey: true,
-	// 			autoIncrement: true,
-	// 		},
-	// 		name: {
-	// 			type: DataTypes.STRING,
-	// 		},
-	// 		lastname: {
-	// 			type: DataTypes.STRING,
-	// 		},
-	// 		phone: {
-	// 			type: DataTypes.STRING,
-	// 		},
-	// 		email: {
-	// 			type: DataTypes.STRING,
-	// 		},
-	// 		costumer_id: {
-	// 			type: DataTypes.INTEGER,
-	// 		},
-	// 		created_at: {
-	// 			type: DataTypes.DATE,
-	// 		},
-	// 		updated_at: {
-	// 			type: DataTypes.DATE,
-	// 			allowNull: true,
-	// 		},
-	// 		deleted_at: {
-	// 			type: DataTypes.DATE,
-	// 			allowNull: true,
-	// 		},
-	// 	},
-	// 	{ sequelize, tableName: 'costumers_TI_info' }
-	// );
-
-	// Seller.init(
-	// 	{
-	// 		id: {
-	// 			type: DataTypes.INTEGER,
-	// 			primaryKey: true,
-	// 			autoIncrement: true,
-	// 		},
-	// 		name: {
-	// 			type: DataTypes.STRING,
-	// 			unique: true,
-	// 		},
-	// 		created_at: {
-	// 			type: DataTypes.DATE,
-	// 		},
-	// 		updated_at: {
-	// 			type: DataTypes.DATE,
-	// 			allowNull: true,
-	// 		},
-	// 		deleted_at: {
-	// 			type: DataTypes.DATE,
-	// 			allowNull: true,
-	// 		},
-	// 	},
-	// 	{
-	// 		sequelize,
-	// 		tableName: 'sellers',
-	// 	}
-	// );
-
+	
 	//*** RELACIONES DE TABLAS ***//
 
 	Area.hasMany(UserArea, { foreignKey: 'area_id' });

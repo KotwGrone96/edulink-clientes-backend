@@ -70,6 +70,9 @@ export default class CostumerController {
 		if('type' in req.query){
 			where['type'] = req.query['type'];
 		}
+		if('manager_id' in req.query){
+			where['manager_id'] = req.query['manager_id'];
+		}
 		const costumers = await this.costumerService.findAll(where, [
 			'id',
 			'name',
