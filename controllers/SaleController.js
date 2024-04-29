@@ -161,6 +161,8 @@ export default class SaleController{
                 'description',
                 'notes',
                 'name',
+                'purchase_order',
+                'folder',
                 'created_at']
             )
             
@@ -198,6 +200,8 @@ export default class SaleController{
                 'description',
                 'notes',
                 'name',
+                'purchase_order',
+                'folder',
                 'created_at']
             )
             

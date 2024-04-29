@@ -18,8 +18,8 @@ export default class SaleService{
             ammount,
             currency,
             description,
-            notes 
-        } = sale;    
+            notes,
+                } = sale;    
         
         const new_sale = Sale.build({
             name,
@@ -50,8 +50,11 @@ export default class SaleService{
             ammount,
             currency,
             description,
-            notes 
-        } = sale;  
+            notes,
+            name,
+            purchase_order,
+            folder,
+            } = sale;  
 
         const updt_sale = await Sale.update({
             costumer_id,
@@ -64,6 +67,10 @@ export default class SaleService{
             currency,
             description,
             notes,
+            name,
+            purchase_order,
+            folder,
+        
             updated_at:timeZoneLima()
         },{ where })
 

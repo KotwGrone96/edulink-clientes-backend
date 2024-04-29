@@ -176,6 +176,7 @@ export default class CostumerService {
 			company_anniversary,
 			manager_id,
 			type,
+			drive_folder_id
 		} = costumer;
 		const new_costumer = Costumer.build({
 			name,
@@ -191,6 +192,7 @@ export default class CostumerService {
 			company_anniversary,
 			manager_id,
 			type,
+			drive_folder_id,
 			created_at: timeZoneLima(),
 		});
 		const n_costumer = await new_costumer.save();
@@ -212,7 +214,8 @@ export default class CostumerService {
 			state,
 			company_anniversary,
 			manager_id,
-			type
+			type,
+			drive_folder_id
 		} = costumer;
 		const edit_costumer = await Costumer.update(
 			{
@@ -229,6 +232,7 @@ export default class CostumerService {
 				company_anniversary,
 				manager_id,
 				type,
+				drive_folder_id,
 				updated_at: timeZoneLima(),
 			},
 			{ where: { id, deleted_at: null } }

@@ -295,6 +295,10 @@ export const loadModels = async (sequelize) => {
 			type: {
 				type: DataTypes.STRING(20), //*** LEAD || COSTUMER ***//
 			},
+			drive_folder_id:{
+				type:DataTypes.STRING,
+				allowNull:true
+			},
 			created_at: {
 				type: DataTypes.DATE,
 			},
@@ -573,6 +577,14 @@ export const loadModels = async (sequelize) => {
 			notes: {
 				type: DataTypes.STRING,
 				allowNull: true,
+			},
+			purchase_order:{
+				type:DataTypes.STRING,
+				allowNull:true
+			},
+			folder:{
+				type:DataTypes.STRING,
+				allowNull:true
 			},
 			created_at: {
 				type: DataTypes.DATE,
