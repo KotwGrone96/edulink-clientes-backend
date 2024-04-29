@@ -80,7 +80,8 @@ export default class SaleService{
                 {
                     model:CostCenter
                 }
-            ]
+            ],
+            order:[['start_date','DESC']]
         });
 
         return sales

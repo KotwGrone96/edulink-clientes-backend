@@ -152,11 +152,12 @@ export default class CostCenterController {
     }
 
     async findAll(req,res){
+        const where = {deleted_at:null}
+        if('user_id' in req.query){
+			where['user_id'] = req.query['user_id'];
+		}
         try {
-            const costsCenters = await this.costCenterService.findAll(
-                {
-                    deleted_at:null
-                },[
+            const costsCenters = await this.costCenterService.findAll(where,[
                     'id',
                     'user_id',
                     'sale_id',
