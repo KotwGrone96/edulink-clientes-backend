@@ -140,6 +140,24 @@ export default class CostCenterController {
         }
         //TODO ********************************* //
 
+        if(req.body['products'].length === 0){
+            return res.json({
+                ok:false,
+                message:'Debe agregar al menos 1 producto'
+            })
+        }
+        const productsToUpdate = req.body['products'].filter(p=> ('id' in p)===true )
+        const productsToCreate= req.body['products'].filter(p=> ('id' in p)===false)
+
+        productsToCreate.forEach(async(pd)=>{
+            pd['cost_center_id'] = req.body['id'];
+            await this.productSelledService.create(pd);
+        })
+
+        productsToUpdate.forEach(async(pd)=>{
+            await this.productSelledService.update(pd,{deleted_at:null,id:pd.id});
+        })
+
         try {
             await this.costCenterService.update(req.body,{deleted_at:null,id:req.body['id']})
             return res.json({
