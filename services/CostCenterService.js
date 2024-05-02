@@ -4,6 +4,7 @@ import Costumer from '../models/costumer.model.js'
 import Sale from "../models/sale.model.js";
 import User from "../models/user.model.js";
 import { timeZoneLima } from "../timezone.js";
+import CostCenterApprovals from "../models/costCenterApprovals.model.js";
 
 export default class CostCenterService{
 
@@ -95,7 +96,8 @@ export default class CostCenterService{
 
                 },
                 {
-                    model:Sale
+                    model:Sale,
+                    where:{deleted_at:null}
                 },
                 {
                     model:ProductSelled
@@ -103,6 +105,9 @@ export default class CostCenterService{
 
                 {
                     model:Costumer
+                },
+                {
+                    model:CostCenterApprovals
                 }
             ],
             order:[['created_at','DESC']]
@@ -117,7 +122,9 @@ export default class CostCenterService{
             include:[
                 {
                     model:Sale,
-                    
+                    where:{
+                        deleted_at:null
+                    }
                 },
                 {
                     model:User,
@@ -134,6 +141,9 @@ export default class CostCenterService{
                 },
                 {
                     model:Costumer
+                },
+                {
+                    model:CostCenterApprovals
                 }
             ]
         });

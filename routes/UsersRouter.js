@@ -5,11 +5,13 @@ import multer from "multer";
 import { extname, join } from 'path';
 import { cwd } from 'process';
 import { userService,userRolesService,areaService } from "../core/services.js";
+import webpush from "../core/webPush.js";
 
 const userController = new UserController(
 	userService,
 	userRolesService,
-	areaService
+	areaService,
+	webpush
 );
 
 const storage = multer.diskStorage({

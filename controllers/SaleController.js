@@ -163,6 +163,7 @@ export default class SaleController{
                 'name',
                 'purchase_order',
                 'folder',
+                'sale_close_email',
                 'created_at']
             )
             
@@ -202,6 +203,7 @@ export default class SaleController{
                 'name',
                 'purchase_order',
                 'folder',
+                'sale_close_email',
                 'created_at']
             )
             

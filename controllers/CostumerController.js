@@ -244,6 +244,7 @@ export default class CostumerController {
 		}
 
 		if (req.file['mimetype'].includes('csv') === false) {
+			fs.unlinkSync(req.file['path']);
 			return res.json({
 				ok: false,
 				message: 'El archivo ingresado no es un CSV',
@@ -255,12 +256,14 @@ export default class CostumerController {
 		);
 
 		if (!storeCSV) {
+			fs.unlinkSync(req.file['path']);
 			return res.json({
 				ok: false,
 				message: 'Error al cargar el archivo CSV',
 			});
 		}
 		if (storeCSV.length == 0) {
+			fs.unlinkSync(req.file['path']);
 			return res.json({
 				ok: false,
 				message: 'No hay registros para agregar',

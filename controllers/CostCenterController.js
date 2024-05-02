@@ -10,12 +10,14 @@ export default class CostCenterController {
     saleService;
     userService;
     productSelledService;
+    costCenterApprovalsService;
 
-    constructor(costCenterService,saleService,userService,productSelledService){
+    constructor(costCenterService,saleService,userService,productSelledService,costCenterApprovalsService){
         this.costCenterService = costCenterService
         this.saleSerivce = saleService
         this.userService = userService
         this.productSelledService = productSelledService
+        this.costCenterApprovalsService = costCenterApprovalsService
     }
 
     async validatePermission(payload){
@@ -44,6 +46,11 @@ export default class CostCenterController {
         }
 
         if(user_exist['UserRoles'][0]['Role']['name'] === 'ADMIN'){
+            return{
+                ok:true
+            }
+        }
+        if(user_exist['UserRoles'][0]['Role']['name'] === 'BILLER'){
             return{
                 ok:true
             }
@@ -140,26 +147,33 @@ export default class CostCenterController {
         }
         //TODO ********************************* //
 
-        if(req.body['products'].length === 0){
-            return res.json({
-                ok:false,
-                message:'Debe agregar al menos 1 producto'
+        if(req.body['state'] != 'APPROVED' && req.body['state'] != 'OBSERVED'){
+            if(!req.body['products'] || req.body['products'].length === 0){
+                return res.json({
+                    ok:false,
+                    message:'Debe agregar al menos 1 producto'
+                })
+            }
+            const productsToUpdate = req.body['products'].filter(p=> ('id' in p)===true )
+            const productsToCreate= req.body['products'].filter(p=> ('id' in p)===false)
+    
+            productsToCreate.forEach(async(pd)=>{
+                pd['cost_center_id'] = req.body['id'];
+                await this.productSelledService.create(pd);
             })
+    
+            productsToUpdate.forEach(async(pd)=>{
+                await this.productSelledService.update(pd,{deleted_at:null,id:pd.id});
+            }) 
         }
-        const productsToUpdate = req.body['products'].filter(p=> ('id' in p)===true )
-        const productsToCreate= req.body['products'].filter(p=> ('id' in p)===false)
-
-        productsToCreate.forEach(async(pd)=>{
-            pd['cost_center_id'] = req.body['id'];
-            await this.productSelledService.create(pd);
-        })
-
-        productsToUpdate.forEach(async(pd)=>{
-            await this.productSelledService.update(pd,{deleted_at:null,id:pd.id});
-        })
 
         try {
             await this.costCenterService.update(req.body,{deleted_at:null,id:req.body['id']})
+
+            if(req.body['state'] != 'DRAFT' && req.body['state'] != 'SEND' && req.body['CostCenterApproval']){
+                await this.costCenterApprovalsService.updateOrCreate(req.body['CostCenterApproval'])
+            }
+
             return res.json({
                 ok:true,
                 message:'Actualizado correctamente'
@@ -179,6 +193,9 @@ export default class CostCenterController {
         const where = {deleted_at:null}
         if('user_id' in req.query){
 			where['user_id'] = req.query['user_id'];
+		}
+        if('state' in req.query){
+			where['state'] = req.query['state'];
 		}
         try {
             const costsCenters = await this.costCenterService.findAll(where,[

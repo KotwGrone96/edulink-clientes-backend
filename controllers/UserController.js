@@ -8,11 +8,13 @@ export default class UserController {
 	userRolesService;
 	updateUsersWorkerPath;
 	areaService;
-	constructor(userService, userRolesService, areaService) {
+	webpush;
+	constructor(userService, userRolesService, areaService,webpush) {
 		this.userService = userService;
 		this.userRolesService = userRolesService;
 		this.updateUsersWorkerPath = join(cwd(), 'workers', 'updateUsers.js');
 		this.areaService = areaService;
+		this.webpush = webpush;
 	}
 
 	async validateUser(req, res) {
@@ -255,6 +257,7 @@ export default class UserController {
 		}
 
 		if (req.file['mimetype'].includes('csv') === false) {
+			fs.unlinkSync(req.file['path']);
 			return res.json({
 				ok: false,
 				message: 'El archivo ingresado no es un CSV',
@@ -266,12 +269,14 @@ export default class UserController {
 		);
 
 		if (!storeCSV) {
+			fs.unlinkSync(req.file['path']);
 			return res.json({
 				ok: false,
 				message: 'Error al cargar el archivo CSV',
 			});
 		}
 		if (storeCSV.length == 0) {
+			fs.unlinkSync(req.file['path']);
 			return res.json({
 				ok: false,
 				message: 'No hay registros para agregar',
@@ -409,9 +414,39 @@ export default class UserController {
 				console.log('Usuarios actualizados: ' + updated_users);
 			});
 
-			worker.on('exit', () => {
+			worker.on('exit', async(exitCode) => {
+				if (exitCode != 0) {
+					fs.unlinkSync(req.file['path']);
+					console.log('Código de salida ===> ', exitCode);
+					if ('subscription' in req.body) {
+						const subscription = await JSON.parse(req.body['subscription']);
+
+						await this.webpush.sendNotification(
+							subscription,
+							JSON.stringify({
+								ok: false,
+								message:
+									'Error en el servidor, no se ha podido importar a los usuarios',
+								title: 'EDULINK - CSV DE USUARIOS',
+							})
+						);
+					}
+					return;
+				}
 				fs.unlinkSync(req.file['path']);
 				console.log('Usuarios importados exitosamente');
+				if ('subscription' in req.body) {
+					const subscription = await JSON.parse(req.body['subscription']);
+
+					await this.webpush.sendNotification(
+						subscription,
+						JSON.stringify({
+							ok: true,
+							message: 'CSV de usuarios importado exitosamente',
+							title: 'EDULINK - CSV DE USUARIOS',
+						})
+					);
+				}
 			});
 
 			return res.json({

@@ -5,6 +5,7 @@ import CostumersRouter from './routes/CostumersRouter.js'
 import ContactsInfoRouter from './routes/ContactsInfoRouter.js'
 import SalesRouter from './routes/SalesRouter.js'
 import CostCenterRouter from './routes/CostCenterRouter.js'
+import EmailRouter from './routes/EmailRouter.js'
 
 const router = Router();
 
@@ -28,6 +29,9 @@ router.use('/api',SalesRouter)
 
 //COST CENTER
 router.use('/api',CostCenterRouter)
+
+//EMAILS
+router.use('/api',EmailRouter)
 
 
 // // OPORTUNITIES

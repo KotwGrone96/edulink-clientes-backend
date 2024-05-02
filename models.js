@@ -13,6 +13,8 @@ import SalesClosed from './models/salesClosed.model.js';
 import Sale from './models/sale.model.js';
 import CostCenter from './models/costCenter.model.js';
 import ProductSelled from './models/productSelled.model.js';
+import Email from './models/email.model.js';
+import CostCenterApprovals from './models/costCenterApprovals.model.js';
 
 
 export const loadModels = async (sequelize) => {
@@ -586,6 +588,10 @@ export const loadModels = async (sequelize) => {
 				type:DataTypes.STRING,
 				allowNull:true
 			},
+			sale_close_email:{
+				type:DataTypes.STRING(10),
+				allowNull:true
+			},
 			created_at: {
 				type: DataTypes.DATE,
 				allowNull: false,
@@ -733,6 +739,66 @@ export const loadModels = async (sequelize) => {
 		{ sequelize, tableName: 'products_selled' }
 	);
 
+	Email.init(
+		{
+			id: {
+				type: DataTypes.UUID,
+				defaultValue:DataTypes.UUIDV4,
+				unique: true,
+				primaryKey: true,
+			},
+			email:{
+				type:DataTypes.STRING,
+				allowNull:false
+			},
+			subject:{
+				type:DataTypes.STRING,
+				allowNull:false
+			},
+			user_id:{
+				type:DataTypes.INTEGER,
+				allowNull:false
+			}
+		},
+		{ sequelize, tableName:'emails' }
+	)
+
+	CostCenterApprovals.init(
+		{
+			id: {
+				type: DataTypes.UUID,
+				defaultValue:DataTypes.UUIDV4,
+				unique: true,
+				primaryKey: true,
+			},
+			cost_center_id:{
+				type:DataTypes.UUID,
+				allowNull:false
+			},
+			state:{
+				type:DataTypes.STRING(10),
+				allowNull:false
+			},
+			body:{
+				type:DataTypes.STRING,
+				allowNull:false
+			},
+			created_at: {
+				type: DataTypes.DATE,
+				allowNull: false,
+			},
+			updated_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+			deleted_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+		},
+		{ sequelize, tableName:'cost_center_approvals' }
+	)
+
 	
 	//*** RELACIONES DE TABLAS ***//
 
@@ -807,6 +873,12 @@ export const loadModels = async (sequelize) => {
 	//TODO *** PRODUCTOS ***/
 	CostCenter.hasMany(ProductSelled, { foreignKey: 'cost_center_id' });
 	ProductSelled.belongsTo(CostCenter, { foreignKey: 'cost_center_id' });
+
+	User.hasOne(Email, { foreignKey: 'user_id' });
+	Email.belongsTo(User, { foreignKey: 'user_id' });
+
+	CostCenter.hasOne(CostCenterApprovals, { foreignKey: 'cost_center_id' });
+	CostCenterApprovals.belongsTo(CostCenter, { foreignKey: 'cost_center_id' });
 
 	// if (process.env.NODE_ENV !== 'production') {
 	// 	console.log('Sincronizando BD de desarrollo');

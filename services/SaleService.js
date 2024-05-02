@@ -19,6 +19,7 @@ export default class SaleService{
             currency,
             description,
             notes,
+            sale_close_email
                 } = sale;    
         
         const new_sale = Sale.build({
@@ -33,6 +34,7 @@ export default class SaleService{
             currency,
             description,
             notes ,
+            sale_close_email,
             created_at:timeZoneLima()
         });
         const n_sale = await new_sale.save();
@@ -54,6 +56,7 @@ export default class SaleService{
             name,
             purchase_order,
             folder,
+            sale_close_email,
             } = sale;  
 
         const updt_sale = await Sale.update({
@@ -70,7 +73,7 @@ export default class SaleService{
             name,
             purchase_order,
             folder,
-        
+            sale_close_email,
             updated_at:timeZoneLima()
         },{ where })
 
