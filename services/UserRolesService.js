@@ -1,4 +1,5 @@
 import Roles from '../models/roles.model.js';
+import RouteByRol from '../models/routesByRole.model.js';
 import UserRoles from '../models/userRoles.model.js';
 import { timeZoneLima } from '../timezone.js';
 
@@ -41,7 +42,7 @@ export default class UserRolesService {
 			include: [
 				{
 					model: Roles,
-					attributes: ['name'],
+					attributes: ['name','label'],
 				},
 			],
 		});
@@ -51,7 +52,12 @@ export default class UserRolesService {
 	async getAllRoles() {
 		const roles = await Roles.findAll({
 			where: { deleted_at: null },
-			attributes: ['id', 'name'],
+			attributes: ['id', 'name','label'],
+			include:[
+				{
+					model:RouteByRol
+				}
+			]
 		});
 		return roles;
 	}

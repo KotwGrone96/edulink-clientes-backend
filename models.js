@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, INTEGER } from 'sequelize';
 import Costumer from './models/costumer.model.js';
 import ContacInfo from './models/contactInfo.model.js';
 import User from './models/user.model.js';
@@ -15,6 +15,8 @@ import CostCenter from './models/costCenter.model.js';
 import ProductSelled from './models/productSelled.model.js';
 import Email from './models/email.model.js';
 import CostCenterApprovals from './models/costCenterApprovals.model.js';
+import Route from './models/routes.model.js';
+import RouteByRol from './models/routesByRole.model.js';
 
 
 export const loadModels = async (sequelize) => {
@@ -116,6 +118,9 @@ export const loadModels = async (sequelize) => {
 			},
 			name: {
 				type: DataTypes.STRING,
+			},
+			label:{
+				type:DataTypes.STRING(20)
 			},
 			created_at: {
 				type: DataTypes.DATE,
@@ -394,139 +399,6 @@ export const loadModels = async (sequelize) => {
 		{ sequelize, tableName: 'costumers_contac_info' }
 	);
 
-	// OPOTUNIDADES
-	Oportunity.init(
-		{
-			id: {
-				type: DataTypes.INTEGER,
-				primaryKey: true,
-				autoIncrement: true,
-			},
-			name: {
-				type: DataTypes.STRING,
-				allowNull: false,
-			},
-			description: {
-				type: DataTypes.STRING,
-				allowNull: false,
-			},
-			user_id: {
-				type: DataTypes.INTEGER,
-				allowNull: false,
-			},
-			costumer_id: {
-				type: DataTypes.INTEGER,
-				allowNull: false,
-			},
-			sales_closed_id: {
-				type: DataTypes.INTEGER,
-				allowNull: true,
-			},
-			start_date: {
-				type: DataTypes.DATE,
-				allowNull: false,
-			},
-			end_date: {
-				type: DataTypes.DATE,
-				allowNull: true,
-			},
-			state: {
-				type: DataTypes.STRING(10),
-				allowNull: false,
-			},
-			ammount: {
-				type: DataTypes.STRING(50),
-				allowNull: true,
-			},
-			currency: {
-				type: DataTypes.STRING(10),
-				allowNull: true,
-			},
-			cost_center: {
-				type: DataTypes.STRING,
-				allowNull: false,
-			},
-			notes: {
-				type: DataTypes.STRING,
-				allowNull: true,
-			},
-			created_at: {
-				type: DataTypes.DATE,
-			},
-			updated_at: {
-				type: DataTypes.DATE,
-				allowNull: true,
-			},
-			deleted_at: {
-				type: DataTypes.DATE,
-				allowNull: true,
-			},
-		},
-		{ sequelize, tableName: 'oportunities' }
-	);
-
-	SalesClosed.init(
-		{
-			id: {
-				type: DataTypes.INTEGER,
-				autoIncrement: true,
-				primaryKey: true,
-			},
-			cost_center: {
-				type: DataTypes.STRING,
-				allowNull: false,
-			},
-			purchase_order: {
-				type: DataTypes.STRING,
-				allowNull: false,
-			},
-			invoice_name: {
-				type: DataTypes.STRING,
-				allowNull: false,
-				unique: true,
-			},
-			oportunity_id: {
-				type: DataTypes.INTEGER,
-			},
-			user_id: {
-				type: DataTypes.INTEGER,
-				allowNull: false,
-			},
-			costumer_id: {
-				type: DataTypes.INTEGER,
-				allowNull: false,
-			},
-			sale_close_date: {
-				type: DataTypes.DATE,
-				allowNull: false,
-			},
-			ammount: {
-				type: DataTypes.STRING(50),
-				allowNull: true,
-			},
-			currency: {
-				type: DataTypes.STRING(10),
-				allowNull: false,
-			},
-			notes: {
-				type: DataTypes.STRING,
-				allowNull: true,
-			},
-			created_at: {
-				type: DataTypes.DATE,
-			},
-			updated_at: {
-				type: DataTypes.DATE,
-				allowNull: true,
-			},
-			deleted_at: {
-				type: DataTypes.DATE,
-				allowNull: true,
-			},
-		},
-		{ sequelize, tableName: 'sales_closed' }
-	);
-
 	// VENTA
 	Sale.init(
 		{
@@ -799,6 +671,49 @@ export const loadModels = async (sequelize) => {
 		{ sequelize, tableName:'cost_center_approvals' }
 	)
 
+	Route.init(
+		{
+			id: {
+				type: DataTypes.UUID,
+				defaultValue:DataTypes.UUIDV4,
+				unique: true,
+				primaryKey: true,
+			},
+			name:{
+				type:DataTypes.STRING(255),
+				allowNull:false
+			},
+			route_group:{
+				type:DataTypes.STRING(50),
+				allowNull:false
+			},
+			type:{
+				type:DataTypes.STRING(50),
+				allowNull:false
+			}
+		},
+		{ sequelize, tableName:'routes' }
+	)
+
+	RouteByRol.init(
+		{
+			id: {
+				type: DataTypes.UUID,
+				defaultValue:DataTypes.UUIDV4,
+				unique: true,
+				primaryKey: true,
+			},
+			route_id:{
+				type:DataTypes.UUID,
+				allowNull:false
+			},
+			rol_id:{
+				type:DataTypes.INTEGER,
+				allowNull:false
+			}
+		},
+		{ sequelize, tableName:'routes_by_rol' }
+	)
 	
 	//*** RELACIONES DE TABLAS ***//
 
@@ -828,23 +743,23 @@ export const loadModels = async (sequelize) => {
 	Costumer.hasMany(ContacInfo, { foreignKey: 'costumer_id' });
 	ContacInfo.belongsTo(Costumer, { foreignKey: 'costumer_id' });
 
-	User.hasMany(Oportunity, { foreignKey: 'user_id' });
-	Oportunity.belongsTo(User, { foreignKey: 'user_id' });
+	// User.hasMany(Oportunity, { foreignKey: 'user_id' });
+	// Oportunity.belongsTo(User, { foreignKey: 'user_id' });
 
-	Costumer.hasMany(Oportunity, { foreignKey: 'costumer_id' });
-	Oportunity.belongsTo(Costumer, { foreignKey: 'costumer_id' });
+	// Costumer.hasMany(Oportunity, { foreignKey: 'costumer_id' });
+	// Oportunity.belongsTo(Costumer, { foreignKey: 'costumer_id' });
 
-	User.hasMany(SalesClosed, { foreignKey: 'user_id' });
-	SalesClosed.belongsTo(User, { foreignKey: 'user_id' });
+	// User.hasMany(SalesClosed, { foreignKey: 'user_id' });
+	// SalesClosed.belongsTo(User, { foreignKey: 'user_id' });
 
-	Costumer.hasMany(SalesClosed, { foreignKey: 'costumer_id' });
-	SalesClosed.belongsTo(Costumer, { foreignKey: 'costumer_id' });
+	// Costumer.hasMany(SalesClosed, { foreignKey: 'costumer_id' });
+	// SalesClosed.belongsTo(Costumer, { foreignKey: 'costumer_id' });
 
-	Oportunity.hasOne(SalesClosed, { foreignKey: 'oportunity_id' });
-	SalesClosed.belongsTo(Oportunity, { foreignKey: 'oportunity_id' });
+	// Oportunity.hasOne(SalesClosed, { foreignKey: 'oportunity_id' });
+	// SalesClosed.belongsTo(Oportunity, { foreignKey: 'oportunity_id' });
 
-	SalesClosed.hasOne(Oportunity, { foreignKey: 'sales_closed_id' });
-	Oportunity.belongsTo(SalesClosed, { foreignKey: 'sales_closed_id' });
+	// SalesClosed.hasOne(Oportunity, { foreignKey: 'sales_closed_id' });
+	// Oportunity.belongsTo(SalesClosed, { foreignKey: 'sales_closed_id' });
 
 	//TODO *** COMERCIAL PRINCIPAL ***/
 	User.hasOne(Costumer, { foreignKey: 'manager_id' });
@@ -879,6 +794,12 @@ export const loadModels = async (sequelize) => {
 
 	CostCenter.hasOne(CostCenterApprovals, { foreignKey: 'cost_center_id' });
 	CostCenterApprovals.belongsTo(CostCenter, { foreignKey: 'cost_center_id' });
+
+	Route.hasMany(RouteByRol, { foreignKey: 'route_id' });
+	RouteByRol.belongsTo(Route, { foreignKey: 'route_id' });
+
+	Roles.hasMany(RouteByRol, { foreignKey: 'rol_id' });
+	RouteByRol.belongsTo(Roles, { foreignKey: 'rol_id' });
 
 	// if (process.env.NODE_ENV !== 'production') {
 	// 	console.log('Sincronizando BD de desarrollo');

@@ -462,4 +462,22 @@ export default class UserController {
 			message: 'Faltan columnas en el CSV o no tienen el nombre correcto',
 		});
 	}
+
+	async getAllRoles(req,res){
+		try {
+			const roles = await this.userRolesService.getAllRoles()
+			return res.json({
+				ok:true,
+				message:"Todos los roles",
+				roles
+			})
+			
+		} catch (error) {
+			return res.json({
+				ok:false,
+				message:"Error en el servidor",
+				error
+			})
+		}
+	}
 }

@@ -30,6 +30,9 @@ const router = Router()
 router.get('/users/all', validateToken, (req, res) =>
 	userController.findAll(req, res)
 );
+router.get('/users/roles', validateToken, (req, res) =>
+	userController.getAllRoles(req, res)
+);
 router.get('/users/roles/:id', validateToken, (req, res) =>
 	userController.getRoles(req, res)
 );

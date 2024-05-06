@@ -8,6 +8,7 @@ import UserCostumerService from "../services/UserCostumerService.js";
 import ContactInfoService from "../services/ContactInfoService.js";
 import ProductSelledService from "../services/ProductSelledService.js";
 import CostCenterApprovalsService from "../services/CostCenterApprovalsService.js";
+import RouteService from "../services/RouteService.js";
 
 const areaService = new AreaService()
 const userService = new UserService()
@@ -19,6 +20,7 @@ const userCostumerService = new UserCostumerService()
 const contactInfoService = new ContactInfoService()
 const productSelledService = new ProductSelledService()
 const costCenterApprovalsService = new CostCenterApprovalsService()
+const routeService = new RouteService()
 
 export {
     areaService,
@@ -30,5 +32,6 @@ export {
     userCostumerService,
     contactInfoService,
     productSelledService,
-    costCenterApprovalsService
+    costCenterApprovalsService,
+    routeService
 }
