@@ -13,4 +13,15 @@ export default class EmailService {
         })
         return emails
     }
+
+    async create(emailBody){
+        const {email,subject,user_id} = emailBody;
+        const newEmail = Email.build({
+            email,
+            subject,
+            user_id
+        })
+        const n_email = await newEmail.save()
+        return n_email
+    }
 };

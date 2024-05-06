@@ -10,4 +10,7 @@ const router = Router()
 
 router.get('/emails/all',validateToken,(req,res)=>emailController.findAll(req,res))
 
+router.post('/emails/create',validateToken,(req,res)=>emailController.create(req,res))
+
+
 export default router

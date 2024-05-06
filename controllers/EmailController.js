@@ -22,4 +22,21 @@ export default class EmailController {
             })
         }
     }
+
+    async create(req,res){
+        try {
+            const email = await this.emailService.create(req.body)
+            return res.json({
+                ok:true,
+                message:'Creado correctamente',
+                email
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:"Ha ocurrido un error en el servidor",
+                error
+            })
+        }
+    }
 };

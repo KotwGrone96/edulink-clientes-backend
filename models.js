@@ -501,6 +501,10 @@ export const loadModels = async (sequelize) => {
 				type: DataTypes.INTEGER,
 				allowNull:false
 			},
+			name:{
+				type:DataTypes.STRING(50),
+				allowNull:true
+			},
 			final_costumer: {
 				type: DataTypes.STRING,
 			},
@@ -653,6 +657,10 @@ export const loadModels = async (sequelize) => {
 			},
 			body:{
 				type:DataTypes.STRING,
+				allowNull:false
+			},
+			approved_by:{
+				type:DataTypes.INTEGER,
 				allowNull:false
 			},
 			created_at: {

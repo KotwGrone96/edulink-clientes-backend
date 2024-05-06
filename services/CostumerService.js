@@ -125,6 +125,7 @@ export default class CostumerService {
 		const costumers = await Costumer.findAll({
 			where,
 			attributes,
+			order:[['created_at','DESC']],
 			include: [
 				{
 					model: UserCostumer,
@@ -142,7 +143,7 @@ export default class CostumerService {
 				{
 					model:Sale
 				}
-			],
+			],	
 		});
 		return costumers;
 	}
