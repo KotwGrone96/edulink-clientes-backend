@@ -9,6 +9,9 @@ import ContactInfoService from "../services/ContactInfoService.js";
 import ProductSelledService from "../services/ProductSelledService.js";
 import CostCenterApprovalsService from "../services/CostCenterApprovalsService.js";
 import RouteService from "../services/RouteService.js";
+import SaleHistoryService from "../services/SaleHistoryService.js";
+import CostCenterHistoryService from "../services/costCenterHistoryService.js";
+import CostCenterApprovalsHistoryService from "../services/CostCenterApprovalsHistoryService.js";
 
 const areaService = new AreaService()
 const userService = new UserService()
@@ -21,6 +24,9 @@ const contactInfoService = new ContactInfoService()
 const productSelledService = new ProductSelledService()
 const costCenterApprovalsService = new CostCenterApprovalsService()
 const routeService = new RouteService()
+const saleHistoryService = new SaleHistoryService()
+const costCenterHistoryService = new CostCenterHistoryService()
+const costCenterApprovalsHistoryService = new CostCenterApprovalsHistoryService()
 
 export {
     areaService,
@@ -33,5 +39,8 @@ export {
     contactInfoService,
     productSelledService,
     costCenterApprovalsService,
-    routeService
+    routeService,
+    saleHistoryService,
+    costCenterHistoryService,
+    costCenterApprovalsHistoryService
 }

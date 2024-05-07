@@ -3,11 +3,13 @@ export default class SaleController{
     saleService
     costumerSerivce
     userService
+    saleHistoryService
 
-    constructor(saleService,costumerService,userService){
+    constructor(saleService,costumerService,userService,saleHistoryService){
         this.saleService = saleService
         this.costumerSerivce = costumerService
         this.userService = userService
+        this.saleHistoryService = saleHistoryService
     }
 
     async validatePermission(payload){
@@ -85,6 +87,14 @@ export default class SaleController{
 
         try {
             const sale = await this.saleService.create(req.body)
+            const saleHistory = {
+                costumer_id:sale['costumer_id'],
+                sale_id:sale['id'],
+                user_id:sale['user_id'],
+                type:'CREATE',
+                state:sale['state']
+            }
+            await this.saleHistoryService.create(saleHistory)
             return res.json({
                 ok:true,
                 message:'Creado correctamente',
@@ -124,6 +134,16 @@ export default class SaleController{
         //TODO ********************************* //
         try {
             await this.saleService.update(req.body,{deleted_at:null,id:req.body['id']});
+
+            const saleHistory = {
+                costumer_id:req.body['costumer_id'],
+                sale_id:req.body['id'],
+                user_id:req.body['user_id'],
+                type:'UPDATE',
+                state:req.body['state']
+            }
+            await this.saleHistoryService.create(saleHistory)
+
             return res.json({
                 ok:true,
                 message:'Actualizado correctamente'

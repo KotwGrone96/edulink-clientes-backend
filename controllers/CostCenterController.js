@@ -11,13 +11,17 @@ export default class CostCenterController {
     userService;
     productSelledService;
     costCenterApprovalsService;
+    costCenterHistoryService;
+    costCenterApprovalHistoryService;
 
-    constructor(costCenterService,saleService,userService,productSelledService,costCenterApprovalsService){
+    constructor(costCenterService,saleService,userService,productSelledService,costCenterApprovalsService,costCenterHistoryService,costCenterApprovalHistoryService){
         this.costCenterService = costCenterService
         this.saleSerivce = saleService
         this.userService = userService
         this.productSelledService = productSelledService
         this.costCenterApprovalsService = costCenterApprovalsService
+        this.costCenterHistoryService = costCenterHistoryService
+        this.costCenterApprovalHistoryService = costCenterApprovalHistoryService
     }
 
     async validatePermission(payload){
@@ -105,7 +109,19 @@ export default class CostCenterController {
         }
 
         try {
+            console.log(req.body)
+            
             const costCenter = await this.costCenterService.create(req.body);
+
+            const costCenterHistory = {
+                costumer_id:costCenter['costumer_id'],
+                sale_id:costCenter['sale_id'],
+                cost_center_id:costCenter['id'],
+                user_id:costCenter['user_id'],
+                action:'CREATE',
+                state:costCenter['state']
+            }
+            await this.costCenterHistoryService.create(costCenterHistory)
 
             req.body['products'].forEach(async(pd)=>{
                 pd['cost_center_id'] = costCenter['id'];
@@ -172,7 +188,27 @@ export default class CostCenterController {
 
             if(req.body['state'] != 'DRAFT' && req.body['state'] != 'SEND' && req.body['CostCenterApproval']){
                 await this.costCenterApprovalsService.updateOrCreate(req.body['CostCenterApproval'])
+
+                const costCenterApprovalHistory = {
+                    costumer_id:req.body['costumer_id'],
+                    sale_id:req.body['sale_id'],
+                    cost_center_id:req.body['id'],
+                    owner_id:req.body['user_id'],
+                    approved_by:req.body['CostCenterApproval']['approved_by'],
+                    state:req.body['state'],
+                    commentary:req.body['CostCenterApproval']['body']
+                }
+                await this.costCenterApprovalHistoryService.create(costCenterApprovalHistory)
             }
+            const costCenterHistory = {
+                costumer_id:req.body['costumer_id'],
+                sale_id:req.body['sale_id'],
+                cost_center_id:req.body['id'],
+                user_id:req.body['user_id'],
+                action:'UPDATE',
+                state:req.body['state']
+            }
+            await this.costCenterHistoryService.create(costCenterHistory)
 
             return res.json({
                 ok:true,

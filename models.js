@@ -1,4 +1,4 @@
-import { DataTypes, INTEGER } from 'sequelize';
+import { DataTypes } from 'sequelize';
 import Costumer from './models/costumer.model.js';
 import ContacInfo from './models/contactInfo.model.js';
 import User from './models/user.model.js';
@@ -8,8 +8,6 @@ import Area from './models/area.model.js';
 import UserGid from './models/userGID.model.js';
 import UserArea from './models/userArea.model.js';
 import UserCostumer from './models/userCostumer.model.js';
-import Oportunity from './models/oportunity.model.js';
-import SalesClosed from './models/salesClosed.model.js';
 import Sale from './models/sale.model.js';
 import CostCenter from './models/costCenter.model.js';
 import ProductSelled from './models/productSelled.model.js';
@@ -17,6 +15,9 @@ import Email from './models/email.model.js';
 import CostCenterApprovals from './models/costCenterApprovals.model.js';
 import Route from './models/routes.model.js';
 import RouteByRol from './models/routesByRole.model.js';
+import CostCenterHistory from './models/costCenterHistory.mode.js';
+import CostCenterApprovalsHistory from './models/costCenterApprovalsHistory.js';
+import SaleHistory from './models/saleHistory.model.js';
 
 
 export const loadModels = async (sequelize) => {
@@ -556,6 +557,7 @@ export const loadModels = async (sequelize) => {
 		{ sequelize, tableName: 'costs_center' }
 	);
 
+	// PRODUCTOS POR VENTA
 	ProductSelled.init(
 		{
 			id: {
@@ -615,6 +617,7 @@ export const loadModels = async (sequelize) => {
 		{ sequelize, tableName: 'products_selled' }
 	);
 
+	// CORREOS AUTOMÁTICOS
 	Email.init(
 		{
 			id: {
@@ -639,6 +642,7 @@ export const loadModels = async (sequelize) => {
 		{ sequelize, tableName:'emails' }
 	)
 
+	// APROBACIONES DE CENTRO DE COSTOS
 	CostCenterApprovals.init(
 		{
 			id: {
@@ -679,6 +683,7 @@ export const loadModels = async (sequelize) => {
 		{ sequelize, tableName:'cost_center_approvals' }
 	)
 
+	// RUTAS DE APP
 	Route.init(
 		{
 			id: {
@@ -703,6 +708,7 @@ export const loadModels = async (sequelize) => {
 		{ sequelize, tableName:'routes' }
 	)
 
+	// RUTAS POR ROL
 	RouteByRol.init(
 		{
 			id: {
@@ -722,7 +728,148 @@ export const loadModels = async (sequelize) => {
 		},
 		{ sequelize, tableName:'routes_by_rol' }
 	)
+
+	// HISTORIAL CENTRO DE COSTOS
+	CostCenterHistory.init(
+		{
+			id:{
+				type:DataTypes.INTEGER,
+				primaryKey:true,
+				autoIncrement:true
+			},
+			costumer_id:{
+				type:DataTypes.INTEGER,
+				allowNull:false
+			},
+			sale_id:{
+				type:DataTypes.UUID,
+				allowNull:false
+			},
+			cost_center_id:{
+				type:DataTypes.UUID,
+				allowNull:false
+			},
+			user_id:{
+				type:DataTypes.INTEGER,
+				allowNull:false
+			},
+			action:{
+				type:DataTypes.STRING(50),
+				allowNull:false
+			},
+			state:{
+				type:DataTypes.STRING(50),
+				allowNull:false
+			},
+			created_at: {
+				type: DataTypes.DATE,
+			},
+			updated_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+			deleted_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+		},
+		{ sequelize, tableName:'costs_center_history' }
+	)
 	
+	// HISTORIAL DE APROBACIONES DE CENTRO DE COSTOS
+	CostCenterApprovalsHistory.init(
+		{
+			id:{
+				type:DataTypes.INTEGER,
+				primaryKey:true,
+				autoIncrement:true
+			},
+			costumer_id:{
+				type:DataTypes.INTEGER,
+				allowNull:false
+			},
+			sale_id:{
+				type:DataTypes.UUID,
+				allowNull:false
+			},
+			cost_center_id:{
+				type:DataTypes.UUID,
+				allowNull:false
+			},
+			owner_id:{
+				type:DataTypes.INTEGER,
+				allowNull:false
+			},
+			approved_by:{
+				type:DataTypes.INTEGER,
+				allowNull:false
+			},
+			state:{
+				type:DataTypes.STRING(50),
+				allowNull:false
+			},
+			commentary:{
+				type:DataTypes.STRING
+			},
+			created_at: {
+				type: DataTypes.DATE,
+			},
+			updated_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+			deleted_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+		},
+		{ sequelize, tableName:'cost_center_approvals_history' }
+	)
+
+	// HISTORIAL DE NEGOCIOS
+	SaleHistory.init(
+		{
+			id:{
+				type:DataTypes.INTEGER,
+				primaryKey:true,
+				autoIncrement:true
+			},
+			costumer_id:{
+				type:DataTypes.INTEGER,
+				allowNull:false
+			},
+			sale_id:{
+				type:DataTypes.UUID,
+				allowNull:false
+			},
+			user_id:{
+				type:DataTypes.INTEGER,
+				allowNull:false
+			},
+			type:{
+				type:DataTypes.STRING(50),
+				allowNull:false
+			},
+			state:{
+				type:DataTypes.STRING(50),
+				allowNull:false
+			},
+			created_at: {
+				type: DataTypes.DATE,
+			},
+			updated_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			},
+			deleted_at: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			}
+		},
+		{ sequelize, tableName:'sales_history' }
+	)
+
+
 	//*** RELACIONES DE TABLAS ***//
 
 	Area.hasMany(UserArea, { foreignKey: 'area_id' });
@@ -750,24 +897,6 @@ export const loadModels = async (sequelize) => {
 
 	Costumer.hasMany(ContacInfo, { foreignKey: 'costumer_id' });
 	ContacInfo.belongsTo(Costumer, { foreignKey: 'costumer_id' });
-
-	// User.hasMany(Oportunity, { foreignKey: 'user_id' });
-	// Oportunity.belongsTo(User, { foreignKey: 'user_id' });
-
-	// Costumer.hasMany(Oportunity, { foreignKey: 'costumer_id' });
-	// Oportunity.belongsTo(Costumer, { foreignKey: 'costumer_id' });
-
-	// User.hasMany(SalesClosed, { foreignKey: 'user_id' });
-	// SalesClosed.belongsTo(User, { foreignKey: 'user_id' });
-
-	// Costumer.hasMany(SalesClosed, { foreignKey: 'costumer_id' });
-	// SalesClosed.belongsTo(Costumer, { foreignKey: 'costumer_id' });
-
-	// Oportunity.hasOne(SalesClosed, { foreignKey: 'oportunity_id' });
-	// SalesClosed.belongsTo(Oportunity, { foreignKey: 'oportunity_id' });
-
-	// SalesClosed.hasOne(Oportunity, { foreignKey: 'sales_closed_id' });
-	// Oportunity.belongsTo(SalesClosed, { foreignKey: 'sales_closed_id' });
 
 	//TODO *** COMERCIAL PRINCIPAL ***/
 	User.hasOne(Costumer, { foreignKey: 'manager_id' });
@@ -803,11 +932,56 @@ export const loadModels = async (sequelize) => {
 	CostCenter.hasOne(CostCenterApprovals, { foreignKey: 'cost_center_id' });
 	CostCenterApprovals.belongsTo(CostCenter, { foreignKey: 'cost_center_id' });
 
+	User.hasMany(CostCenterApprovals, { foreignKey: 'approved_by' });
+	CostCenterApprovals.belongsTo(User, { foreignKey: 'approved_by' });
+
 	Route.hasMany(RouteByRol, { foreignKey: 'route_id' });
 	RouteByRol.belongsTo(Route, { foreignKey: 'route_id' });
 
 	Roles.hasMany(RouteByRol, { foreignKey: 'rol_id' });
 	RouteByRol.belongsTo(Roles, { foreignKey: 'rol_id' });
+
+	//*** HISTORIAL DE CENTROS DE COSTOS ***/
+
+	Costumer.hasMany(CostCenterHistory,{ foreignKey:'costumer_id' });
+	CostCenterHistory.belongsTo(Costumer, { foreignKey:'costumer_id' });
+
+	Sale.hasMany(CostCenterHistory, { foreignKey: 'sale_id' });
+	CostCenterHistory.belongsTo(Sale, { foreignKey: 'sale_id' });
+
+	CostCenter.hasMany(CostCenterHistory, { foreignKey: 'cost_center_id' });
+	CostCenterHistory.belongsTo(CostCenter, { foreignKey: 'cost_center_id' });
+
+	User.hasMany(CostCenterHistory, { foreignKey: 'user_id' });
+	CostCenterHistory.belongsTo(User, { foreignKey: 'user_id' });	
+
+	//*** HISTORIAL DE APROBACIONES DE CENTROS DE COSTOS ***/
+
+	Costumer.hasMany(CostCenterApprovalsHistory,{ foreignKey:'costumer_id' });
+	CostCenterApprovalsHistory.belongsTo(Costumer, { foreignKey:'costumer_id' });
+
+	Sale.hasMany(CostCenterApprovalsHistory, { foreignKey: 'sale_id' });
+	CostCenterApprovalsHistory.belongsTo(Sale, { foreignKey: 'sale_id' });
+
+	CostCenter.hasMany(CostCenterApprovalsHistory, { foreignKey: 'cost_center_id' });
+	CostCenterApprovalsHistory.belongsTo(CostCenter, { foreignKey: 'cost_center_id' });
+
+	User.hasMany(CostCenterHistory, { foreignKey: 'owner_id' });
+	CostCenterHistory.belongsTo(User, { foreignKey: 'owner_id' });	
+
+	User.hasMany(CostCenterHistory, { foreignKey: 'approved_by' });
+	CostCenterHistory.belongsTo(User, { foreignKey: 'approved_by' });	
+
+	//*** HISTORIAL DE NEGOCIOS ***/
+
+	Costumer.hasMany(SaleHistory,{ foreignKey:'costumer_id' });
+	SaleHistory.belongsTo(Costumer, { foreignKey:'costumer_id' });
+
+	Sale.hasMany(SaleHistory, { foreignKey: 'sale_id' });
+	SaleHistory.belongsTo(Sale, { foreignKey: 'sale_id' });
+
+	User.hasMany(SaleHistory, { foreignKey: 'user_id' });
+	SaleHistory.belongsTo(User, { foreignKey: 'user_id' });	
 
 	// if (process.env.NODE_ENV !== 'production') {
 	// 	console.log('Sincronizando BD de desarrollo');
