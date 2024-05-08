@@ -140,7 +140,8 @@ export default class SaleController{
                 sale_id:req.body['id'],
                 user_id:req.body['user_id'],
                 type:'UPDATE',
-                state:req.body['state']
+                state:req.body['state'],
+                attribute:req.body['attribute']
             }
             await this.saleHistoryService.create(saleHistory)
 

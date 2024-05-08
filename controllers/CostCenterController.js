@@ -108,25 +108,26 @@ export default class CostCenterController {
             })
         }
 
-        try {
-            console.log(req.body)
+        try {      
             
             const costCenter = await this.costCenterService.create(req.body);
-
-            const costCenterHistory = {
-                costumer_id:costCenter['costumer_id'],
-                sale_id:costCenter['sale_id'],
-                cost_center_id:costCenter['id'],
-                user_id:costCenter['user_id'],
-                action:'CREATE',
-                state:costCenter['state']
-            }
-            await this.costCenterHistoryService.create(costCenterHistory)
 
             req.body['products'].forEach(async(pd)=>{
                 pd['cost_center_id'] = costCenter['id'];
                 await this.productSelledService.create(pd);
             })
+
+            const costCenterHistory = {
+                costumer_id:costCenter['costumer_id'],
+                sale_id:costCenter['sale_id'],
+                cost_center_id:costCenter['id'],
+                owner_id:costCenter['user_id'],
+                action_by:costCenter['user_id'],
+                action:'CREATE',
+                state:costCenter['state']
+            }
+
+            await this.costCenterHistoryService.create(costCenterHistory)
 
             return res.json({
                 ok:true,
@@ -184,6 +185,13 @@ export default class CostCenterController {
         }
 
         try {
+
+            const lastState = req.body['state'];
+
+            if(req.body['isObserved']){
+                req.body['state'] = 'OBSERVED'
+            }
+
             await this.costCenterService.update(req.body,{deleted_at:null,id:req.body['id']})
 
             if(req.body['state'] != 'DRAFT' && req.body['state'] != 'SEND' && req.body['CostCenterApproval']){
@@ -200,11 +208,21 @@ export default class CostCenterController {
                 }
                 await this.costCenterApprovalHistoryService.create(costCenterApprovalHistory)
             }
+
+            let action_by = '';
+            if(lastState === 'DRAFT' || lastState === 'SEND'){
+                action_by = req.body['user_id'];
+            }
+            if(lastState != 'DRAFT' && lastState != 'SEND' && req.body['CostCenterApproval']){
+                action_by = req.body['CostCenterApproval']['approved_by']
+            }
+
             const costCenterHistory = {
                 costumer_id:req.body['costumer_id'],
                 sale_id:req.body['sale_id'],
                 cost_center_id:req.body['id'],
-                user_id:req.body['user_id'],
+                owner_id:req.body['user_id'],
+                action_by,
                 action:'UPDATE',
                 state:req.body['state']
             }
@@ -250,6 +268,7 @@ export default class CostCenterController {
                     'max_date_of_provider_attention',
                     'comission',
                     'state',
+                    'name',
                     'created_at'
                 ])
             return res.json({
@@ -288,6 +307,7 @@ export default class CostCenterController {
                     'max_date_of_provider_attention',
                     'comission',
                     'state',
+                    'name',
                     'created_at'
                 ])
             return res.json({

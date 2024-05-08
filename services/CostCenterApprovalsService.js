@@ -4,7 +4,7 @@ import { timeZoneLima } from "../timezone.js";
 export default class CostCenterApprovalsService {
     
     async create(costCenterApproval){
-        const {cost_center_id, state, body} = costCenterApproval;
+        const {cost_center_id, state, body,approved_by} = costCenterApproval;
         const ccApproval = CostCenterApprovals.build({
             cost_center_id,
             state,

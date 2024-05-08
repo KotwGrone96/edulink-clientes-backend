@@ -3,13 +3,14 @@ import { timeZoneLima } from "../timezone.js";
 
 export default class SaleHistoryService {
     async create(saleHistory){
-        const { costumer_id, sale_id, user_id, type, state } = saleHistory;
+        const { costumer_id, sale_id, user_id, type, state, attribute } = saleHistory;
         const newSaleHistory = SaleHistory.build({
             costumer_id,
             sale_id,
             user_id,
             type,
             state,
+            attribute,
             created_at:timeZoneLima()
         })
         const n_saleHistory = await newSaleHistory.save()

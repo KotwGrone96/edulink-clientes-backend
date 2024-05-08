@@ -23,7 +23,8 @@ export default class CostCenterService{
             max_date_of_costumer_attention,
             max_date_of_provider_attention,
             comission,
-            state
+            state,
+            name
         } = costCenter;
 
         const newCostCenter = CostCenter.build({
@@ -41,6 +42,7 @@ export default class CostCenterService{
             max_date_of_provider_attention,
             comission,
             state,
+            name,
             created_at:timeZoneLima()
         });
 
@@ -63,7 +65,8 @@ export default class CostCenterService{
             max_date_of_costumer_attention,
             max_date_of_provider_attention,
             comission,
-            state
+            state,
+            name
         } = costCenter;
 
         const updt_costCenter = await CostCenter.update({
@@ -81,6 +84,7 @@ export default class CostCenterService{
             max_date_of_provider_attention,
             comission,
             state,
+            name,
             updated_at:timeZoneLima()
         },{ where })
         
@@ -97,7 +101,6 @@ export default class CostCenterService{
                 },
                 {
                     model:Sale,
-                    where:{deleted_at:null}
                 },
                 {
                     model:ProductSelled

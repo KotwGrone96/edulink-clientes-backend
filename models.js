@@ -430,11 +430,11 @@ export const loadModels = async (sequelize) => {
 				allowNull: true,
 			},
 			state: {
-				type: DataTypes.STRING(10),
+				type: DataTypes.STRING(50),
 				allowNull: false,
 			},
 			type: {
-				type: DataTypes.STRING(10), //*** OPORTUNITY || SALE ***//
+				type: DataTypes.STRING(50), //*** OPORTUNITY || SALE ***//
 				allowNull: false,
 			},
 			ammount: {
@@ -749,7 +749,11 @@ export const loadModels = async (sequelize) => {
 				type:DataTypes.UUID,
 				allowNull:false
 			},
-			user_id:{
+			owner_id:{
+				type:DataTypes.INTEGER,
+				allowNull:false
+			},
+			action_by:{
 				type:DataTypes.INTEGER,
 				allowNull:false
 			},
@@ -854,6 +858,9 @@ export const loadModels = async (sequelize) => {
 				type:DataTypes.STRING(50),
 				allowNull:false
 			},
+			attribute:{
+				type:DataTypes.STRING(50)
+			},
 			created_at: {
 				type: DataTypes.DATE,
 			},
@@ -952,8 +959,11 @@ export const loadModels = async (sequelize) => {
 	CostCenter.hasMany(CostCenterHistory, { foreignKey: 'cost_center_id' });
 	CostCenterHistory.belongsTo(CostCenter, { foreignKey: 'cost_center_id' });
 
-	User.hasMany(CostCenterHistory, { foreignKey: 'user_id' });
-	CostCenterHistory.belongsTo(User, { foreignKey: 'user_id' });	
+	User.hasMany(CostCenterHistory, { foreignKey: 'owner_id' });
+	CostCenterHistory.belongsTo(User, { foreignKey: 'owner_id' });	
+
+	User.hasMany(CostCenterHistory, { foreignKey: 'action_by' });
+	CostCenterHistory.belongsTo(User, { foreignKey: 'action_by' });	
 
 	//*** HISTORIAL DE APROBACIONES DE CENTROS DE COSTOS ***/
 
@@ -966,11 +976,11 @@ export const loadModels = async (sequelize) => {
 	CostCenter.hasMany(CostCenterApprovalsHistory, { foreignKey: 'cost_center_id' });
 	CostCenterApprovalsHistory.belongsTo(CostCenter, { foreignKey: 'cost_center_id' });
 
-	User.hasMany(CostCenterHistory, { foreignKey: 'owner_id' });
-	CostCenterHistory.belongsTo(User, { foreignKey: 'owner_id' });	
+	User.hasMany(CostCenterApprovalsHistory, { foreignKey: 'owner_id' });
+	CostCenterApprovalsHistory.belongsTo(User, { foreignKey: 'owner_id' });	
 
-	User.hasMany(CostCenterHistory, { foreignKey: 'approved_by' });
-	CostCenterHistory.belongsTo(User, { foreignKey: 'approved_by' });	
+	User.hasMany(CostCenterApprovalsHistory, { foreignKey: 'approved_by' });
+	CostCenterApprovalsHistory.belongsTo(User, { foreignKey: 'approved_by' });	
 
 	//*** HISTORIAL DE NEGOCIOS ***/
 
