@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro de costos PDF</title>
+    <style>
+        /* Estilos para la página normal */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 1cm;
+            box-sizing: border-box;
+        }
+
+        /* Estilos para la impresión */
+        @media print {
+           @page {
+                size: A4;
+                margin: 0;
+            }
+            body{
+                margin: 1cm;
+            }
+        }
+        .titleRow{
+            background: #757575;
+            color: #F1F1F1;
+            text-align: center;
+            padding: 8px;
+        }
+        .titleRow-name{
+            color: #FFBE15;
+        }
+       
+    </style>
+</head>
+<body>
+    <div class="titleRow">
+        COTIZACION CLIENTE FINAL <span class="titleRow-name">DM1715182500777</span>
+    </div>
+    {{!--INICIO TABLA 1 --}}
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+            {{!--INICIO COLUMNAS 1 Y 2--}}
+                <td>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Cliente Final</td>
+                                <td>INSTITUTO PEDAGOGICO MARIANNE FROSTIG</td>
+                            </tr>
+                            <tr>
+                                <td>Orden de compra</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td>Contacto de cliente</td>
+                                <td>JORGE HUAYTA</td>
+                            </tr>
+                            <tr>
+                                <td>Celular / Correo</td>
+                                <td>992479672 / johuayta@pedagogicomariannefrostig.edu.pe</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            {{!--FIN COLUMNAS 1 Y 2--}}
+            {{!--INICIO COLUMNAS 3 Y 4--}}
+                <td>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Razón social</td>
+                                <td>INSTITUCION EDUCATIVA PRIVADA MARIANNE FROSTIG E.I.R.L.</td>
+                            </tr>
+                            <tr>
+                                <td>Ruc</td>
+                                <td>20609571358</td>
+                            </tr>
+                            <tr>
+                                <td>Tipo de cambio</td>
+                                <td>PEN</td>
+                            </tr>
+                            <tr>
+                                <td>Condiciones de Pago Cliente</td>
+                                <td>AL CONTADO</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            {{!--FIN COLUMNAS 3 Y 4--}}
+            </tr>
+        </tbody>
+    </table>
+    {{!--FIN TABLA 1 --}}
+    <div class="titleRow">
+        DATOS DE FACTURACION CLIENTE
+    </div>
+    {{!--INICIO TABLA 2 --}}
+    <table>
+        <thead>
+            <tr>
+                <th>PART NUMBER</th>
+                <th>DESCRIPCIÓN</th>
+                <th>UNIDADES</th>
+                <th>PRECIO DE VENTA</th>
+                <th>TOTAL</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>12</td>
+                <td>Education Plus</td>
+                <td>120</td>
+                <td>12</td>
+                <td>1440.00</td>
+            </tr>
+        </tbody>
+    </table>
+    {{!--FIN TABLA 2 --}}
+    {{!--INICIO TABLA 3 --}}
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>SUB TOTAL VENTA SIN IGV</td>
+                <td>1440.00</td>
+            </tr>
+            <tr>
+                <td>IGV</td>
+                <td>259.20</td>
+            </tr>
+            <tr>
+                <td>TOTAL</td>
+                <td>1699.20</td>
+            </tr>
+        </tbody>
+    </table>
+    {{!--FIN TABLA 3 --}}
+</body>
+</html>

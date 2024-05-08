@@ -1,8 +1,3 @@
-import fs from 'fs'
-import PDFDocument from 'pdfkit'
-import handlebars from 'handlebars'
-import process from 'process';
-import { join } from 'path';
 
 export default class CostCenterController {
 
@@ -346,23 +341,16 @@ export default class CostCenterController {
     }
 
     async generatePDF(req,res){
-        // Obtener las variables del cuerpo de la solicitud
-        const { title, content } = req.body;
-        const template = handlebars.compile(fs.readFileSync(join(process.cwd(),'templates','costCenterPDF.hbs'), 'utf8'));
-        // Crear un nuevo documento PDF
-        const doc = new PDFDocument();
-        doc.pipe(fs.createWriteStream('documento.pdf'));
 
-        // Renderizar el contenido HTML con Handlebars
-        const html = template({ title, content });
-
-        // Agregar el contenido HTML al PDF
-        doc.font('Helvetica').text(html);
-        // Finalizar y cerrar el PDF
-        doc.end();
-        console.log(html)
-        // Enviar el PDF como respuesta
-        res.sendFile('documento.pdf',{ root: process.cwd() });
+        res.render('costCenterPDF',{
+            title:'PDF CENTRO DE COSTOS',
+            name:'DM1715182500777',
+            final_client:'INSTITUTO PEDAGOGICO MARIANNE FROSTIG',
+            purchase_order:'',
+            
+            content:'ACÁ VAN LAS TABLAS',
+            layout:false
+        })
     }
 
 }
