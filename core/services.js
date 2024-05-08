@@ -10,7 +10,7 @@ import ProductSelledService from "../services/ProductSelledService.js";
 import CostCenterApprovalsService from "../services/CostCenterApprovalsService.js";
 import RouteService from "../services/RouteService.js";
 import SaleHistoryService from "../services/SaleHistoryService.js";
-import CostCenterHistoryService from "../services/costCenterHistoryService.js";
+import CostCenterHistoryService from "../services/CostCenterHistoryService.js";
 import CostCenterApprovalsHistoryService from "../services/CostCenterApprovalsHistoryService.js";
 
 const areaService = new AreaService()
