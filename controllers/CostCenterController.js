@@ -268,6 +268,11 @@ export default class CostCenterController {
                     'comission',
                     'state',
                     'name',
+                    'phone',
+                    'email',
+                    'destiny_person',
+                    'destiny_address',
+                    'commentary',
                     'created_at'
                 ])
             return res.json({
@@ -307,6 +312,11 @@ export default class CostCenterController {
                     'comission',
                     'state',
                     'name',
+                    'phone',
+                    'email',
+                    'destiny_person',
+                    'destiny_address',
+                    'commentary',
                     'created_at'
                 ])
             return res.json({

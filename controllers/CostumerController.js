@@ -50,7 +50,8 @@ export default class CostumerController {
 				'state',
 				'manager_id',
 				'type',
-				'drive_folder_id'
+				'drive_folder_id',
+				'sector'
 			]
 		);
 		if (!costumer) {
@@ -90,7 +91,8 @@ export default class CostumerController {
 			'state',
 			'manager_id',
 			'type',
-			'drive_folder_id'
+			'drive_folder_id',
+			'sector'
 		]);
 		return res.json({
 			ok: true,

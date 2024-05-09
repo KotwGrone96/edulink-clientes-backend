@@ -24,7 +24,12 @@ export default class CostCenterService{
             max_date_of_provider_attention,
             comission,
             state,
-            name
+            name,
+            phone,
+            email,
+            destiny_person,
+            destiny_address,
+            commentary
         } = costCenter;
 
         const newCostCenter = CostCenter.build({
@@ -43,6 +48,11 @@ export default class CostCenterService{
             comission,
             state,
             name,
+            phone,
+            email,
+            destiny_person,
+            destiny_address,
+            commentary,
             created_at:timeZoneLima()
         });
 
@@ -66,7 +76,12 @@ export default class CostCenterService{
             max_date_of_provider_attention,
             comission,
             state,
-            name
+            name,
+            phone,
+            email,
+            destiny_person,
+            destiny_address,
+            commentary,
         } = costCenter;
 
         const updt_costCenter = await CostCenter.update({
@@ -85,6 +100,11 @@ export default class CostCenterService{
             comission,
             state,
             name,
+            phone,
+            email,
+            destiny_person,
+            destiny_address,
+            commentary,
             updated_at:timeZoneLima()
         },{ where })
         

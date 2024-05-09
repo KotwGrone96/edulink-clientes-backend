@@ -307,6 +307,9 @@ export const loadModels = async (sequelize) => {
 				type:DataTypes.STRING,
 				allowNull:true
 			},
+			sector:{
+				type:DataTypes.STRING(50)
+			},
 			created_at: {
 				type: DataTypes.DATE,
 			},
@@ -518,6 +521,12 @@ export const loadModels = async (sequelize) => {
 			phone_or_email: {
 				type: DataTypes.STRING,
 			},
+			phone:{
+				type:DataTypes.STRING(50)
+			},
+			email:{
+				type:DataTypes.STRING(100)
+			},
 			currency: {
 				type: DataTypes.STRING(10),
 				allowNull: false,
@@ -540,6 +549,15 @@ export const loadModels = async (sequelize) => {
 			},
 			max_date_of_provider_attention:{
 				type: DataTypes.DATE
+			},
+			destiny_person:{
+				type:DataTypes.STRING(100)
+			},
+			destiny_address:{
+				type:DataTypes.STRING(255)
+			},
+			commentary:{
+				type:DataTypes.TEXT
 			},
 			created_at: {
 				type: DataTypes.DATE,
