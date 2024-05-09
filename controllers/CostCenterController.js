@@ -1,4 +1,8 @@
-
+import puppeteer from "puppeteer";
+import Handlebars from "handlebars";
+import {join} from 'path'
+import { cwd } from "process";
+import fs from 'fs'
 export default class CostCenterController {
 
     costCenterService;
@@ -342,14 +346,71 @@ export default class CostCenterController {
 
     async generatePDF(req,res){
 
-        res.render('costCenterPDF',{
+        // return res.render('costCenterPDF.hbs',{
+        //     title:'PDF CENTRO DE COSTOS',
+        //     name:'DM1715182500777',
+        //     final_client:'INSTITUTO PEDAGOGICO MARIANNE FROSTIG',
+        //     purchase_order:'',
+        //     contact:'',
+        //     email:'',
+        //     phone:'',
+        //     costumer_name:'',
+        //     ruc:'',
+        //     currency:'',
+        //     type_of_payment:'',
+        //     totalWithOutTaxes:'1440.00',
+        //     taxes:'259.20',
+        //     total:'1699.20',
+        //     layout:false
+        // })
+
+        const filepath = join(cwd(),'views','costCenterPDF.hbs')
+        const html = fs.readFileSync(filepath,{encoding:'utf-8'})
+        const content = Handlebars.compile(html)({
             title:'PDF CENTRO DE COSTOS',
             name:'DM1715182500777',
             final_client:'INSTITUTO PEDAGOGICO MARIANNE FROSTIG',
             purchase_order:'',
-            
-            content:'ACÁ VAN LAS TABLAS',
+            contact:'',
+            email:'',
+            phone:'',
+            costumer_name:'',
+            ruc:'',
+            currency:'',
+            type_of_payment:'',
+            totalWithOutTaxes:'1440.00',
+            taxes:'259.20',
+            total:'1699.20',
             layout:false
+        })
+
+        const browser = await puppeteer.launch()
+        const page = await browser.newPage()
+        await page.setContent(content)
+        await page.pdf({
+            path:'pruebaPDF.pdf',
+            format:'A4',
+            printBackground:true,
+            landscape:true
+        })
+        await page.close()
+        await browser.close()
+
+        res.set({
+            'Content-Type':'application/pdf',
+            'Content-Disposition':'attachment; filename="archivo.pdf"'
+        })
+        const readStream = fs.createReadStream(join(cwd(),'pruebaPDF.pdf'));
+        readStream.pipe(res);
+
+        readStream.on('end',()=>{
+            fs.unlink(join(cwd(),'pruebaPDF.pdf'),(err)=>{
+                if(err){
+                    console.log('Hubo un error')
+                    console.log(err)
+                    return
+                }
+            })
         })
     }
 

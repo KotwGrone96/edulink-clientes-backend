@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centro de costos PDF</title>
+    <title>{{ title }}</title>
     <style>
         /* Estilos para la página normal */
+        *{
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+            font-size: 16px;
+        }
         body {
             font-family: Arial, sans-serif;
             margin: 1cm;
-            box-sizing: border-box;
         }
 
         /* Estilos para la impresión */
@@ -17,6 +22,7 @@
            @page {
                 size: A4;
                 margin: 0;
+                
             }
             body{
                 margin: 1cm;
@@ -27,139 +33,149 @@
             color: #F1F1F1;
             text-align: center;
             padding: 8px;
+            font-weight: 700;
         }
         .titleRow-name{
             color: #FFBE15;
+        }
+
+        .td1{
+            border: 1px solid #1f1f1f;
+            padding: 8px;
+            background-color: #EDEDED;
+            color: #757575;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .td2{
+            border: 1px solid #1f1f1f;
+            padding: 8px;
+            font-size: 14px;
+        }
+        .td3{
+            padding: 16px 0;
+            font-size: 12px;
+        }
+        .td4{
+            border: 1px solid #1f1f1f; 
+            padding: 8px 0;
+            text-align: center;
+            color: #F1F1F1;
+            font-weight: 700;
+        }
+        .th1{
+            padding: 16px 0;
+            color: #757575;
+            font-weight: 700;
+            font-size: 12px;
         }
        
     </style>
 </head>
 <body>
-    <div class="titleRow">
-        COTIZACION CLIENTE FINAL <span class="titleRow-name">DM1715182500777</span>
+    <div style="border: 1px solid #1f1f1f;">
+        <div class="titleRow">
+        COTIZACION CLIENTE FINAL <span class="titleRow-name">{{ name }}</span>
+        </div>
+        {{!--INICIO TABLA 1 --}}
+        <table style="border-collapse: collapse; width: 100%; margin: 16px 0;">
+            <thead>
+                <tr>
+                    <th style=""></th>
+                    <th style=""></th>
+                    <th style=""></th>
+                    <th style=""></th>
+                </tr>
+            </thead>
+            <tbody style="">
+                <tr>
+                    <td class="td1">Nombre Comercial</td>
+                    <td class="td2">{{ final_client }}</td>
+                    <td class="td1">Razón social</td>
+                    <td class="td2">INSTITUCION EDUCATIVA PRIVADA MARIANNE FROSTIG E.I.R.L.</td>
+                </tr>
+                <tr>
+                    <td class="td1">Orden de compra</td>
+                    <td class="td2">{{ purchase_order }}</td>
+                    <td class="td1">RUC</td>
+                    <td class="td2">20609571358</td>
+                </tr>
+                <tr>
+                    <td class="td1">Teléfono / Celular</td>
+                    <td class="td2">{{contact}}</td>
+                    <td class="td1">Tipo de cambio</td>
+                    <td class="td2">PEN</td>
+                </tr>
+                <tr>
+                    <td class="td1">Correo</td>
+                    <td class="td2">mfrosting@frosting.edu.pe</td>
+                    <td class="td1">Condiciones de Pago Cliente</td>
+                    <td class="td2">AL CONTADO</td>
+                </tr>
+                <tr>
+                    <td class="td1">Dirección de entrega</td>
+                    <td class="td2">Av. Calle falsa 123</td>
+                    <td class="td1">Persona que recibe</td>
+                    <td class="td2">Victor Wayco</td>
+                </tr>
+            </tbody>
+        </table>
+        {{!--FIN TABLA 1 --}}
+        <div class="titleRow">
+            COMENTARIOS
+        </div>
+        <div style="width: 100%;">
+            <p style="padding: 16px 8px;font-size: 14px;"> Para poder ingresar se deben comunicar con Rodrigo de recepción, pueden ubicarlo al siguiente número 1231456798 </p>
+        </div>
+        <div class="titleRow">
+            DATOS DE FACTURACION CLIENTE
+        </div>
+        {{!--INICIO TABLA 2 --}}
+        <table style="border-collapse: collapse; width: 100%;">
+            <thead style="background-color: #EDEDED;">
+                <tr>
+                    <th class="th1">PART NUMBER</th>
+                    <th class="th1">DESCRIPCIÓN</th>
+                    <th class="th1">UNIDADES</th>
+                    <th class="th1">PRECIO DE VENTA</th>
+                    <th class="th1">TOTAL</th>
+                </tr>
+            </thead>
+            <tbody style="text-align: center;">
+                <tr style="border-bottom: 1px solid #EDEDED;">
+                    <td class="td3">12</td>
+                    <td class="td3">Education Plus</td>
+                    <td class="td3">120</td>
+                    <td class="td3">12</td>
+                    <td class="td3">1440.00</td>
+                </tr>
+            </tbody>
+        </table>
+        {{!--FIN TABLA 2 --}}
+        {{!--INICIO TABLA 3 --}}
+        <table style="border-collapse: collapse; width: 100%;">
+            <thead>
+                <tr>
+                    <th style="width: 80%;"></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="background-color: #757575;">
+                    <td class="td4">SUB TOTAL VENTA SIN IGV</td>
+                    <td class="td4">{{totalWithOutTaxes}}</td>
+                </tr>
+                <tr style="background-color: #757575;">
+                    <td class="td4">IGV</td>
+                    <td class="td4">{{taxes}}</td>
+                </tr>
+                <tr style="background-color: #757575;">
+                    <td class="td4">TOTAL</td>
+                    <td class="td4">{{total}}</td>
+                </tr>
+            </tbody>
+        </table>
+        {{!--FIN TABLA 3 --}}
     </div>
-    {{!--INICIO TABLA 1 --}}
-    <table>
-        <thead>
-            <tr>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-            {{!--INICIO COLUMNAS 1 Y 2--}}
-                <td>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Cliente Final</td>
-                                <td>INSTITUTO PEDAGOGICO MARIANNE FROSTIG</td>
-                            </tr>
-                            <tr>
-                                <td>Orden de compra</td>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <td>Contacto de cliente</td>
-                                <td>JORGE HUAYTA</td>
-                            </tr>
-                            <tr>
-                                <td>Celular / Correo</td>
-                                <td>992479672 / johuayta@pedagogicomariannefrostig.edu.pe</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            {{!--FIN COLUMNAS 1 Y 2--}}
-            {{!--INICIO COLUMNAS 3 Y 4--}}
-                <td>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Razón social</td>
-                                <td>INSTITUCION EDUCATIVA PRIVADA MARIANNE FROSTIG E.I.R.L.</td>
-                            </tr>
-                            <tr>
-                                <td>Ruc</td>
-                                <td>20609571358</td>
-                            </tr>
-                            <tr>
-                                <td>Tipo de cambio</td>
-                                <td>PEN</td>
-                            </tr>
-                            <tr>
-                                <td>Condiciones de Pago Cliente</td>
-                                <td>AL CONTADO</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            {{!--FIN COLUMNAS 3 Y 4--}}
-            </tr>
-        </tbody>
-    </table>
-    {{!--FIN TABLA 1 --}}
-    <div class="titleRow">
-        DATOS DE FACTURACION CLIENTE
-    </div>
-    {{!--INICIO TABLA 2 --}}
-    <table>
-        <thead>
-            <tr>
-                <th>PART NUMBER</th>
-                <th>DESCRIPCIÓN</th>
-                <th>UNIDADES</th>
-                <th>PRECIO DE VENTA</th>
-                <th>TOTAL</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>12</td>
-                <td>Education Plus</td>
-                <td>120</td>
-                <td>12</td>
-                <td>1440.00</td>
-            </tr>
-        </tbody>
-    </table>
-    {{!--FIN TABLA 2 --}}
-    {{!--INICIO TABLA 3 --}}
-    <table>
-        <thead>
-            <tr>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>SUB TOTAL VENTA SIN IGV</td>
-                <td>1440.00</td>
-            </tr>
-            <tr>
-                <td>IGV</td>
-                <td>259.20</td>
-            </tr>
-            <tr>
-                <td>TOTAL</td>
-                <td>1699.20</td>
-            </tr>
-        </tbody>
-    </table>
-    {{!--FIN TABLA 3 --}}
 </body>
 </html>
