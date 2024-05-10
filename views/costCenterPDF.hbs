@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
+    <title>{{ name }}</title>
     <style>
         /* Estilos para la página normal */
         *{
@@ -90,33 +90,33 @@
             <tbody style="">
                 <tr>
                     <td class="td1">Nombre Comercial</td>
-                    <td class="td2">{{ final_client }}</td>
+                    <td class="td2">{{ final_costumer }}</td>
                     <td class="td1">Razón social</td>
-                    <td class="td2">INSTITUCION EDUCATIVA PRIVADA MARIANNE FROSTIG E.I.R.L.</td>
+                    <td class="td2">{{ costumerName }}</td>
                 </tr>
                 <tr>
                     <td class="td1">Orden de compra</td>
                     <td class="td2">{{ purchase_order }}</td>
                     <td class="td1">RUC</td>
-                    <td class="td2">20609571358</td>
+                    <td class="td2">{{ ruc }}</td>
                 </tr>
                 <tr>
                     <td class="td1">Teléfono / Celular</td>
-                    <td class="td2">{{contact}}</td>
+                    <td class="td2">{{ phone }}</td>
                     <td class="td1">Tipo de cambio</td>
-                    <td class="td2">PEN</td>
+                    <td class="td2">{{ currency }}</td>
                 </tr>
                 <tr>
                     <td class="td1">Correo</td>
-                    <td class="td2">mfrosting@frosting.edu.pe</td>
+                    <td class="td2">{{ email }}</td>
                     <td class="td1">Condiciones de Pago Cliente</td>
-                    <td class="td2">AL CONTADO</td>
+                    <td class="td2">{{ type_of_payment }}</td>
                 </tr>
                 <tr>
                     <td class="td1">Dirección de entrega</td>
-                    <td class="td2">Av. Calle falsa 123</td>
+                    <td class="td2">{{ destiny_address }}</td>
                     <td class="td1">Persona que recibe</td>
-                    <td class="td2">Victor Wayco</td>
+                    <td class="td2">{{ destiny_person }}</td>
                 </tr>
             </tbody>
         </table>
@@ -125,7 +125,9 @@
             COMENTARIOS
         </div>
         <div style="width: 100%;">
-            <p style="padding: 16px 8px;font-size: 14px;"> Para poder ingresar se deben comunicar con Rodrigo de recepción, pueden ubicarlo al siguiente número 1231456798 </p>
+            <p style="padding: 16px 8px;font-size: 14px;">
+                {{ commentary }}
+            </p>
         </div>
         <div class="titleRow">
             DATOS DE FACTURACION CLIENTE
@@ -142,13 +144,15 @@
                 </tr>
             </thead>
             <tbody style="text-align: center;">
-                <tr style="border-bottom: 1px solid #EDEDED;">
-                    <td class="td3">12</td>
-                    <td class="td3">Education Plus</td>
-                    <td class="td3">120</td>
-                    <td class="td3">12</td>
-                    <td class="td3">1440.00</td>
-                </tr>
+                {{#each products}}
+                    <tr style="border-bottom: 1px solid #EDEDED;">
+                        <td class="td3">{{ partNumber }}</td>
+                        <td class="td3">{{ description }}</td>
+                        <td class="td3">{{ units }}</td>
+                        <td class="td3">{{ sale_price }}</td>
+                        <td class="td3">{{ totalPrice }}</td>
+                    </tr>
+                {{/each}}       
             </tbody>
         </table>
         {{!--FIN TABLA 2 --}}
@@ -163,15 +167,15 @@
             <tbody>
                 <tr style="background-color: #757575;">
                     <td class="td4">SUB TOTAL VENTA SIN IGV</td>
-                    <td class="td4">{{totalWithOutTaxes}}</td>
+                    <td class="td4">{{ ammountWithOutTaxes }}</td>
                 </tr>
                 <tr style="background-color: #757575;">
                     <td class="td4">IGV</td>
-                    <td class="td4">{{taxes}}</td>
+                    <td class="td4">{{ ammountTaxes }}</td>
                 </tr>
                 <tr style="background-color: #757575;">
                     <td class="td4">TOTAL</td>
-                    <td class="td4">{{total}}</td>
+                    <td class="td4">{{ total }}</td>
                 </tr>
             </tbody>
         </table>

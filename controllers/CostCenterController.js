@@ -355,73 +355,65 @@ export default class CostCenterController {
     }
 
     async generatePDF(req,res){
+        const data = {
+			name: req.body['name']?req.body['name']:'',
+			final_costumer: req.body['final_costumer']?req.body['final_costumer']:'',
+			purchase_order: req.body['purchase_order']?req.body['purchase_order']:'',
+			phone: req.body['phone']?req.body['phone']:'',
+			email: req.body['email']?req.body['email']:'',
+			destiny_address: req.body['destiny_address']?req.body['destiny_address']:'',
+			costumerName: req.body['costumerName']?req.body['costumerName']:'',
+			ruc: req.body['ruc']?req.body['ruc']:'',
+			currency: req.body['currency']?req.body['currency']:'',
+			type_of_payment: req.body['type_of_payment']?req.body['type_of_payment']:'',
+			destiny_person: req.body['destiny_person']?req.body['destiny_person']:'',
+			commentary: req.body['commentary']?req.body['commentary']:'',
+			ammountWithOutTaxes: req.body['ammountWithOutTaxes']?req.body['ammountWithOutTaxes']:'',
+			ammountTaxes: req.body['ammountTaxes']?req.body['ammountTaxes']:'',
+			total:req.body['total']?req.body['total']:'',
+            products:req.body['products']?req.body['products']:[]
+		};
 
-        // return res.render('costCenterPDF.hbs',{
-        //     title:'PDF CENTRO DE COSTOS',
-        //     name:'DM1715182500777',
-        //     final_client:'INSTITUTO PEDAGOGICO MARIANNE FROSTIG',
-        //     purchase_order:'',
-        //     contact:'',
-        //     email:'',
-        //     phone:'',
-        //     costumer_name:'',
-        //     ruc:'',
-        //     currency:'',
-        //     type_of_payment:'',
-        //     totalWithOutTaxes:'1440.00',
-        //     taxes:'259.20',
-        //     total:'1699.20',
-        //     layout:false
-        // })
+        try {
+            const templateFilePath = join(cwd(),'views','costCenterPDF.hbs')
+            const pdfFilePath = join(cwd(),'temp','pdf',`${data.name}.pdf`)
+            const html = fs.readFileSync(templateFilePath,{encoding:'utf-8'})
+            const content = Handlebars.compile(html)(data)
 
-        const filepath = join(cwd(),'views','costCenterPDF.hbs')
-        const html = fs.readFileSync(filepath,{encoding:'utf-8'})
-        const content = Handlebars.compile(html)({
-            title:'PDF CENTRO DE COSTOS',
-            name:'DM1715182500777',
-            final_client:'INSTITUTO PEDAGOGICO MARIANNE FROSTIG',
-            purchase_order:'',
-            contact:'',
-            email:'',
-            phone:'',
-            costumer_name:'',
-            ruc:'',
-            currency:'',
-            type_of_payment:'',
-            totalWithOutTaxes:'1440.00',
-            taxes:'259.20',
-            total:'1699.20',
-            layout:false
-        })
-
-        const browser = await puppeteer.launch()
-        const page = await browser.newPage()
-        await page.setContent(content)
-        await page.pdf({
-            path:'pruebaPDF.pdf',
-            format:'A4',
-            printBackground:true,
-            landscape:true
-        })
-        await page.close()
-        await browser.close()
-
-        res.set({
-            'Content-Type':'application/pdf',
-            'Content-Disposition':'attachment; filename="archivo.pdf"'
-        })
-        const readStream = fs.createReadStream(join(cwd(),'pruebaPDF.pdf'));
-        readStream.pipe(res);
-
-        readStream.on('end',()=>{
-            fs.unlink(join(cwd(),'pruebaPDF.pdf'),(err)=>{
-                if(err){
-                    console.log('Hubo un error')
-                    console.log(err)
-                    return
-                }
+            const browser = await puppeteer.launch()
+            const page = await browser.newPage()
+            await page.setContent(content)
+            await page.pdf({
+                path:pdfFilePath,
+                format:'A4',
+                printBackground:true,
+                landscape:true
             })
-        })
+            await page.close()
+            await browser.close()
+
+            res.set({
+                'Content-Type':'application/pdf',
+                'Content-Disposition':`attachment; filename="${data.name}.pdf"`
+            })
+            const readStream = fs.createReadStream(pdfFilePath);
+            readStream.pipe(res);
+            readStream.on('end',()=>{
+                fs.unlink(pdfFilePath,(err)=>{
+                    if(err){
+                        console.log('Hubo un error')
+                        console.log(err)
+                        return
+                    }
+                })
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error al generar el PDF',
+                error
+            })
+        }   
     }
 
 }
