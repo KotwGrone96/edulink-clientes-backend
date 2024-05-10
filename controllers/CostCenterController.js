@@ -371,42 +371,53 @@ export default class CostCenterController {
 			ammountWithOutTaxes: req.body['ammountWithOutTaxes']?req.body['ammountWithOutTaxes']:'',
 			ammountTaxes: req.body['ammountTaxes']?req.body['ammountTaxes']:'',
 			total:req.body['total']?req.body['total']:'',
-            products:req.body['products']?req.body['products']:[]
+            products:req.body['products']?req.body['products']:[],
+            layout:false
 		};
 
         try {
-            const templateFilePath = join(cwd(),'views','costCenterPDF.hbs')
-            const pdfFilePath = join(cwd(),'temp','pdf',`${data.name}.pdf`)
-            const html = fs.readFileSync(templateFilePath,{encoding:'utf-8'})
-            const content = Handlebars.compile(html)(data)
+            res.render('costCenterPDF',data)
+            // const templateFilePath = join(cwd(),'views','costCenterPDF.hbs')
+            // const pdfFilePath = join(cwd(),'temp','pdf',`${data.name}.pdf`)
+            // const html = fs.readFileSync(templateFilePath,{encoding:'utf-8'})
+            // const content = Handlebars.compile(html)(data)
+            // return res.json({
+            //     ok:true,
+            //     message:'PDF GENERADO',
+            //     pdf:content
+            // })
 
-            const browser = await puppeteer.launch()
-            const page = await browser.newPage()
-            await page.setContent(content)
-            await page.pdf({
-                path:pdfFilePath,
-                format:'A4',
-                printBackground:true,
-                landscape:true
-            })
-            await page.close()
-            await browser.close()
+            // const browser = await puppeteer.launch()
+            // const page = await browser.newPage()
+            // await page.setContent(content)
+            // await page.pdf({
+            //     path:pdfFilePath,
+            //     format:'A4',
+            //     printBackground:true,
+            //     landscape:true
+            // })
+            // await page.close()
+            // await browser.close()
 
-            res.set({
-                'Content-Type':'application/pdf',
-                'Content-Disposition':`attachment; filename="${data.name}.pdf"`
-            })
-            const readStream = fs.createReadStream(pdfFilePath);
-            readStream.pipe(res);
-            readStream.on('end',()=>{
-                fs.unlink(pdfFilePath,(err)=>{
-                    if(err){
-                        console.log('Hubo un error')
-                        console.log(err)
-                        return
-                    }
-                })
-            })
+            // res.set({
+            //     'Content-Type':'application/pdf',
+            //     'Content-Disposition':`attachment; filename="${data.name}.pdf"`
+            // })
+            // const readStream = fs.createReadStream(pdfFilePath);
+            
+            // readStream.pipe(res);
+            // readStream.on('end',()=>{
+            //     fs.unlink(pdfFilePath,(err)=>{
+            //         if(err){
+            //             console.log('Hubo un error')
+            //             console.log(err)
+            //             return
+            //         }
+            //     })
+            // })
+            // readStream.on('error',(err)=>{
+            //     console.log(err)
+            // })
         } catch (error) {
             return res.json({
                 ok:false,

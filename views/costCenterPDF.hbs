@@ -12,12 +12,6 @@
             margin: 0;
             font-size: 16px;
         }
-        body {
-            font-family: Arial, sans-serif;
-            margin: 1cm;
-        }
-
-        /* Estilos para la impresión */
         @media print {
            @page {
                 size: A4;
@@ -27,7 +21,17 @@
             body{
                 margin: 1cm;
             }
+            #btnContainer{
+                display: none;
+            }
+            
         }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 1cm;
+        }
+
+        /* Estilos para la impresión */ 
         .titleRow{
             background: #757575;
             color: #F1F1F1;
@@ -73,6 +77,11 @@
     </style>
 </head>
 <body>
+    <div id="btnContainer" style="width: 100%;">
+        <button id="botonImprimir" style="background-color: #e70e0e;color: #F1F1F1;font-weight: 700; cursor: pointer; margin: 0 auto;padding: 8px 16px; border: none;display: block; border-radius: 8px;">
+            Imprimir PDF
+        </button>
+    </div>
     <div style="border: 1px solid #1f1f1f;">
         <div class="titleRow">
         COTIZACION CLIENTE FINAL <span class="titleRow-name">{{ name }}</span>
@@ -181,5 +190,11 @@
         </table>
         {{!--FIN TABLA 3 --}}
     </div>
+    <script>
+        const pdfBtn = document.getElementById('botonImprimir');
+        pdfBtn.addEventListener('click',()=>{
+            window.print()
+        })
+    </script>
 </body>
 </html>
