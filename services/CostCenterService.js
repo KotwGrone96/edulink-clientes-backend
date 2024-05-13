@@ -130,7 +130,12 @@ export default class CostCenterService{
                     model:Costumer
                 },
                 {
-                    model:CostCenterApprovals
+                    model:CostCenterApprovals,
+                    include:[
+                        {
+                            model:User
+                        }
+                    ]
                 }
             ],
             order:[['created_at','DESC']]
