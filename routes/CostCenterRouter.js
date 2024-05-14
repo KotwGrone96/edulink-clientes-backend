@@ -13,6 +13,7 @@ router.get('/costCenter/:id',validateToken,(req,res)=> costCenterController.find
 router.post('/costCenter/create',validateToken,(req,res)=> costCenterController.create(req,res))
 router.post('/costCenter/generatePDF',validateToken,(req,res)=> costCenterController.generatePDF(req,res))
 router.put('/costCenter/update',validateToken,(req,res)=> costCenterController.update(req,res))
+router.put('/costCenter/update/GmailThread',validateToken,(req,res)=> costCenterController.updateSimpleAttribute(req,res))
 router.delete('/costCenter/delete/:id',validateToken,(req,res)=> costCenterController.delete(req,res))
 
 export default router

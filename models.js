@@ -559,6 +559,12 @@ export const loadModels = async (sequelize) => {
 			commentary:{
 				type:DataTypes.TEXT
 			},
+			email_thread_id:{
+				type:DataTypes.STRING(255)
+			},
+			email_subject:{
+				type:DataTypes.STRING(255)
+			},
 			created_at: {
 				type: DataTypes.DATE,
 				allowNull: false,

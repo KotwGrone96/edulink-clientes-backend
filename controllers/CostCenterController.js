@@ -273,6 +273,8 @@ export default class CostCenterController {
                     'destiny_person',
                     'destiny_address',
                     'commentary',
+                    'email_thread_id',
+                    'email_subject',
                     'created_at'
                 ])
             return res.json({
@@ -317,6 +319,8 @@ export default class CostCenterController {
                     'destiny_person',
                     'destiny_address',
                     'commentary',
+                    'email_thread_id',
+                    'email_subject',
                     'created_at'
                 ])
             return res.json({
@@ -427,4 +431,36 @@ export default class CostCenterController {
         }   
     }
 
+    async updateSimpleAttribute(req,res){
+        if(
+            'id' in req.body === false ||
+            'user_id' in req.body === false||
+            'sale_id' in req.body === false
+        )
+            {
+                res.json({
+                    ok:false,
+                    message:'Falta datos por enviar'
+                })
+            }
+        //TODO ********************************* //
+        const hasAccess = await this.validatePermission(req.body);
+        if(!hasAccess.ok){
+            return res.json(hasAccess)
+        }
+        //TODO ********************************* //
+        try {
+            await this.costCenterService.update(req.body,{deleted_at:null,id:req.body['id']})
+            return res.json({
+                ok:true,
+                message:'Actualizado correctamente'
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
 }

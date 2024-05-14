@@ -29,7 +29,9 @@ export default class CostCenterService{
             email,
             destiny_person,
             destiny_address,
-            commentary
+            commentary,
+            email_thread_id,
+            email_subject
         } = costCenter;
 
         const newCostCenter = CostCenter.build({
@@ -53,6 +55,8 @@ export default class CostCenterService{
             destiny_person,
             destiny_address,
             commentary,
+            email_thread_id,
+            email_subject,
             created_at:timeZoneLima()
         });
 
@@ -82,6 +86,8 @@ export default class CostCenterService{
             destiny_person,
             destiny_address,
             commentary,
+            email_thread_id,
+            email_subject
         } = costCenter;
 
         const updt_costCenter = await CostCenter.update({
@@ -105,6 +111,8 @@ export default class CostCenterService{
             destiny_person,
             destiny_address,
             commentary,
+            email_thread_id,
+            email_subject,
             updated_at:timeZoneLima()
         },{ where })
         
