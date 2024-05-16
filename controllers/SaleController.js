@@ -4,12 +4,14 @@ export default class SaleController{
     costumerSerivce
     userService
     saleHistoryService
+    saleTaskService
 
-    constructor(saleService,costumerService,userService,saleHistoryService){
+    constructor(saleService,costumerService,userService,saleHistoryService,saleTaskService){
         this.saleService = saleService
         this.costumerSerivce = costumerService
         this.userService = userService
         this.saleHistoryService = saleHistoryService
+        this.saleTaskService = saleTaskService
     }
 
     async validatePermission(payload){
@@ -264,4 +266,133 @@ export default class SaleController{
         }
     }
 
+    async createSaleTask(req,res){
+        if(
+            'name' in req.body === false ||
+            'description' in req.body === false ||
+            'sale_id' in req.body === false ||
+            'designated_user' in req.body === false ||
+            'state' in req.body === false ||
+            'deadline' in req.body === false 
+        ){
+           return res.json({
+            ok:false,
+            message:'Faltan datos por enviar'
+           }) 
+        }
+        try {
+            const saleTask = await this.saleTaskService.create(req.body);
+            return res.json({
+                ok:true,
+                message:'Tarea creada',
+                saleTask
+            })
+            
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            }) 
+        }
+    }
+
+    async updateSaleTask(req,res){
+        if(
+            'name' in req.body === false ||
+            'description' in req.body === false ||
+            'sale_id' in req.body === false ||
+            'designated_user' in req.body === false ||
+            'state' in req.body === false ||
+            'deadline' in req.body === false 
+        ){
+           return res.json({
+            ok:false,
+            message:'Faltan datos por enviar'
+           }) 
+        }
+        try {
+            const saleTask = await this.saleTaskService.update(req.body);
+            return res.json({
+                ok:true,
+                message:'Tarea actualizada',
+                saleTask
+            })
+            
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            }) 
+        }
+    }
+
+    async findAllSaleTask(req,res){
+        const where = { deleted_at:null }
+
+        if('designated_user' in req.body){
+            where['designated_user'] = req.body['designated_user']
+        }
+        if('sale_id' in req.body){
+            where['sale_id'] = req.body['sale_id']
+        }
+
+        const attributes = [
+            'id',
+            'name',
+            'description',
+            'state',
+            'commentary',
+            'deadline',
+            'end_date',
+            'created_at'
+        ]
+        try {
+            const saleTasks = await this.saleTaskService.findAll(where,attributes);
+            return res.json({
+                ok:true,
+                message:'Todas las tareas',
+                saleTasks
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            }) 
+        }
+    }
+
+    async findOneSaleTask(req,res){
+        const where = { 
+            deleted_at:null,
+            id:req.body['id']
+        }
+
+        const attributes = [
+            'id',
+            'name',
+            'description',
+            'state',
+            'commentary',
+            'deadline',
+            'end_date',
+            'created_at'
+        ]
+        try {
+            const saleTask = await this.saleTaskService.findOne(where,attributes);
+            return res.json({
+                ok:true,
+                message:'Todas las tareas',
+                saleTask
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            }) 
+        }
+    }
 }

@@ -18,6 +18,7 @@ import RouteByRol from './models/routesByRole.model.js';
 import CostCenterHistory from './models/costCenterHistory.mode.js';
 import CostCenterApprovalsHistory from './models/costCenterApprovalsHistory.js';
 import SaleHistory from './models/saleHistory.model.js';
+import SaleTask from './models/saleTask.model.js';
 
 
 export const loadModels = async (sequelize) => {
@@ -900,6 +901,59 @@ export const loadModels = async (sequelize) => {
 		{ sequelize, tableName:'sales_history' }
 	)
 
+	// TAREAS POR VENTA
+	SaleTask.init(
+		{
+			id:{
+				type: DataTypes.UUID,
+				defaultValue:DataTypes.UUIDV4,
+				unique: true,
+				primaryKey: true
+			},
+			name:{
+				type:DataTypes.STRING,
+				allowNull:false
+			},
+			description:{
+				type:DataTypes.TEXT,
+				allowNull:false
+			},
+			sale_id:{
+				type:DataTypes.UUID,
+				allowNull:false
+			},
+			designated_user:{
+				type:DataTypes.INTEGER,
+				allowNull:false
+			},
+			state:{
+				type:DataTypes.STRING(20),
+				allowNull:false
+			},
+			commentary:{
+				type:DataTypes.TEXT
+			},
+			deadline:{
+				type:DataTypes.DATE,
+				allowNull:false
+			},
+			end_date:{
+				type:DataTypes.DATE
+			},
+			created_at: {
+				type: DataTypes.DATE,
+				allowNull:false
+			},
+			updated_at: {
+				type: DataTypes.DATE
+			},
+			deleted_at: {
+				type: DataTypes.DATE
+			}
+		},
+		{ sequelize, tableName:'sale_tasks' }
+	)
+
 
 	//*** RELACIONES DE TABLAS ***//
 
@@ -1016,6 +1070,13 @@ export const loadModels = async (sequelize) => {
 
 	User.hasMany(SaleHistory, { foreignKey: 'user_id' });
 	SaleHistory.belongsTo(User, { foreignKey: 'user_id' });	
+
+	//*** TAREAS POR VENTAS - RELACIÓN ***/
+	Sale.hasMany(SaleTask,{ foreignKey:'sale_id' });
+	SaleTask.belongsTo(Sale,{ foreignKey:'sale_id' });
+
+	User.hasMany(SaleTask,{ foreignKey:'designated_user' });
+	SaleTask.belongsTo(User,{ foreignKey:'designated_user' });
 
 	// if (process.env.NODE_ENV !== 'production') {
 	// 	console.log('Sincronizando BD de desarrollo');

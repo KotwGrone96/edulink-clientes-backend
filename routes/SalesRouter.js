@@ -1,9 +1,9 @@
 import { Router } from "express";
 import SaleController from './../controllers/SaleController.js'
 import { validateToken } from "../middleware/Auth.js";
-import { saleService,costumerService,userService, saleHistoryService } from "../core/services.js";
+import { saleService,costumerService,userService, saleHistoryService, saleTaskService } from "../core/services.js";
 
-const saleController = new SaleController(saleService,costumerService,userService, saleHistoryService)
+const saleController = new SaleController(saleService,costumerService,userService, saleHistoryService,saleTaskService)
 
 const router = Router()
 

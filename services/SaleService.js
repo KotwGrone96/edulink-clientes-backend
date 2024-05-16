@@ -1,6 +1,7 @@
 import CostCenter from "../models/costCenter.model.js";
 import Costumer from "../models/costumer.model.js";
 import Sale from "../models/sale.model.js";
+import SaleTask from "../models/saleTask.model.js";
 import User from "../models/user.model.js";
 import UserCostumer from "../models/userCostumer.model.js";
 import { timeZoneLima } from "../timezone.js";
@@ -89,6 +90,9 @@ export default class SaleService{
                 },
                 {
                     model:CostCenter
+                },
+                {
+                    model:SaleTask
                 }
             ],
             order:[['start_date','DESC']]
@@ -114,6 +118,9 @@ export default class SaleService{
                 },
                 {
                     model:CostCenter
+                },
+                {
+                    model:SaleTask
                 }
             ]
         });
@@ -128,5 +135,4 @@ export default class SaleService{
 
         return updt_sale;
     }
-
 }
