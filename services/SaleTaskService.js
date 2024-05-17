@@ -1,3 +1,5 @@
+import Costumer from "../models/costumer.model.js";
+import Sale from "../models/sale.model.js";
 import SaleTask from "../models/saleTask.model.js";
 import User from "../models/user.model.js";
 import { timeZoneLima } from "../timezone.js";
@@ -51,6 +53,14 @@ export default class SaleTaskService {
             include:[
                 {
                     model:User
+                },
+                {
+                    model:Sale,
+                    include:[
+                        {
+                            model:Costumer
+                        }
+                    ]
                 }
             ]
         })
@@ -64,6 +74,14 @@ export default class SaleTaskService {
             include:[
                 {
                     model:User
+                },
+                {
+                    model:Sale,
+                    include:[
+                        {
+                            model:Costumer
+                        }
+                    ]
                 }
             ]
         })

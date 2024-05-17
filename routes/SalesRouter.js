@@ -13,4 +13,10 @@ router.post('/sales/create',validateToken,(req,res)=> saleController.create(req,
 router.put('/sales/update',validateToken,(req,res)=> saleController.update(req,res))
 router.delete('/sales/delete/:id',validateToken,(req,res)=> saleController.delete(req,res))
 
+router.get('/saleTask/all',validateToken,(req,res)=> saleController.findAllSaleTask(req,res))
+router.get('/saleTask/:id',validateToken,(req,res)=> saleController.findOneSaleTask(req,res))
+router.post('/saleTask/create',validateToken,(req,res)=> saleController.createSaleTask(req,res))
+router.put('/saleTask/update',validateToken,(req,res)=> saleController.updateSaleTask(req,res))
+router.delete('/saleTask/delete/:id',validateToken,(req,res)=> saleController.deleteTask(req,res))
+
 export default router

@@ -299,6 +299,7 @@ export default class SaleController{
 
     async updateSaleTask(req,res){
         if(
+            'id' in req.body === false ||
             'name' in req.body === false ||
             'description' in req.body === false ||
             'sale_id' in req.body === false ||
@@ -311,8 +312,13 @@ export default class SaleController{
             message:'Faltan datos por enviar'
            }) 
         }
+
+        const where = {
+            id:req.body['id']
+        }
+
         try {
-            const saleTask = await this.saleTaskService.update(req.body);
+            const saleTask = await this.saleTaskService.update(req.body,where);
             return res.json({
                 ok:true,
                 message:'Tarea actualizada',
@@ -331,11 +337,11 @@ export default class SaleController{
     async findAllSaleTask(req,res){
         const where = { deleted_at:null }
 
-        if('designated_user' in req.body){
-            where['designated_user'] = req.body['designated_user']
+        if('designated_user' in req.query){
+            where['designated_user'] = req.query['designated_user']
         }
-        if('sale_id' in req.body){
-            where['sale_id'] = req.body['sale_id']
+        if('sale_id' in req.query){
+            where['sale_id'] = req.query['sale_id']
         }
 
         const attributes = [
@@ -367,7 +373,7 @@ export default class SaleController{
     async findOneSaleTask(req,res){
         const where = { 
             deleted_at:null,
-            id:req.body['id']
+            id:req.params['id']
         }
 
         const attributes = [
@@ -393,6 +399,22 @@ export default class SaleController{
                 message:'Error en el servidor',
                 error
             }) 
+        }
+    }
+
+    async deleteTask(req,res){
+        try {
+            await this.saleTaskService.delete(req.params['id']);
+            return res.json({
+                ok:true,
+                message:'Eliminado correctamente'
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error al eliminar el registro',
+                error
+            })
         }
     }
 }
