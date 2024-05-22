@@ -39,6 +39,28 @@
             padding: 8px;
             font-weight: 700;
         }
+        .titleRowColor{
+            background: #13A0F2;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 8px;
+            font-weight: 700;
+        }
+        .titleRowColor2{
+            background: #13B9AB;
+            color: #FFFFFF;
+            text-align: center;
+            font-weight: 700;
+            border: 1px solid #1f1f1f;
+        }
+        .titleRowColor3{
+            background: #FFBE15;
+            color: #FFFFFF;
+            text-align: center;
+            font-weight: 700;
+            border: 1px solid #1f1f1f;
+            padding: 8px;
+        }
         .titleRow-name{
             color: #FFBE15;
         }
@@ -48,6 +70,22 @@
             padding: 8px;
             background-color: #EDEDED;
             color: #757575;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .tda{
+            border: 1px solid #1f1f1f;
+            padding: 8px;
+            background-color: #13B9AB;
+            color: #FFFFFF;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .tdb{
+            border: 1px solid #1f1f1f;
+            padding: 8px;
+            background-color: #85D01D;
+            color: #FFFFFF;
             font-weight: 700;
             font-size: 14px;
         }
@@ -73,6 +111,9 @@
             font-weight: 700;
             font-size: 12px;
         }
+        .page-break {
+            page-break-before: always;
+        }
        
     </style>
 </head>
@@ -82,9 +123,207 @@
             Imprimir PDF
         </button>
     </div>
-    <div style="border: 1px solid #1f1f1f;">
+    <div style="border: 1px solid #1f1f1f; margin: 10px 0px;">
+        <div class="titleRowColor">
+            CENTRO DE COSTOS 2024/ GASTOS OCULTOS ( {{ currency }} )
+        </div>
+        <div style="display: flex;justify-content: space-between; align-items: center;margin: 16px 0px;">
+            <div>
+                <table style="border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="tda">Vendedor</td>
+                            <td class="td2"> {{ hideCostCenter.seller_name }} </td>
+                        </tr>
+                        <tr>
+                            <td class="tda">Fecha de Envio CC</td>
+                            <td class="td2"> {{ hideCostCenter.date_of_send }} </td>
+                        </tr>
+                        <tr>
+                            <td class="tda">Fecha Maxima de Atencion Cliente</td>
+                            <td class="td2"> {{ hideCostCenter.max_date_of_costumer_attention }} </td>
+                        </tr>
+                        <tr>
+                            <td class="tda">Fecha Maxima de Atencion Proveedor</td>
+                            <td class="td2"> {{ hideCostCenter.max_date_of_provider_attention }} </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <table style="border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody style="text-align: center;">
+                        <tr>
+                            <td class="tda">Margen Bruto %</td>
+                            <td class="tda">Margen Neto %</td>
+                            <td class="tda">Comisión %</td>
+                        </tr>
+                        <tr>
+                            <td class="td2">{{ hideCostCenter.grossMarginPorcent }}</td>
+                            <td class="td2">{{ hideCostCenter.netMarginPorcent }}</td>
+                            <td class="td2">{{ hideCostCenter.comissionPorcent }}</td>
+                        </tr>
+                        <tr>
+                            <td class="tda">Margen Bruto</td>
+                            <td class="tdb">Margen Neto</td>
+                            <td class="tdb">Comisión</td>
+                        </tr>
+                        <tr>
+                            <td class="td2">{{ hideCostCenter.grossMargin }}</td>
+                            <td class="td2">{{ hideCostCenter.netMargin }}</td>
+                            <td class="td2">{{ hideCostCenter.comission }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {{!--INICIO TABLA MAIN PRODUCTS --}}
+        <div class="titleRowColor">
+            Compra de Mercaderia - Mayorista
+        </div>
+        <table style="border-collapse: collapse; width: 100%;">
+            <thead style="background-color: #EDEDED;">
+                <tr>
+                    <th class="th1">PART NUMBER</th>
+                    <th class="th1">DESCRIPCIÓN</th>
+                    <th class="th1">CANTIDAD</th>
+                    <th class="th1">PRECIO DE COMPRA</th>
+                    <th class="th1">PRECIO DE VENTA</th>
+                    <th class="th1">PROVEEDOR</th>
+                    <th class="th1">TOTAL</th>
+                </tr>
+            </thead>
+            <tbody style="text-align: center;">
+                {{#each hideCostCenter.mainProducts}}
+                    <tr style="border-bottom: 1px solid #EDEDED;">
+                        <td class="td3">{{ partNumber }}</td>
+                        <td class="td3">{{ description }}</td>
+                        <td class="td3">{{ units }}</td>
+                        <td class="td3">{{ purchase_price }}</td>
+                        <td class="td3">{{ sale_price }}</td>
+                        <td class="td3">{{ provider }}</td>
+                        <td class="td3">{{ totalPrice }}</td>
+                    </tr>
+                {{/each}}       
+            </tbody>
+        </table>
+        {{!--FIN TABLA MAIN PRODUCTS --}}
+
+        {{!--INICIO TABLA EXTRA PRODUCTS --}}
+        <div class="titleRowColor">
+            Compra de Accesorios - Adicionales - Materiales
+        </div>
+        <table style="border-collapse: collapse; width: 100%;">
+            <thead style="background-color: #EDEDED;">
+                <tr>
+                    <th class="th1">PART NUMBER</th>
+                    <th class="th1">DESCRIPCIÓN</th>
+                    <th class="th1">CANTIDAD</th>
+                    <th class="th1">PRECIO DE COMPRA</th>
+                    <th class="th1">PRECIO DE VENTA</th>
+                    <th class="th1">PROVEEDOR</th>
+                    <th class="th1">TOTAL</th>
+                </tr>
+            </thead>
+            <tbody style="text-align: center;">
+                {{#each hideCostCenter.extraProducts}}
+                    <tr style="border-bottom: 1px solid #EDEDED;">
+                        <td class="td3">{{ partNumber }}</td>
+                        <td class="td3">{{ description }}</td>
+                        <td class="td3">{{ units }}</td>
+                        <td class="td3">{{ purchase_price }}</td>
+                        <td class="td3">{{ sale_price }}</td>
+                        <td class="td3">{{ provider }}</td>
+                        <td class="td3">{{ totalPrice }}</td>
+                    </tr>
+                {{/each}}       
+            </tbody>
+        </table>
+        {{!--FIN TABLA EXTRA PRODUCTS --}}
+
+        {{!--INICIO TABLA THIRD PRODUCTS --}}
+        <div class="titleRowColor">
+            Compra de Servicios con terceros
+        </div>
+        <table style="border-collapse: collapse; width: 100%;">
+            <thead style="background-color: #EDEDED;">
+                <tr>
+                    <th class="th1">PART NUMBER</th>
+                    <th class="th1">DESCRIPCIÓN</th>
+                    <th class="th1">CANTIDAD</th>
+                    <th class="th1">PRECIO DE COMPRA</th>
+                    <th class="th1">PRECIO DE VENTA</th>
+                    <th class="th1">PROVEEDOR</th>
+                    <th class="th1">TOTAL</th>
+                </tr>
+            </thead>
+            <tbody style="text-align: center;">
+                {{#each hideCostCenter.thirdProducts}}
+                    <tr style="border-bottom: 1px solid #EDEDED;">
+                        <td class="td3">{{ partNumber }}</td>
+                        <td class="td3">{{ description }}</td>
+                        <td class="td3">{{ units }}</td>
+                        <td class="td3">{{ purchase_price }}</td>
+                        <td class="td3">{{ sale_price }}</td>
+                        <td class="td3">{{ provider }}</td>
+                        <td class="td3">{{ totalPrice }}</td>
+                    </tr>
+                {{/each}}       
+            </tbody>
+        </table>
+        {{!--FIN TABLA THIRD PRODUCTS --}}
+        
+        {{!--INICIO TABLA TAXES INTERNALS --}}
+        <div class="titleRowColor3">
+            Gastos Internos Edulink
+        </div>
+        <table style="border-collapse: collapse; width: 100%;">
+            <thead style="background-color: #EDEDED;">
+                <tr>
+                    <th class="th1">DESCRIPCIÓN</th>
+                    <th class="th1"></th>
+                    <th class="th1"></th>
+                    <th class="th1"></th>
+                    <th class="th1"></th>
+                    <th class="th1">PROCENTAJE</th>
+                    <th class="th1">TOTAL</th>
+                </tr>   
+            </thead>
+            <tbody style="text-align: center;">
+                {{#each hideCostCenter.selfSpends}}
+                    <tr style="border-bottom: 1px solid #EDEDED;">
+                        <td colspan="5" class="td3">{{ description }}</td>
+                        <td class="td3">{{ porcentage }}</td>
+                        <td class="td3">{{ totalPrice }}</td>
+                    </tr>
+                {{/each}}   
+            </tbody>
+        </table>
+        {{!--FIN TABLA TAXES INTERNALS --}}
+
+        <div class="titleRowColor2">
+            <span style="border-right: 1px solid #1f1f1f;padding: 8px;display: inline-block;width: 70%; text-align: center;">COSTOS OCULTOS DEL PROYECTO</span> <span style="display: inline-block;text-align: center;"> {{ hideCostCenter.total }} </span>
+        </div>
+    </div>
+    {{!--QUIEBRE DE PÁGINA --}}
+    <div class="page-break"></div>
+    {{!--QUIEBRE DE PÁGINA --}}
+    <div style="border: 1px solid #1f1f1f;margin: 1.5cm 0cm;">
         <div class="titleRow">
-        COTIZACION CLIENTE FINAL <span class="titleRow-name">{{ name }}</span>
+            COTIZACION CLIENTE FINAL <span class="titleRow-name">{{ name }}</span>
         </div>
         {{!--INICIO TABLA 1 --}}
         <table style="border-collapse: collapse; width: 100%; margin: 16px 0;">

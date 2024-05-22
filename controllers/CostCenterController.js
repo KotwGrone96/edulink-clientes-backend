@@ -376,6 +376,7 @@ export default class CostCenterController {
 			ammountTaxes: req.body['ammountTaxes']?req.body['ammountTaxes']:'',
 			total:req.body['total']?req.body['total']:'',
             products:req.body['products']?req.body['products']:[],
+            hideCostCenter:req.body['hideCostCenter'],
             layout:false
 		};
 
