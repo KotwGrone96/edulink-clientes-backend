@@ -39,7 +39,8 @@ export default class CostCenterApprovalsService {
             await exist.update({
                 state,
                 body,
-                approved_by
+                approved_by,
+                updated_at:timeZoneLima()
             })
             return exist
         }

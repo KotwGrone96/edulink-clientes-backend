@@ -275,7 +275,16 @@ export default class CostCenterController {
                     'commentary',
                     'email_thread_id',
                     'email_subject',
-                    'created_at'
+                    'created_at',
+                    'ammountHidden',
+                    'ammountWithOutTaxes',
+                    'ammountTaxes',
+                    'ammountTotal',
+                    'netMargin',
+                    'invoice_email',
+                    'invoice_manager',
+                    'biller_email',
+                    'biller_manager'
                 ])
             return res.json({
                 ok:true,
@@ -321,7 +330,16 @@ export default class CostCenterController {
                     'commentary',
                     'email_thread_id',
                     'email_subject',
-                    'created_at'
+                    'created_at',
+                    'ammountHidden',
+                    'ammountWithOutTaxes',
+                    'ammountTaxes',
+                    'ammountTotal',
+                    'netMargin',
+                    'invoice_email',
+                    'invoice_manager',
+                    'biller_email',
+                    'biller_manager'
                 ])
             return res.json({
                 ok:true,
@@ -377,6 +395,10 @@ export default class CostCenterController {
 			total:req.body['total']?req.body['total']:'',
             products:req.body['products']?req.body['products']:[],
             hideCostCenter:req.body['hideCostCenter'],
+            invoice_email:req.body['invoice_email'],
+            invoice_manager:req.body['invoice_manager'],
+            biller_email:req.body['biller_email'],
+            biller_manager:req.body['biller_manager'],
             layout:false
 		};
 
@@ -464,4 +486,71 @@ export default class CostCenterController {
             })
         }
     }
+
+    async adminUpdate(req,res){
+        if(
+            'id' in req.body === false ||
+            'user_id' in req.body === false||
+            'sale_id' in req.body === false
+        )
+            {
+                res.json({
+                    ok:false,
+                    message:'Falta datos por enviar'
+                })
+            }
+        //TODO ********************************* //
+        const hasAccess = await this.validatePermission(req.body);
+        if(!hasAccess.ok){
+            return res.json(hasAccess)
+        }
+        //TODO ********************************* //
+        try {
+            if(!req.body['products'] || req.body['products'].length === 0){
+                return res.json({
+                    ok:false,
+                    message:'Debe agregar al menos 1 producto'
+                })
+            }
+            const productsToUpdate = req.body['products'].filter(p=> ('id' in p)===true )
+            const productsToCreate= req.body['products'].filter(p=> ('id' in p)===false)
+    
+            productsToCreate.forEach(async(pd)=>{
+                pd['cost_center_id'] = req.body['id'];
+                await this.productSelledService.create(pd);
+            })
+    
+            productsToUpdate.forEach(async(pd)=>{
+                await this.productSelledService.update(pd,{deleted_at:null,id:pd.id});
+            }) 
+
+            
+            const {user_id,owner_id,...body} = req.body
+            await this.costCenterService.update(body,{deleted_at:null,id:req.body['id']})
+
+            const costCenterHistory = {
+                costumer_id:req.body['costumer_id'],
+                sale_id:req.body['sale_id'],
+                cost_center_id:req.body['id'],
+                owner_id:owner_id,
+                action_by:user_id,
+                action:'ADMIN_UPDATE',
+                state:req.body['state']
+            }
+            await this.costCenterHistoryService.create(costCenterHistory)
+
+            return res.json({
+                ok:true,
+                message:'Actualizado correctamente'
+            })
+            
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
+
 }

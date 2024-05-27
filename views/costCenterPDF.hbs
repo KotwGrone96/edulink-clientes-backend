@@ -369,6 +369,39 @@
             </tbody>
         </table>
         {{!--FIN TABLA 1 --}}
+
+        {{!--INICIO TABLA FACTURACION --}}
+        <div class="titleRow">
+            CONTACTOS DE FACTURACIÓN
+        </div>
+        <table style="border-collapse: collapse; width: 100%; margin: 16px 0;">
+            <thead>
+                <tr>
+                    <th style=""></th>
+                    <th style=""></th>
+                    <th style=""></th>
+                    <th style=""></th>
+                </tr>
+            </thead>
+            <tbody style="">
+                <tr>
+                    <td class="td1">Correo de facturación</td>
+                    <td class="td2">{{ invoice_email }}</td>
+                    <td class="td1">Responsable de facturación</td>
+                    <td class="td2">{{ invoice_manager }}</td>
+                </tr>
+                <tr>
+                    <td class="td1">Correo de cobranza</td>
+                    <td class="td2">{{ biller_email }}</td>
+                    <td class="td1">Responsable de cobranza</td>
+                    <td class="td2">{{ biller_manager }}</td>
+                </tr>
+                
+            </tbody>
+        </table>
+        {{!--FIN TABLA FACTURACION --}}
+
+
         <div class="titleRow">
             COMENTARIOS
         </div>

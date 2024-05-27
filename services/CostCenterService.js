@@ -31,7 +31,16 @@ export default class CostCenterService{
             destiny_address,
             commentary,
             email_thread_id,
-            email_subject
+            email_subject,
+            ammountHidden,
+            ammountWithOutTaxes,
+            ammountTaxes,
+            ammountTotal,
+            netMargin,
+            invoice_email,
+            invoice_manager,
+            biller_email,
+            biller_manager
         } = costCenter;
 
         const newCostCenter = CostCenter.build({
@@ -57,6 +66,15 @@ export default class CostCenterService{
             commentary,
             email_thread_id,
             email_subject,
+            ammountHidden,
+            ammountWithOutTaxes,
+            ammountTaxes,
+            ammountTotal,
+            netMargin,
+            invoice_email,
+            invoice_manager,
+            biller_email,
+            biller_manager,
             created_at:timeZoneLima()
         });
 
@@ -87,7 +105,16 @@ export default class CostCenterService{
             destiny_address,
             commentary,
             email_thread_id,
-            email_subject
+            email_subject,
+            ammountHidden,
+            ammountWithOutTaxes,
+            ammountTaxes,
+            ammountTotal,
+            netMargin,
+            invoice_email,
+            invoice_manager,
+            biller_email,
+            biller_manager
         } = costCenter;
 
         const updt_costCenter = await CostCenter.update({
@@ -113,6 +140,15 @@ export default class CostCenterService{
             commentary,
             email_thread_id,
             email_subject,
+            ammountHidden,
+            ammountWithOutTaxes,
+            ammountTaxes,
+            ammountTotal,
+            netMargin,
+            invoice_email,
+            invoice_manager,
+            biller_email,
+            biller_manager,
             updated_at:timeZoneLima()
         },{ where })
         

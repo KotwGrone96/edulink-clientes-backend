@@ -566,6 +566,33 @@ export const loadModels = async (sequelize) => {
 			email_subject:{
 				type:DataTypes.STRING(255)
 			},
+			ammountHidden:{
+				type:DataTypes.STRING(50)
+			},
+			ammountWithOutTaxes:{
+				type:DataTypes.STRING(50)
+			},
+			ammountTaxes:{
+				type:DataTypes.STRING(50)
+			},
+			ammountTotal:{
+				type:DataTypes.STRING(50)
+			},
+			netMargin:{
+				type:DataTypes.STRING(50)
+			},
+			invoice_email:{
+				type:DataTypes.STRING
+			},
+			invoice_manager:{
+				type:DataTypes.STRING
+			},
+			biller_email:{
+				type:DataTypes.STRING
+			},
+			biller_manager:{
+				type:DataTypes.STRING
+			},
 			created_at: {
 				type: DataTypes.DATE,
 				allowNull: false,

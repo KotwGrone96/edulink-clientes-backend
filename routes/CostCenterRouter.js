@@ -14,6 +14,7 @@ router.post('/costCenter/create',validateToken,(req,res)=> costCenterController.
 router.post('/costCenter/generatePDF',validateToken,(req,res)=> costCenterController.generatePDF(req,res))
 router.put('/costCenter/update',validateToken,(req,res)=> costCenterController.update(req,res))
 router.put('/costCenter/update/GmailThread',validateToken,(req,res)=> costCenterController.updateSimpleAttribute(req,res))
+router.put('/costCenter/update/adminUpdate',validateToken,(req,res)=> costCenterController.adminUpdate(req,res))
 router.delete('/costCenter/delete/:id',validateToken,(req,res)=> costCenterController.delete(req,res))
 
 export default router
