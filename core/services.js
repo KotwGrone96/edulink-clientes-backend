@@ -13,6 +13,7 @@ import SaleHistoryService from "../services/SaleHistoryService.js";
 import CostCenterHistoryService from "../services/CostCenterHistoryService.js";
 import CostCenterApprovalsHistoryService from "../services/CostCenterApprovalsHistoryService.js";
 import SaleTaskService from "../services/SaleTaskService.js";
+import InvoiceService from "../services/InvoiceService.js";
 
 const areaService = new AreaService()
 const userService = new UserService()
@@ -29,6 +30,7 @@ const saleHistoryService = new SaleHistoryService()
 const costCenterHistoryService = new CostCenterHistoryService()
 const costCenterApprovalsHistoryService = new CostCenterApprovalsHistoryService()
 const saleTaskService = new SaleTaskService()
+const invoiceService = new InvoiceService()
 
 
 export {
@@ -46,5 +48,6 @@ export {
     saleHistoryService,
     costCenterHistoryService,
     costCenterApprovalsHistoryService,
-    saleTaskService
+    saleTaskService,
+    invoiceService
 }

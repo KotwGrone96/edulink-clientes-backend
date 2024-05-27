@@ -19,6 +19,7 @@ import CostCenterHistory from './models/costCenterHistory.mode.js';
 import CostCenterApprovalsHistory from './models/costCenterApprovalsHistory.js';
 import SaleHistory from './models/saleHistory.model.js';
 import SaleTask from './models/saleTask.model.js';
+import Invoice from './models/invoice.model.js';
 
 
 export const loadModels = async (sequelize) => {
@@ -981,6 +982,58 @@ export const loadModels = async (sequelize) => {
 		{ sequelize, tableName:'sale_tasks' }
 	)
 
+	// FACTURAS
+	Invoice.init(
+		{
+			id:{
+				type: DataTypes.UUID,
+				defaultValue:DataTypes.UUIDV4,
+				unique: true,
+				primaryKey: true,
+			},
+			name:{
+				type:DataTypes.STRING,
+				unique:true,
+				allowNull:false
+			},
+			filename:{
+				type:DataTypes.STRING,
+				allowNull:false
+			},
+			invoice_date:{
+				type:DataTypes.DATE,
+				allowNull:false
+			},
+			is_paid:{
+				type:DataTypes.STRING(10)
+			},
+			paid_date:{
+				type:DataTypes.DATE
+			},
+			cost_center_id:{
+				type:DataTypes.UUID,
+				allowNull:false
+			},
+			sale_id:{
+				type:DataTypes.UUID,
+				allowNull:false
+			},
+			costumer_id:{
+				type:DataTypes.INTEGER,
+				allowNull:false
+			},
+			created_at: {
+				type: DataTypes.DATE,
+				allowNull:false
+			},
+			updated_at: {
+				type: DataTypes.DATE,
+			},
+			deleted_at: {
+				type: DataTypes.DATE,
+			}
+		},
+		{ sequelize, tableName:'invoices' })
 
 	//*** RELACIONES DE TABLAS ***//
 
@@ -1105,6 +1158,15 @@ export const loadModels = async (sequelize) => {
 	User.hasMany(SaleTask,{ foreignKey:'designated_user' });
 	SaleTask.belongsTo(User,{ foreignKey:'designated_user' });
 
+	//*** FACTURACIÓN - RELACIONES ***/
+	CostCenter.hasOne(Invoice,{ foreignKey:'cost_center_id' });
+	Invoice.belongsTo(CostCenter,{ foreignKey:'cost_center_id' });
+
+	CostCenter.hasOne(Sale,{ foreignKey:'sale_id' });
+	Sale.belongsTo(CostCenter,{ foreignKey:'sale_id' });
+
+	CostCenter.hasOne(Costumer,{ foreignKey:'costumer_id' });
+	Costumer.belongsTo(CostCenter,{ foreignKey:'costumer_id' });
 	// if (process.env.NODE_ENV !== 'production') {
 	// 	console.log('Sincronizando BD de desarrollo');
 	// 	await sequelize.sync({ alter: true });
