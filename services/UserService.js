@@ -24,8 +24,6 @@ export default class UserService {
 					{
 						model: UserRoles,
 						attributes: ['id', 'user_id', 'rol_id'],
-						where:{deleted_at:null},
-						required:false,
 						include: [
 							{
 								model: Roles,
@@ -58,8 +56,6 @@ export default class UserService {
 				{
 					model: UserRoles,
 					attributes: ['id', 'user_id', 'rol_id'],
-					where:{deleted_at:null},
-					required:false,
 					include: [
 						{
 							model: Roles,
@@ -69,8 +65,6 @@ export default class UserService {
 				},
 				{
 					model: UserArea,
-					where:{deleted_at:null},
-					required:false,
 					include: [
 						{ 
 							model: Area
@@ -90,8 +84,6 @@ export default class UserService {
 				{
 					model: UserRoles,
 					attributes: ['id', 'user_id', 'rol_id'],
-					where:{deleted_at:null},
-					required:false,
 					include: [
 						{
 							model: Roles,
@@ -102,8 +94,6 @@ export default class UserService {
 				{
 					model: UserArea,
 					include: [{ model: Area }],
-					where:{deleted_at:null},
-					required:false,
 				},
 			],
 		});

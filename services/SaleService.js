@@ -86,17 +86,13 @@ export default class SaleService{
             attributes,
             include:[
                 {
-                    model:User,
+                    model:User
                 },
                 {
-                    model:CostCenter,
-                    where:{deleted_at:null},
-                    required:false
+                    model:CostCenter
                 },
                 {
-                    model:SaleTask,
-                    where:{deleted_at:null},
-                    required:false
+                    model:SaleTask
                 }
             ],
             order:[['start_date','DESC']]
@@ -121,14 +117,10 @@ export default class SaleService{
                     ]
                 },
                 {
-                    model:CostCenter,
-                    where:{deleted_at:null},
-                    required:false
+                    model:CostCenter
                 },
                 {
-                    model:SaleTask,
-                    where:{deleted_at:null},
-                    required:false
+                    model:SaleTask
                 }
             ]
         });

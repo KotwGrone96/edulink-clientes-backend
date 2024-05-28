@@ -356,10 +356,10 @@ export default class CostCenterController {
     }
 
     async delete(req,res){
-        // const hasAccess = await this.validatePermission(req.body);
-        // if(!hasAccess.ok){
-        //     return res.json(hasAccess)
-        // }
+        const hasAccess = await this.validatePermission(req.body);
+        if(!hasAccess.ok){
+            return res.json(hasAccess)
+        }
 
         try {
             await this.costCenterService.delete(req.params['id']);
