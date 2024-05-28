@@ -36,6 +36,8 @@ export default class AreaService {
 			},
 			include: {
 				model: UserArea,
+				where:{deleted_at:null},
+				required:false,
 				include: {
 					model: User,
 				},
@@ -71,6 +73,8 @@ export default class AreaService {
 			},
 			include: {
 				model: UserArea,
+				where:{deleted_at:null},
+				required:false,
 				include: [
 					{
 						model: User,
