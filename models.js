@@ -1162,11 +1162,6 @@ export const loadModels = async (sequelize) => {
 	CostCenter.hasOne(Invoice,{ foreignKey:'cost_center_id' });
 	Invoice.belongsTo(CostCenter,{ foreignKey:'cost_center_id' });
 
-	CostCenter.hasOne(Sale,{ foreignKey:'sale_id' });
-	Sale.belongsTo(CostCenter,{ foreignKey:'sale_id' });
-
-	CostCenter.hasOne(Costumer,{ foreignKey:'costumer_id' });
-	Costumer.belongsTo(CostCenter,{ foreignKey:'costumer_id' });
 	// if (process.env.NODE_ENV !== 'production') {
 	// 	console.log('Sincronizando BD de desarrollo');
 	// 	await sequelize.sync({ alter: true });
