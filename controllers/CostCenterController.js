@@ -300,6 +300,30 @@ export default class CostCenterController {
         }
     }
 
+    async countAll(req,res){
+        const where = {deleted_at:null}
+        if('user_id' in req.query){
+			where['user_id'] = req.query['user_id'];
+		}
+        if('state' in req.query){
+			where['state'] = req.query['state'];
+		}
+        try {
+            const totalItems = await this.costCenterService.countAll(where)
+            return res.json({
+                ok:true,
+                message:'Todos los centros de costos',
+                totalItems
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error al solicitar los centros de costos',
+                error
+            })
+        }
+    }
+
     async findOne(req,res){
         try {
             const costCenter = await this.costCenterService.findOne(

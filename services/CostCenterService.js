@@ -5,6 +5,7 @@ import Sale from "../models/sale.model.js";
 import User from "../models/user.model.js";
 import { timeZoneLima } from "../timezone.js";
 import CostCenterApprovals from "../models/costCenterApprovals.model.js";
+import Invoice from "../models/invoice.model.js";
 
 export default class CostCenterService{
 
@@ -180,6 +181,11 @@ export default class CostCenterService{
                             model:User
                         }
                     ]
+                },
+                {
+                    model:Invoice,
+                    where:{deleted_at:null},
+                    required:false
                 }
             ],
             order:[['created_at','DESC']]
@@ -229,5 +235,10 @@ export default class CostCenterService{
         },{ where:{ id } });
 
         return updt_costCenter;
+    }
+
+    async countAll(where){
+        const costCenters = await CostCenter.count({where})
+        return costCenters;
     }
 }

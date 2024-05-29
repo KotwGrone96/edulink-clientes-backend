@@ -9,6 +9,7 @@ const router = Router();
 
 
 router.get('/costCenter/all',validateToken,(req,res)=> costCenterController.findAll(req,res))
+router.get('/costCenter/countAll',validateToken,(req,res)=> costCenterController.countAll(req,res))
 router.get('/costCenter/:id',validateToken,(req,res)=> costCenterController.findOne(req,res))
 router.post('/costCenter/create',validateToken,(req,res)=> costCenterController.create(req,res))
 router.post('/costCenter/generatePDF',validateToken,(req,res)=> costCenterController.generatePDF(req,res))

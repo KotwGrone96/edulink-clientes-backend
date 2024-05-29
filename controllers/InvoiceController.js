@@ -165,6 +165,9 @@ export default class InvoiceController {
 			});
 		}
         console.log(req.file)
-        return res.send('archivo')
+        return res.json({
+            ok:true,
+            message:'Guardado correctamente'
+        })
     }
 };
