@@ -100,24 +100,33 @@ export default class CostumerService {
 	}
 
 	async findOne(where, attributes) {
-		const costumer = await Costumer.findOne({ where, attributes,include: [
-			{
-				model: UserCostumer,
-				attributes: ['user_id'],
+		const costumer = await Costumer.findOne(
+			{ 
+				where,
+				attributes,
 				include: [
 					{
-						model: User,
-						attributes: ['name', 'lastname', 'email'],
+						model: UserCostumer,
+						attributes: ['user_id'],
+						where:{deleted_at:null},
+						required:false,
+						include: [
+							{
+								model: User,
+								attributes: ['name', 'lastname', 'email'],
+							},
+						],
 					},
-				],
-			},
-			{
-				model:User,
-			},
-			{
-				model:Sale
-			}
-		], });
+					{
+						model:User,
+					},
+					{
+						model:Sale,
+						where:{deleted_at:null},
+						required:false,
+					}
+				], 
+			});
 		return costumer;
 	}
 
@@ -130,6 +139,8 @@ export default class CostumerService {
 				{
 					model: UserCostumer,
 					attributes: ['user_id'],
+					where:{deleted_at:null},
+					required:false,
 					include: [
 						{
 							model: User,
@@ -141,7 +152,9 @@ export default class CostumerService {
 					model:User,
 				},
 				{
-					model:Sale
+					model:Sale,
+					where:{deleted_at:null},
+					required:false,
 				}
 			],	
 		});
@@ -156,6 +169,8 @@ export default class CostumerService {
 				{
 					model: UserCostumer,
 					attributes: ['user_id'],
+					where:{deleted_at:null},
+					required:false,
 				}
 			]
 		});
