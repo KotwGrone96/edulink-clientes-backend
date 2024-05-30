@@ -156,9 +156,11 @@ export default class CostCenterService{
         return updt_costCenter;
     }
 
-    async findAll(where,attributes){
+    async findAll(where,attributes,limit=undefined,offset=undefined){
         const costsCenters = await CostCenter.findAll({ where,
             attributes,
+            limit,
+            offset,
             include:[
                 {
                     model:User,

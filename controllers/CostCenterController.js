@@ -250,42 +250,56 @@ export default class CostCenterController {
         if('state' in req.query){
 			where['state'] = req.query['state'];
 		}
+
+        const attributes = [
+            'id',
+            'user_id',
+            'sale_id',
+            'costumer_id',
+            'final_costumer',
+            'purchase_order_name',
+            'costumer_contact',
+            'phone_or_email',
+            'currency',
+            'type_of_payment',
+            'date_of_send',
+            'max_date_of_costumer_attention',
+            'max_date_of_provider_attention',
+            'comission',
+            'state',
+            'name',
+            'phone',
+            'email',
+            'destiny_person',
+            'destiny_address',
+            'commentary',
+            'email_thread_id',
+            'email_subject',
+            'created_at',
+            'ammountHidden',
+            'ammountWithOutTaxes',
+            'ammountTaxes',
+            'ammountTotal',
+            'netMargin',
+            'invoice_email',
+            'invoice_manager',
+            'biller_email',
+            'biller_manager'
+        ]
+
+        let limit = undefined;
+        let offset = undefined;
+
+        if('limit' in req.query){   
+            limit = Number(req.query['limit'])
+        }
+
+        if('offset' in req.query){   
+            offset = Number(req.query['offset'])
+        }
+
         try {
-            const costsCenters = await this.costCenterService.findAll(where,[
-                    'id',
-                    'user_id',
-                    'sale_id',
-                    'costumer_id',
-                    'final_costumer',
-                    'purchase_order_name',
-                    'costumer_contact',
-                    'phone_or_email',
-                    'currency',
-                    'type_of_payment',
-                    'date_of_send',
-                    'max_date_of_costumer_attention',
-                    'max_date_of_provider_attention',
-                    'comission',
-                    'state',
-                    'name',
-                    'phone',
-                    'email',
-                    'destiny_person',
-                    'destiny_address',
-                    'commentary',
-                    'email_thread_id',
-                    'email_subject',
-                    'created_at',
-                    'ammountHidden',
-                    'ammountWithOutTaxes',
-                    'ammountTaxes',
-                    'ammountTotal',
-                    'netMargin',
-                    'invoice_email',
-                    'invoice_manager',
-                    'biller_email',
-                    'biller_manager'
-                ])
+            const costsCenters = await this.costCenterService.findAll(where,attributes,limit,offset)
             return res.json({
                 ok:true,
                 message:'Todos los centros de costos',
