@@ -594,6 +594,9 @@ export const loadModels = async (sequelize) => {
 			biller_manager:{
 				type:DataTypes.STRING
 			},
+			tasks:{
+				type:DataTypes.STRING
+			},
 			created_at: {
 				type: DataTypes.DATE,
 				allowNull: false,

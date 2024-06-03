@@ -284,7 +284,8 @@ export default class CostCenterController {
             'invoice_email',
             'invoice_manager',
             'biller_email',
-            'biller_manager'
+            'biller_manager',
+            'tasks'
         ]
 
         let limit = undefined;
@@ -377,7 +378,8 @@ export default class CostCenterController {
                     'invoice_email',
                     'invoice_manager',
                     'biller_email',
-                    'biller_manager'
+                    'biller_manager',
+                    'tasks'
                 ])
             return res.json({
                 ok:true,
