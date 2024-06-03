@@ -654,6 +654,12 @@ export const loadModels = async (sequelize) => {
 				type: DataTypes.STRING(50),
 				allowNull:true
 			},
+			isVisible:{
+				type: DataTypes.STRING(10)
+			},
+			plus_to:{
+				type: DataTypes.STRING,
+			},
 			created_at: {
 				type: DataTypes.DATE,
 				allowNull: false,

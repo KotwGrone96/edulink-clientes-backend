@@ -15,7 +15,9 @@ export default class ProductSelledService{
             sale_price,
             type,
             provider,
-            porcentage
+            porcentage,
+            isVisible,
+            plus_to
         } = productSelled;
 
         const newProductSelled = ProductSelled.build({
@@ -29,6 +31,8 @@ export default class ProductSelledService{
             type,
             provider,
             porcentage,
+            isVisible,
+            plus_to,
             created_at:timeZoneLima()
         });
         const n_productSelled = await newProductSelled.save();
@@ -47,7 +51,9 @@ export default class ProductSelledService{
             sale_price,
             type,
             provider,
-            porcentage
+            porcentage,
+            isVisible,
+            plus_to
         } = productSelled;
         const updt_productSelled = await ProductSelled.update({
             cost_center_id,
@@ -60,6 +66,8 @@ export default class ProductSelledService{
             type,
             provider,
             porcentage,
+            isVisible,
+            plus_to,
             updated_at:timeZoneLima()
         },{ where });
 
