@@ -12,5 +12,6 @@ router.get('/emails/all',validateToken,(req,res)=>emailController.findAll(req,re
 
 router.post('/emails/create',validateToken,(req,res)=>emailController.create(req,res))
 
+router.delete('/emails/delete/:id',validateToken,(req,res)=>emailController.delete(req,res))
 
 export default router

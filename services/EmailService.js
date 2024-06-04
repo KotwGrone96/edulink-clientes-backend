@@ -24,4 +24,9 @@ export default class EmailService {
         const n_email = await newEmail.save()
         return n_email
     }
+
+    async delete(where){
+       const emailDestroy =  await Email.destroy({where})
+       return emailDestroy
+    }
 };

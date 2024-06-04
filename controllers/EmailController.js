@@ -39,4 +39,21 @@ export default class EmailController {
             })
         }
     }
+
+    async delete(req,res){
+        const id = req.params['id']
+        try {
+            await this.emailService.delete({id})
+            return res.json({
+                ok:true,
+                message:"Retirado correctamente",
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:"Ha ocurrido un error en el servidor",
+                error
+            })
+        }
+    }
 };
