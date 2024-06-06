@@ -169,6 +169,10 @@ export default class SaleController{
             where['costumer_id'] = req.query['costumer_id']
         }
 
+        if('user_id' in req.query){
+            where['user_id'] = req.query['user_id']
+        }
+
         try {
             const sales = await this.saleService.findAll(
                 where,
