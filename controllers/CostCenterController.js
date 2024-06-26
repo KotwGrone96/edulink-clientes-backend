@@ -181,6 +181,14 @@ export default class CostCenterController {
             productsToUpdate.forEach(async(pd)=>{
                 await this.productSelledService.update(pd,{deleted_at:null,id:pd.id});
             }) 
+
+            if('productsToDelete' in req.body){
+                const { productsToDelete } = req.body;
+
+                productsToDelete.forEach(async(ptd_id)=>{
+                    await this.productSelledService.delete(ptd_id);
+                })
+            }
         }
 
         try {
@@ -564,6 +572,13 @@ export default class CostCenterController {
                 await this.productSelledService.update(pd,{deleted_at:null,id:pd.id});
             }) 
 
+            if('productsToDelete' in req.body){
+                const { productsToDelete } = req.body;
+
+                productsToDelete.forEach(async(ptd_id)=>{
+                    await this.productSelledService.delete(ptd_id);
+                })
+            }
             
             const {user_id,owner_id,...body} = req.body
             await this.costCenterService.update(body,{deleted_at:null,id:req.body['id']})
