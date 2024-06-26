@@ -223,7 +223,9 @@ export default class CostCenterService{
                     ]
                 },
                 {
-                    model:ProductSelled
+                    model:ProductSelled,
+                    where:{deleted_at:null},
+                    required:false
                 },
                 {
                     model:Costumer
