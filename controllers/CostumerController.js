@@ -101,6 +101,30 @@ export default class CostumerController {
 		});
 	}
 
+	async countAll(req, res) {
+		const where = { deleted_at:null }
+		if('type' in req.query){
+			where['type'] = req.query['type'];
+		}
+		if('manager_id' in req.query){
+			where['manager_id'] = req.query['manager_id'];
+		}
+		try {
+            const totalItems = await this.costumerService.countAll(where)
+            return res.json({
+                ok:true,
+                message:'Todos los clientes',
+                totalItems
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error al solicitar los clientes',
+                error
+            })
+        }
+	}
+
 	async findAllSimpleInfo(req, res) {
 		const where = { deleted_at:null }
 		if('type' in req.query){

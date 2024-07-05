@@ -391,4 +391,9 @@ export default class CostumerService {
 		const n_costumer = await new_costumer.save();
 		return n_costumer;
 	}
+
+	async countAll(where){
+        const costumers = await Costumer.count({where})
+        return costumers;
+    }
 }

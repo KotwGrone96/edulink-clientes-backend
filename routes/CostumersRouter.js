@@ -33,6 +33,9 @@ router.get('/costumer/find/:id', validateToken, (req, res) =>
 router.get('/costumer/all', validateToken, (req, res) =>
 	costumerController.findAll(req, res)
 );
+router.get('/costumer/countAll', validateToken, (req, res) =>
+	costumerController.countAll(req, res)
+);
 router.get('/costumer/all/simpleInfo', validateToken, (req, res) =>
 	costumerController.findAllSimpleInfo(req, res)
 );
