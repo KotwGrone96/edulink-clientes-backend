@@ -17,6 +17,7 @@ export const createConnectionDB = async (env) => {
 		host: env.DB_HOST,
 		username: env.DB_USER,
 		password: env.DB_PASS,
+		port:env.DB_PORT,
 		database:
 			process.env.NODE_ENV === 'production' ? env.DB_NAME : env.DB_NAME_DEV,
 		dialect: 'mysql',
