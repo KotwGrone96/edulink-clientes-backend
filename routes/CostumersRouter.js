@@ -39,6 +39,9 @@ router.get('/costumer/countAll', validateToken, (req, res) =>
 router.get('/costumer/all/simpleInfo', validateToken, (req, res) =>
 	costumerController.findAllSimpleInfo(req, res)
 );
+router.get('/costumer/all/attributes', validateToken, (req, res) =>
+	costumerController.findAllAttributes(req, res)
+);
 router.post('/costumer/create', validateToken, (req, res) =>
 	costumerController.create(req, res)
 );
