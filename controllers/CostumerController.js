@@ -75,7 +75,14 @@ export default class CostumerController {
 		if('manager_id' in req.query){
 			where['manager_id'] = req.query['manager_id'];
 		}
-		const costumers = await this.costumerService.findAll(where, [
+		if('costumer_id' in req.query){
+			where['id'] = req.query['costumer_id'];
+		}
+		if('sector' in req.query){
+			where['sector'] = req.query['sector'];
+		}
+
+		const attributes = [
 			'id',
 			'name',
 			'domain',
@@ -93,7 +100,45 @@ export default class CostumerController {
 			'type',
 			'drive_folder_id',
 			'sector'
-		]);
+		]
+
+		let limit = undefined;
+        let offset = undefined;
+
+        if('limit' in req.query){   
+            limit = Number(req.query['limit'])
+        }
+
+        if('offset' in req.query){   
+            offset = Number(req.query['offset'])
+        }
+
+		const costumers = await this.costumerService.findAll(where,attributes,limit,offset);
+		return res.json({
+			ok: true,
+			message: 'Todos los clientes',
+			costumers,
+		});
+	}
+
+	async findAllAttributes(req, res) {
+		const where = { deleted_at:null }
+		if('type' in req.query){
+			where['type'] = req.query['type'];
+		}
+		if('manager_id' in req.query){
+			where['manager_id'] = req.query['manager_id'];
+		}
+		if('attributes' in req.query === false){
+			return res.json({
+				ok: false,
+				message: 'Falta indicar los atributos',
+			});
+		}
+
+		const attributes = req.query['attributes'].split('-')
+
+		const costumers = await this.costumerService.findAll(where, attributes);
 		return res.json({
 			ok: true,
 			message: 'Todos los clientes',
@@ -109,6 +154,13 @@ export default class CostumerController {
 		if('manager_id' in req.query){
 			where['manager_id'] = req.query['manager_id'];
 		}
+		if('costumer_id' in req.query){
+			where['id'] = req.query['costumer_id'];
+		}
+		if('sector' in req.query){
+			where['sector'] = req.query['sector'];
+		}
+
 		try {
             const totalItems = await this.costumerService.countAll(where)
             return res.json({

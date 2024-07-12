@@ -130,10 +130,12 @@ export default class CostumerService {
 		return costumer;
 	}
 
-	async findAll(where, attributes) {
+	async findAll(where, attributes,limit=undefined,offset=undefined) {
 		const costumers = await Costumer.findAll({
 			where,
 			attributes,
+			limit,
+            offset,
 			order:[['created_at','DESC']],
 			include: [
 				{
