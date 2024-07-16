@@ -105,6 +105,51 @@ export default class SaleService{
         return sales
     }
 
+    async findAllCustomInclude(where,attributes, models){
+        const include = []
+
+        if(models.includes('user')){
+            const includeModel = {
+                model:User,
+                where:{deleted_at:null},
+                required:false
+            }
+            include.push(includeModel)
+        }
+        if(models.includes('cost_center')){
+            const includeModel = {
+                model:CostCenter,
+                where:{deleted_at:null},
+                required:false
+            }
+            include.push(includeModel)
+        }
+        if(models.includes('sale_task')){
+            const includeModel = {
+                model:SaleTask,
+                where:{deleted_at:null},
+                required:false
+            }
+            include.push(includeModel)
+        }
+        if(models.includes('costumer')){
+            const includeModel = {
+                model:Costumer,
+                where:{deleted_at:null},
+                required:false
+            }
+            include.push(includeModel)
+        }
+
+        const sales = await Sale.findAll({ where,
+            attributes,     
+            include,
+            order:[['start_date','DESC']]
+        });
+
+        return sales
+    }
+
     async findOne(where,attributes){
         const sale = await Sale.findOne({ where,
             attributes,

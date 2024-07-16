@@ -42,6 +42,7 @@ router.get('/costumer/all/simpleInfo', validateToken, (req, res) =>
 router.get('/costumer/all/attributes', validateToken, (req, res) =>
 	costumerController.findAllAttributes(req, res)
 );
+router.get('/costumers/csv/data',validateToken,(req,res)=>costumerController.csvAllData(req,res))
 router.post('/costumer/create', validateToken, (req, res) =>
 	costumerController.create(req, res)
 );

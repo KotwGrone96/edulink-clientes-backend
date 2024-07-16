@@ -1,3 +1,6 @@
+import { Parser } from '@json2csv/plainjs/index.js';
+import {Readable} from 'stream'
+
 export default class SaleController{
 
     saleService
@@ -419,6 +422,113 @@ export default class SaleController{
                 message:'Error al eliminar el registro',
                 error
             })
+        }
+    }
+
+    async csvAllData(req,res){
+
+        const where = { deleted_at:null }
+
+        if('costumer_id' in req.query){
+            where['costumer_id'] = req.query['costumer_id']
+        }
+
+        if('user_id' in req.query){
+            where['user_id'] = req.query['user_id']
+        }
+
+        const attributes = [
+            'id',
+            'costumer_id',
+            'user_id',
+            'start_date',
+            'end_date',
+            'state',
+            'type',
+            'ammount',
+            'currency',
+            'description',
+            'notes',
+            'name',
+            'purchase_order',
+            'folder',
+            'sale_close_email',
+            'created_at'
+        ]
+            
+        const models = ['user','cost_center','costumer']
+
+        try {
+            const sales = await this.saleService.findAllCustomInclude(
+                where,
+                attributes,
+                models
+            )
+            
+            const arraySales = sales.map(s=>s.dataValues)
+
+            const stateTranslates = {
+                PENDING:'En proceso',
+                SENDED:'Propuesta enviada',
+                NEGOTIATION:'Negociación',
+                REJECTED:'Rechazado',
+                WIN:'Ganado'
+            }
+
+            const typeTranslate = {
+                OPORTUNITY:'Oportunidad',
+                SALE:'Venta'
+            }
+
+            const filterData = arraySales.map(s=>{
+                const cc = s.CostCenters.length > 0? s.CostCenters[0]:null;
+                const saleFilter = {
+                    'ID de negocio':s.id,
+                    'ID de cliente':s.costumer_id,
+                    'Cliente':s.Costumer.name,
+                    'ID del creador':`${s.user_id}`,
+                    'Creador':`${s.User.name} ${s.User.lastname}`,
+                    'Fecha de inicio':s.start_date,
+                    'Estado':stateTranslates[s.state],
+                    'Fecha de finalización':s.end_date,
+                    'Tipo de negocio':typeTranslate[s.type],
+                    'Nombre':s.name,
+                    'Descripción':s.description,
+                    'Google Drive':s.folder,
+                    'Orden de compra':s.purchase_order,
+                    'ID centro de costos':cc?cc.id:'',
+                    'Centro de costos':cc?`https://clientes.edulink.la/cc/view/${btoa(cc.id)}`:'',
+                    'Moneda':s.currency,
+                    'Total de venta':cc?cc.ammountTotal:'',
+                    'Total sin IGV':cc?cc.ammountWithOutTaxes:'',
+                    'IGV':cc?cc.ammountTaxes:'',
+                    'Costo oculto del proyecto':cc?cc.ammountHidden:'',
+                    'Margen Bruto':cc?Number(cc.ammountWithOutTaxes)-Number(cc.ammountHidden):'',
+                    'Margen Neto':cc?cc.netMargin:'',
+                    'Comisión %':cc?cc.comission:'',
+                    'Comisión':cc?Number(cc.netMargin)*(Number(cc.comission)/100):''
+                }
+                return saleFilter
+            })
+            try {
+                const opts = {};
+                const parser = new Parser(opts);
+                const csv = parser.parse(filterData);
+                res.set({
+                    'Content-Type':'text/csv',
+                    'Content-Disposition':`attachment; filename="prueba.csv"`
+                })
+                const readStream = new Readable({encoding:'utf-8'})
+                readStream.push(csv,'utf-8')
+                readStream.push(null)
+                
+                readStream.pipe(res)
+              } catch (err) {
+                console.error(err);
+              }
+
+        } catch (error) {
+            console.error(err);
         }
     }
 }
