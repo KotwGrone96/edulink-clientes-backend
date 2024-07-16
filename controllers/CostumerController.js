@@ -2,6 +2,8 @@ import fs from 'fs';
 import { Worker } from 'worker_threads';
 import { join } from 'path';
 import { cwd } from 'process';
+import { Parser } from '@json2csv/plainjs/index.js';
+import {Readable} from 'stream'
 
 export default class CostumerController {
 	costumerService;
@@ -707,5 +709,97 @@ export default class CostumerController {
 				error,
 			});
 		}
+	}
+
+	async csvAllData(req, res){
+		const where = {
+			deleted_at:null
+		}
+
+		if('type' in req.query){
+			where['type'] = req.query['type'];
+		}
+		if('manager_id' in req.query){
+			where['manager_id'] = req.query['manager_id'];
+		}
+		if('costumer_id' in req.query){
+			where['id'] = req.query['costumer_id'];
+		}
+		if('sector' in req.query){
+			where['sector'] = req.query['sector'];
+		}
+
+		const attributes = [
+			'id',
+			'name',
+			'domain',
+			'phone',
+			'email',
+			'address',
+			'province',
+			'company_anniversary',
+			'ruc',
+			'ruc_type',
+			'country',
+			'state',
+			'manager_id',
+			'type',
+			'drive_folder_id',
+			'sector'
+		]
+		const costumers = await this.costumerService.findAll(where,attributes)
+		const arrayCostumers = costumers.map(c=>c.dataValues)
+		const translates = {
+			ACTIVE:'Activo',
+			INACTIVE:'Inactivo',
+			COSTUMER:'Cliente',
+			LEAD:'Prospecto',
+			CORPORATE:'Corporativo',
+			EDUCATIONAL:'Educativo',
+			NATURAL_PERSON:'Persona natural'
+		}
+
+		const filterData = arrayCostumers.map(c=>{
+			const costumerFilter = {
+				'ID':c.id,
+				'Nombre':c.name,
+				'Dominio':c.domain,
+				'Teléfono':c.phone,
+				'Correo':c.email,
+				'Dirección':c.address,
+				'Provincia':c.province,
+				'Aniversario del cliente':c.company_anniversary,
+				'Documento':c.ruc,
+				'Tipo de documento':c.ruc_type,
+				'País':c.country,
+				'Estado':translates[c.state],
+				'ID de encargado comercial':c.manager_id,
+				'Encargado comercial':`${c.User.name} ${c.User.lastname}`,
+				'Tipo de cliente':translates[c.type],
+				'Google Drive':c.drive_folder_id,
+				'Sector':translates[c.sector]
+			}
+			// attributes.forEach(attr=>{
+			// 	costumerFilter[attr] = c[attr]
+			// })
+			return costumerFilter
+		})
+
+		try {
+			const opts = {};
+			const parser = new Parser(opts);
+			const csv = parser.parse(filterData);
+			res.set({
+                'Content-Type':'text/csv',
+                'Content-Disposition':`attachment; filename="prueba.csv"`
+            })
+			const readStream = new Readable({encoding:'utf-8'})
+			readStream.push(csv,'utf-8')
+			readStream.push(null)
+			
+			readStream.pipe(res)
+		  } catch (err) {
+			console.error(err);
+		  }
 	}
 }
