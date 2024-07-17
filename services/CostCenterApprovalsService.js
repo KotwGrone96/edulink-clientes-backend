@@ -10,7 +10,8 @@ export default class CostCenterApprovalsService {
             state,
             body,
             approved_by,
-            created_at:timeZoneLima()
+            created_at:timeZoneLima(),
+            updated_at:timeZoneLima()
         })
         const new_ccApproval = await ccApproval.save()
         return new_ccApproval

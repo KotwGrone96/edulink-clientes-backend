@@ -1,8 +1,11 @@
-import puppeteer from "puppeteer";
-import Handlebars from "handlebars";
-import {join} from 'path'
-import { cwd } from "process";
-import fs from 'fs'
+// import puppeteer from "puppeteer";
+// import Handlebars from "handlebars";
+// import {join} from 'path'
+// import { cwd } from "process";
+// import fs from 'fs'
+import moment from "moment";
+import { Parser } from '@json2csv/plainjs/index.js';
+import {Readable} from 'stream'
 export default class CostCenterController {
 
     costCenterService;
@@ -608,4 +611,133 @@ export default class CostCenterController {
         }
     }
 
+    async csvAllData(req,res){
+        const where = {deleted_at:null}
+        if('user_id' in req.query){
+			where['user_id'] = req.query['user_id'];
+		}
+
+        if('costumer_id' in req.query){
+			where['user_id'] = req.query['user_id'];
+		}
+        
+        if('state' in req.query){
+			where['state'] = req.query['state'];
+		}
+
+        const attributes = [
+            'id',
+            'user_id',
+            'sale_id',
+            'costumer_id',
+            'final_costumer',
+            'purchase_order_name',
+            'costumer_contact',
+            'phone_or_email',
+            'currency',
+            'type_of_payment',
+            'date_of_send',
+            'max_date_of_costumer_attention',
+            'max_date_of_provider_attention',
+            'comission',
+            'state',
+            'name',
+            'phone',
+            'email',
+            'destiny_person',
+            'destiny_address',
+            'commentary',
+            'email_thread_id',
+            'email_subject',
+            'created_at',
+            'ammountHidden',
+            'ammountWithOutTaxes',
+            'ammountTaxes',
+            'ammountTotal',
+            'netMargin',
+            'invoice_email',
+            'invoice_manager',
+            'biller_email',
+            'biller_manager',
+            'tasks'
+        ]
+        const costsCenters = await this.costCenterService.findAll(where,attributes)
+        const arrayCCs = costsCenters.map(cc=>cc.dataValues)
+
+        const stateTranslates = {
+            DRAFT:'Borrador',
+            SEND:'En aprobación',
+            APPROVED:'Aprobado',
+            OBSERVED:'Observado'
+        }
+
+        const filterData = arrayCCs.map(cc=>{
+
+            let tasks = cc.tasks && cc.tasks.length > 0
+                ?JSON.parse(cc.tasks).join('|')
+                .replace('LICENSES_ACTIVATION_GOOGLE','Activación de licencias Google')
+                .replace('LICENSES_ACTIVATION','Activación de otras licencias')
+                .replace('PURCHASE','Compra de productos')
+                .replace('TI_HARDWARE_INSTALLATION','Instalación de hardware')
+                .replace('TI_SOFTWARE_INSTALLATION','Instalación de software')
+                :''
+
+            const costCenter = {
+                'ID de CC':cc.id,
+                'Nombre de CC':cc.name,
+                'ID de cliente':cc.costumer_id,
+                'Cliente':cc.Costumer.name,
+                'Nombre comercial':cc.final_costumer,
+                'Tipo de documento':cc.Costumer.ruc_type,
+                'Documento':cc.Costumer.ruc,
+                'ID de negocio':cc.sale_id,
+                'Negocio':cc.Sale.name,
+                'Teléfono':cc.phone,
+                'Correo':cc.email,
+                'Dirección de entrega':cc.destiny_address,
+                'Persona que recibe':cc.destiny_person,
+                'Correo de facturación':cc.invoice_email,
+                'Responsable de facturación':cc.invoice_manager,
+                'Correo de cobranza':cc.biller_email,
+                'Responsable de cobranza':cc.biller_manager,
+                'Comentarios':cc.commentary,
+                'Tareas':tasks,
+                'ID de creador':cc.user_id,
+                'Creador':`${cc.User.name} ${cc.User.lastname}`,
+                'Fecha de creación':moment(cc.created_at).format('YYYY-MM-DD HH:mm'),
+                'Estado':stateTranslates[cc.state],
+                'Fecha de envío para aprobación':cc.state != 'DRAFT'?moment(cc.date_of_send).format('YYYY-MM-DD HH:mm'):'',
+                'Fecha de última revisión':cc.CostCenterApproval?moment(cc.CostCenterApproval.updated_at).format('YYYY-MM-DD HH:mm'):'',
+                'Revisado por':cc.CostCenterApproval?`${cc.CostCenterApproval.User.name} ${cc.CostCenterApproval.User.lastname}`:'',
+                'Moneda':cc.currency,
+                'Forma de pago':cc.type_of_payment,
+                'Total de venta':cc.ammountTotal,
+                'Total sin IGV':cc.ammountWithOutTaxes,
+                'IGV':cc.ammountTaxes,
+                'Costo oculto del proyecto':cc.ammountHidden,
+                'Margen Bruto':Number(cc.ammountWithOutTaxes)-Number(cc.ammountHidden),
+                'Margen Neto':cc.netMargin,
+                'Comisión %':cc.comission,
+                'Comisión':Number(cc.netMargin)*(Number(cc.comission)/100),
+                'Centro de costos':`https://clientes.edulink.la/cc/view/${btoa(cc.id)}`,
+            }
+            return costCenter
+        })
+        try {
+            const opts = {};
+            const parser = new Parser(opts);
+            const csv = parser.parse(filterData);
+            res.set({
+                'Content-Type':'text/csv',
+                'Content-Disposition':`attachment; filename="prueba.csv"`
+            })
+            const readStream = new Readable({encoding:'utf-8'})
+            readStream.push(csv,'utf-8')
+            readStream.push(null)
+            
+            readStream.pipe(res)
+          } catch (err) {
+            console.error(err);
+          }
+    }
 }
