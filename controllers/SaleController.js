@@ -1,5 +1,6 @@
 import { Parser } from '@json2csv/plainjs/index.js';
 import {Readable} from 'stream'
+import moment from 'moment';
 
 export default class SaleController{
 
@@ -488,9 +489,9 @@ export default class SaleController{
                     'Cliente':s.Costumer.name,
                     'ID del creador':`${s.user_id}`,
                     'Creador':`${s.User.name} ${s.User.lastname}`,
-                    'Fecha de inicio':s.start_date,
+                    'Fecha de inicio':moment(s.start_date).format('YYYY-MM-DD HH:mm'),
                     'Estado':stateTranslates[s.state],
-                    'Fecha de finalización':s.end_date,
+                    'Fecha de finalización':s.end_date && s.end_date.length > 0?moment(s.end_date).format('YYYY-MM-DD HH:mm'):'',
                     'Tipo de negocio':typeTranslate[s.type],
                     'Nombre':s.name,
                     'Descripción':s.description,
