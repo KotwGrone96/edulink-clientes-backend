@@ -597,6 +597,9 @@ export const loadModels = async (sequelize) => {
 			tasks:{
 				type:DataTypes.STRING
 			},
+			payments_months:{
+				type:DataTypes.STRING
+			},
 			created_at: {
 				type: DataTypes.DATE,
 				allowNull: false,
