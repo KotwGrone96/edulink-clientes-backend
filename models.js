@@ -20,6 +20,7 @@ import CostCenterApprovalsHistory from './models/costCenterApprovalsHistory.js';
 import SaleHistory from './models/saleHistory.model.js';
 import SaleTask from './models/saleTask.model.js';
 import Invoice from './models/invoice.model.js';
+import Payment from './models/payment.model.js';
 
 
 export const loadModels = async (sequelize) => {
@@ -1047,6 +1048,54 @@ export const loadModels = async (sequelize) => {
 		},
 		{ sequelize, tableName:'invoices' })
 
+	// PAGOS
+	Payment.init(
+		{
+			id:{
+				type: DataTypes.UUID,
+				defaultValue:DataTypes.UUIDV4,
+				unique: true,
+				primaryKey: true,
+			},
+			costumer_id:{
+				type:DataTypes.INTEGER,
+				allowNull:false
+			},
+			sale_id:{
+				type:DataTypes.UUID,
+				allowNull:false
+			},
+			cost_center_id:{
+				type:DataTypes.UUID,
+				allowNull:false
+			},
+			ammount:{
+				type:DataTypes.STRING,
+				allowNull:false
+			},
+			currency:{
+				type:DataTypes.STRING,
+				allowNull:false
+			},
+			payment_date:{
+				type:DataTypes.STRING,
+				allowNull:false
+			},
+			filename:{
+				type:DataTypes.STRING
+			},
+			created_at: {
+				type: DataTypes.DATE,
+				allowNull:false
+			},
+			updated_at: {
+				type: DataTypes.DATE
+			},
+			deleted_at: {
+				type: DataTypes.DATE
+			}
+		},{ sequelize, tableName:'payments' })
+
 	//*** RELACIONES DE TABLAS ***//
 
 	Area.hasMany(UserArea, { foreignKey: 'area_id' });
@@ -1171,8 +1220,24 @@ export const loadModels = async (sequelize) => {
 	SaleTask.belongsTo(User,{ foreignKey:'designated_user' });
 
 	//*** FACTURACIÓN - RELACIONES ***/
-	CostCenter.hasOne(Invoice,{ foreignKey:'cost_center_id' });
+	CostCenter.hasMany(Invoice,{ foreignKey:'cost_center_id' });
 	Invoice.belongsTo(CostCenter,{ foreignKey:'cost_center_id' });
+
+	Sale.hasMany(Invoice,{ foreignKey:'sale_id' });
+	Invoice.belongsTo(Sale,{ foreignKey:'sale_id' });
+
+	Costumer.hasMany(Invoice,{ foreignKey:'costumer_id' });
+	Invoice.belongsTo(Costumer,{ foreignKey:'costumer_id' });
+
+	//*** PAGOS - RELACIONES ***/
+	CostCenter.hasMany(Payment,{ foreignKey:'cost_center_id' });
+	Payment.belongsTo(CostCenter,{ foreignKey:'cost_center_id' });
+
+	Sale.hasMany(Payment,{ foreignKey:'sale_id' });
+	Payment.belongsTo(Sale,{ foreignKey:'sale_id' });
+
+	Costumer.hasMany(Payment,{ foreignKey:'costumer_id' });
+	Payment.belongsTo(Costumer,{ foreignKey:'costumer_id' });
 
 	// if (process.env.NODE_ENV !== 'production') {
 	// 	console.log('Sincronizando BD de desarrollo');
