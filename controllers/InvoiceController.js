@@ -236,7 +236,7 @@ export default class InvoiceController {
         if(!ruc){
             return res.status(404).json({
                 ok:false,
-                message:'De enviar el RUC/DNI del cliente'
+                message:'Debe enviar el RUC/DNI del cliente'
             })
         }
 
