@@ -6,6 +6,7 @@ import User from "../models/user.model.js";
 import { timeZoneLima } from "../timezone.js";
 import CostCenterApprovals from "../models/costCenterApprovals.model.js";
 import Invoice from "../models/invoice.model.js";
+import Payment from '../models/payment.model.js'
 
 export default class CostCenterService{
 
@@ -196,6 +197,11 @@ export default class CostCenterService{
                 },
                 {
                     model:Invoice,
+                    where:{deleted_at:null},
+                    required:false
+                },
+                {
+                    model:Payment,
                     where:{deleted_at:null},
                     required:false
                 }
