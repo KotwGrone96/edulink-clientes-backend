@@ -97,6 +97,10 @@ export default class SaleService{
                     model:SaleTask,
                     where:{deleted_at:null},
                     required:false
+                },
+                {
+                    model:Costumer,
+                    where:{deleted_at:null},
                 }
             ],
             order:[['start_date','DESC']]
