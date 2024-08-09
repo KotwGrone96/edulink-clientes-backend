@@ -1009,6 +1009,14 @@ export const loadModels = async (sequelize) => {
 				unique:true,
 				allowNull:false
 			},
+			currency:{
+				type:DataTypes.STRING,
+				allowNull:false
+			},
+			ammount:{
+				type:DataTypes.STRING,
+				allowNull:false
+			},
 			filename:{
 				type:DataTypes.STRING,
 				allowNull:false

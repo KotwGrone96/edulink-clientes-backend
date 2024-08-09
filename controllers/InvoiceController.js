@@ -80,9 +80,24 @@ export default class InvoiceController {
 
     async findAll(req,res){
         const where = { deleted_at:null };
+
+        if('cost_center_id' in req.query){
+            where['cost_center_id'] = req.query['cost_center_id']
+        }
+
+        if('sale_id' in req.query){
+            where['sale_id'] = req.query['sale_id']
+        }
+
+        if('costumer_id' in req.query){
+            where['costumer_id'] = req.query['costumer_id']
+        }
+
         const attributes = [
             'id',
             'name',
+            'currency',
+            'ammount',
             'filename',
             'invoice_date',
             'is_paid',
@@ -118,6 +133,8 @@ export default class InvoiceController {
         const attributes = [
             'id',
             'name',
+            'currency',
+            'ammount',
             'filename',
             'invoice_date',
             'is_paid',
@@ -205,6 +222,8 @@ export default class InvoiceController {
 
         const body = {
             name:req.body.name,
+            currency:req.body.currency,
+            ammount:req.body.ammount,
             filename: `${req.body.name}${extname(req.file['originalname'])}`,
             invoice_date: req.body.invoice_date,
             cost_center_id: req.body.cost_center_id,

@@ -1,4 +1,7 @@
+import Costumer from "../models/costumer.model.js";
 import Invoice from "../models/invoice.model.js";
+import Sale from "../models/sale.model.js";
+import User from "../models/user.model.js";
 import { timeZoneLima } from "../timezone.js";
 
 export default class InvoiceService {
@@ -6,6 +9,8 @@ export default class InvoiceService {
     async create(invoice){
         const {
             name,
+            currency,
+            ammount,
             filename,
             invoice_date,
             cost_center_id,
@@ -15,6 +20,8 @@ export default class InvoiceService {
 
         const newInvoice = Invoice.build({
             name,
+            currency,
+            ammount,
             filename,
             invoice_date,
             cost_center_id,
@@ -30,6 +37,8 @@ export default class InvoiceService {
     async update(invoice,where){
         const {
             name,
+            currency,
+            ammount,
             filename,
             invoice_date,
             is_paid,
@@ -41,6 +50,8 @@ export default class InvoiceService {
 
         const updt_invoice = await Invoice.update({
             name,
+            currency,
+            ammount,
             filename,
             invoice_date,
             is_paid,
@@ -57,7 +68,22 @@ export default class InvoiceService {
     async findAll(where,attributes){
         const invoices = await Invoice.findAll({
             where,
-            attributes
+            attributes,
+            include:[
+                {
+                    model:Costumer,
+                    where:{deleted_at:null},
+                    required:true
+                },
+                {
+                    model:Sale,
+                    where:{deleted_at:null},
+                    required:true,
+                    include:[{
+                        model:User
+                    }]
+                }
+            ]
         });
 
         return invoices
