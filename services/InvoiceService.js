@@ -99,9 +99,11 @@ export default class InvoiceService {
     }
 
     async delete(id){
-        const updt_invoice = await Invoice.update({
-            deleted_at:timeZoneLima()
-        },{ where:{ id } });
-        return updt_invoice;
+        // const updt_invoice = await Invoice.update({
+        //     deleted_at:timeZoneLima()
+        // },{ where:{ id } });
+        // return updt_invoice;
+        const del_invoice = await Invoice.destroy({ where:{ id } })
+        return del_invoice
     }
 };

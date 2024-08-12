@@ -31,6 +31,6 @@ router.post(
 	upload,
 	(req,res)=>invoiceController.uploadInvoice(req,res))
 router.put('/invoice/update',validateToken,(req,res)=>invoiceController.update(req,res))
-router.delete('/invoice/delete',validateToken,(req,res)=>invoiceController.delete(req,res))
+router.delete('/invoice/delete/:id',validateToken,(req,res)=>invoiceController.delete(req,res))
 
 export default router
