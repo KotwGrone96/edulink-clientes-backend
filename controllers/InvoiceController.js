@@ -165,6 +165,8 @@ export default class InvoiceController {
     async delete(req,res){
         try {
             await this.invoiceService.delete(req.params['id']);
+            const filepathToDelete = join(cwd(),'storage','invoices',req.body.ruc, req.body.filename)
+            fs.unlinkSync(filepathToDelete)
             return res.json({
                 ok:true,
                 message:'Eliminado correctamente'
