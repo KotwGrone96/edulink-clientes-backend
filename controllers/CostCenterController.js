@@ -261,6 +261,9 @@ export default class CostCenterController {
         if('state' in req.query){
 			where['state'] = req.query['state'];
 		}
+        if('costumer_id' in req.query){
+			where['costumer_id'] = req.query['costumer_id'];
+		}
 
         const attributes = [
             'id',
@@ -334,6 +337,9 @@ export default class CostCenterController {
 		}
         if('state' in req.query){
 			where['state'] = req.query['state'];
+		}
+        if('costumer_id' in req.query){
+			where['costumer_id'] = req.query['costumer_id'];
 		}
         try {
             const totalItems = await this.costCenterService.countAll(where)

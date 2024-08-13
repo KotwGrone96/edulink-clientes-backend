@@ -532,4 +532,46 @@ export default class SaleController{
             console.error(err);
         }
     }
+
+    async findAllAttributes(req,res){
+        try {
+            if('attributes' in req.query == false){
+                return res.json({
+                    ok:false,
+                    message:'No ha enviado ningún atributo'
+                })
+            }
+            const attributes = req.query['attributes'].split('-')
+
+            const where = { deleted_at:null }
+
+            if('costumer_id' in req.query){
+                where['costumer_id'] = req.query['costumer_id']
+            }
+            if('user_id' in req.query){
+                where['user_id'] = req.query['user_id']
+            }
+            if('state' in req.query){
+                where['state'] = req.query['state']
+            }
+            if('type' in req.query){
+                where['type'] = req.query['type']
+            }
+
+            const sales = await this.saleService.findAllAttributes(where,attributes);
+            return res.json({
+                ok:true,
+                message:'Todas las ventas',
+                sales
+            })
+
+
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error al eliminar el registro',
+                error
+            })
+        }
+    }
 }

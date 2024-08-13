@@ -109,6 +109,11 @@ export default class SaleService{
         return sales
     }
 
+    async findAllAttributes(where,attributes){
+        const sales = await Sale.findAll({ where, attributes });
+        return sales
+    }
+
     async findAllCustomInclude(where,attributes, models){
         const include = []
 
