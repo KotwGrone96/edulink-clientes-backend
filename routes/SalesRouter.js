@@ -8,6 +8,7 @@ const saleController = new SaleController(saleService,costumerService,userServic
 const router = Router()
 
 router.get('/sales/all',validateToken,(req,res)=> saleController.findAll(req,res))
+router.get('/sales/findAllAttributes',validateToken,(req,res)=> saleController.findAllAttributes(req,res))
 router.get('/sales/:id',validateToken,(req,res)=> saleController.findOne(req,res))
 router.get('/sales/csv/data',validateToken,(req,res)=>saleController.csvAllData(req,res))
 router.post('/sales/create',validateToken,(req,res)=> saleController.create(req,res))
