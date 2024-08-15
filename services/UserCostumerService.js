@@ -84,4 +84,15 @@ export default class UserCostumerService {
 		const userCostumers = await UserCostumer.bulkCreate(data);
 		return userCostumers;
 	}
+
+	async update(userCostumer){
+		const { user_id, costumer_id, hasDriveAccess } = userCostumer
+		const updt_userCostumer = await UserCostumer.update({
+			hasDriveAccess,
+			updated_at:timeZoneLima()
+		},{where:{ user_id, costumer_id, }})
+
+		return updt_userCostumer
+	}
+
 }

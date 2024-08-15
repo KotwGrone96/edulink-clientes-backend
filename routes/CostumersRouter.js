@@ -64,6 +64,9 @@ router.post('/costumer/assignManagers', validateToken, (req, res) =>
 router.put('/costumer/update', validateToken, (req, res) =>
 	costumerController.update(req, res)
 );
+router.put('/costumer/update/userCostumer', validateToken, (req, res) =>
+	costumerController.updateUserCostumers(req, res)
+);
 router.delete('/costumer/delete/:id', validateToken, (req, res) =>
 	costumerController.delete(req, res)
 );

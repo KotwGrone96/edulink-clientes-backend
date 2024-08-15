@@ -350,6 +350,9 @@ export const loadModels = async (sequelize) => {
 					key: 'id',
 				},
 			},
+			hasDriveAccess: {
+				type: DataTypes.STRING,
+			},
 			created_at: {
 				type: DataTypes.DATE,
 			},

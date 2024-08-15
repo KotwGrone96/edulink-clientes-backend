@@ -107,7 +107,7 @@ export default class CostumerService {
 				include: [
 					{
 						model: UserCostumer,
-						attributes: ['user_id'],
+						attributes: ['user_id','hasDriveAccess'],
 						where:{deleted_at:null},
 						required:false,
 						include: [

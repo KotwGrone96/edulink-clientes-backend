@@ -802,4 +802,32 @@ export default class CostumerController {
 			console.error(err);
 		  }
 	}
+
+	async updateUserCostumers(req, res){
+		if (
+			'user_id' in req.body == false ||
+			'costumer_id' in req.body == false
+		) {
+			return res.json({
+				ok: false,
+				message: 'Faltan datos por enviar',
+			});
+		}
+
+		try {
+			await this.userCostumerService.update(req.body)
+			return res.json({
+				ok:true,
+				message:'Actualizado correctamente'
+			})
+			
+		} catch (error) {
+			console.error(error);
+			return res.json({
+				ok:false,
+				message:'Error en el servidor',
+				error
+			})
+		}
+	}
 }
