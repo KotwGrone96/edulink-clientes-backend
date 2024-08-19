@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 	},
 });
 
-const upload = multer({ storage: storage }).single('invoice')
+const upload = multer({ storage: storage }).single('finance')
 
 const router = Router()
 
