@@ -21,6 +21,8 @@ import SaleHistory from './models/saleHistory.model.js';
 import SaleTask from './models/saleTask.model.js';
 import Invoice from './models/invoice.model.js';
 import Payment from './models/payment.model.js';
+import Finance from './models/finance.model.js';
+import FinanceSection from './models/financeSection.model.js';
 
 
 export const loadModels = async (sequelize) => {
@@ -1107,6 +1109,45 @@ export const loadModels = async (sequelize) => {
 			}
 		},{ sequelize, tableName:'payments' })
 
+	FinanceSection.init({
+		id:{
+			type: DataTypes.UUID,
+			defaultValue:DataTypes.UUIDV4,
+			unique: true,
+			primaryKey: true,
+		},
+		name:{
+			type:DataTypes.STRING,
+			allowNull:false
+		},
+	},{ sequelize, tableName:'finance_sections' })
+
+	Finance.init({
+		id:{
+			type: DataTypes.UUID,
+			defaultValue:DataTypes.UUIDV4,
+			unique: true,
+			primaryKey: true,
+		},
+		name:{
+			type:DataTypes.STRING,
+			allowNull:false
+		},
+		costumer_id:{
+			type:DataTypes.INTEGER,
+			allowNull:false
+		},
+		filename:{
+			type:DataTypes.STRING,
+			allowNull:false
+		},
+		finance_section_id:{
+			type:DataTypes.UUID,
+			allowNull:false
+		}
+	},{ sequelize, tableName:'finances' })
+	
+
 	//*** RELACIONES DE TABLAS ***//
 
 	Area.hasMany(UserArea, { foreignKey: 'area_id' });
@@ -1249,6 +1290,9 @@ export const loadModels = async (sequelize) => {
 
 	Costumer.hasMany(Payment,{ foreignKey:'costumer_id' });
 	Payment.belongsTo(Costumer,{ foreignKey:'costumer_id' });
+
+	FinanceSection.hasMany(Finance,{ foreignKey:'finance_section_id' })
+	Finance.belongsTo(FinanceSection,{ foreignKey:'finance_section_id' });
 
 	// if (process.env.NODE_ENV !== 'production') {
 	// 	console.log('Sincronizando BD de desarrollo');

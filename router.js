@@ -8,6 +8,7 @@ import CostCenterRouter from './routes/CostCenterRouter.js'
 import EmailRouter from './routes/EmailRouter.js'
 import RouteRouter from './routes/RoutesRouter.js'
 import InvoiceRouter from './routes/InvoicesRouter.js'
+import FinanceRouter from './routes/FinanceRouter.js'
 
 const router = Router();
 
@@ -40,6 +41,9 @@ router.use('/api',RouteRouter)
 
 //FACTURAS
 router.use('/api',InvoiceRouter)
+
+// FINANZAS
+router.use('/api',FinanceRouter)
 
 // // OPORTUNITIES
 // router.get('/api/oportunity/all', validateToken, (req, res) =>

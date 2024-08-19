@@ -15,6 +15,7 @@ import CostCenterApprovalsHistoryService from "../services/CostCenterApprovalsHi
 import SaleTaskService from "../services/SaleTaskService.js";
 import InvoiceService from "../services/InvoiceService.js";
 import PaymentService from "../services/PaymentService.js"
+import FinanceSectionService from "../services/FinanceSectionService.js";
 
 const areaService = new AreaService()
 const userService = new UserService()
@@ -33,6 +34,8 @@ const costCenterApprovalsHistoryService = new CostCenterApprovalsHistoryService(
 const saleTaskService = new SaleTaskService()
 const invoiceService = new InvoiceService()
 const paymentService = new PaymentService()
+const financeSectionService = new FinanceSectionService()
+
 
 
 export {
@@ -52,5 +55,6 @@ export {
     costCenterApprovalsHistoryService,
     saleTaskService,
     invoiceService,
-    paymentService
+    paymentService,
+    financeSectionService
 }
