@@ -25,6 +25,7 @@ const router = Router()
 
 router.get('/financeSection/all',validateToken,(req,res)=>financeSectionController.findAll(req,res))
 router.get('/finance/all',validateToken,(req,res)=>financeController.findAll(req,res))
+router.get('/finance/files/:filename',(req,res)=>financeController.findFinanceFile(req,res))
 router.get('/finance/:id',validateToken,(req,res)=>financeController.findOne(req,res))
 
 router.post('/financeSection/create',validateToken,(req,res)=>financeSectionController.create(req,res))
