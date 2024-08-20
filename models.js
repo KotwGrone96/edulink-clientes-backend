@@ -23,6 +23,7 @@ import Invoice from './models/invoice.model.js';
 import Payment from './models/payment.model.js';
 import Finance from './models/finance.model.js';
 import FinanceSection from './models/financeSection.model.js';
+import SaleCollaborator from './models/saleCollaborator.model.js';
 
 
 export const loadModels = async (sequelize) => {
@@ -1146,7 +1147,32 @@ export const loadModels = async (sequelize) => {
 			allowNull:false
 		}
 	},{ sequelize, tableName:'finances' })
-	
+
+	SaleCollaborator.init({
+		id:{
+			type: DataTypes.UUID,
+			defaultValue:DataTypes.UUIDV4,
+			unique: true,
+			primaryKey: true,
+		},
+		costumer_id:{
+			type:DataTypes.INTEGER,
+			allowNull:false
+		},
+		sale_id:{
+			type:DataTypes.UUID,
+			allowNull:false
+		},
+		user_id:{
+			type:DataTypes.INTEGER,
+			allowNull:false
+		},
+		drive_folder_id:{
+			type:DataTypes.STRING,
+			allowNull:false
+		}
+
+	},{ sequelize, tableName:'sales_collaborators' })
 
 	//*** RELACIONES DE TABLAS ***//
 
