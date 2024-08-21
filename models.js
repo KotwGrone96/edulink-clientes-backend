@@ -1317,8 +1317,20 @@ export const loadModels = async (sequelize) => {
 	Costumer.hasMany(Payment,{ foreignKey:'costumer_id' });
 	Payment.belongsTo(Costumer,{ foreignKey:'costumer_id' });
 
+	//*** FINANZAS - RELACIONES ***/
 	FinanceSection.hasMany(Finance,{ foreignKey:'finance_section_id' })
 	Finance.belongsTo(FinanceSection,{ foreignKey:'finance_section_id' });
+
+	//*** COLABORADORES - RELACIONES ***/
+	Costumer.hasMany(SaleCollaborator,{ foreignKey:'costumer_id' })
+	SaleCollaborator.belongsTo(Costumer,{ foreignKey:'costumer_id' })
+
+	Sale.hasMany(SaleCollaborator,{ foreignKey:'sale_id' })
+	SaleCollaborator.belongsTo(Sale,{ foreignKey:'sale_id' })
+
+	User.hasMany(SaleCollaborator,{ foreignKey:'user_id' })
+	SaleCollaborator.belongsTo(User,{ foreignKey:'user_id' })
+
 
 	// if (process.env.NODE_ENV !== 'production') {
 	// 	console.log('Sincronizando BD de desarrollo');

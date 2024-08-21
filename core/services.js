@@ -17,6 +17,7 @@ import InvoiceService from "../services/InvoiceService.js";
 import PaymentService from "../services/PaymentService.js"
 import FinanceSectionService from "../services/FinanceSectionService.js";
 import FinanceService from "../services/FinanceService.js";
+import SaleCollaboratorService from "../services/SaleCollaboratorService.js"
 
 const areaService = new AreaService()
 const userService = new UserService()
@@ -37,8 +38,7 @@ const invoiceService = new InvoiceService()
 const paymentService = new PaymentService()
 const financeSectionService = new FinanceSectionService()
 const financeService = new FinanceService()
-
-
+const saleCollaboratorService = new SaleCollaboratorService()
 
 export {
     areaService,
@@ -59,5 +59,6 @@ export {
     invoiceService,
     paymentService,
     financeSectionService,
-    financeService
+    financeService,
+    saleCollaboratorService
 }
