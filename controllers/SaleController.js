@@ -9,13 +9,15 @@ export default class SaleController{
     userService
     saleHistoryService
     saleTaskService
+    costCenterService
 
-    constructor(saleService,costumerService,userService,saleHistoryService,saleTaskService){
+    constructor(saleService,costumerService,userService,saleHistoryService,saleTaskService,costCenterService){
         this.saleService = saleService
         this.costumerSerivce = costumerService
         this.userService = userService
         this.saleHistoryService = saleHistoryService
         this.saleTaskService = saleTaskService
+        this.costCenterService = costCenterService
     }
 
     async validatePermission(payload){
@@ -140,6 +142,15 @@ export default class SaleController{
         //TODO ********************************* //
         try {
             await this.saleService.update(req.body,{deleted_at:null,id:req.body['id']});
+
+            const costCenterUpdt = {
+                currency:req.body['currency']
+            }
+
+            await this.costCenterService.update(costCenterUpdt,{
+                costumer_id:req.body['costumer_id'],
+                sale_id:req.body['id']
+            });
 
             const saleHistory = {
                 costumer_id:req.body['costumer_id'],
@@ -558,7 +569,14 @@ export default class SaleController{
                 where['type'] = req.query['type']
             }
 
-            const sales = await this.saleService.findAllAttributes(where,attributes);
+            //let models = ['user','cost_center','sale_task','costumer','saleCollaborator']
+            let models = []
+
+            if('models' in req.query){
+                models = req.query['models'].split('-')
+            }
+
+            const sales = await this.saleService.findAllCustomInclude(where,attributes,models);
             return res.json({
                 ok:true,
                 message:'Todas las ventas',

@@ -1,9 +1,11 @@
 import { Router } from "express";
 import SaleController from './../controllers/SaleController.js'
 import { validateToken } from "../middleware/Auth.js";
-import { saleService,costumerService,userService, saleHistoryService, saleTaskService } from "../core/services.js";
+import { saleService,costumerService,userService, saleHistoryService, saleTaskService, costCenterService, saleCollaboratorService } from "../core/services.js";
+import SaleCollaboratorController from "../controllers/SaleCollaboratorController.js";
 
-const saleController = new SaleController(saleService,costumerService,userService, saleHistoryService,saleTaskService)
+const saleController = new SaleController(saleService, costumerService, userService, saleHistoryService, saleTaskService, costCenterService)
+const saleCollaboratorController = new SaleCollaboratorController(saleCollaboratorService)
 
 const router = Router()
 
@@ -20,5 +22,9 @@ router.get('/saleTask/:id',validateToken,(req,res)=> saleController.findOneSaleT
 router.post('/saleTask/create',validateToken,(req,res)=> saleController.createSaleTask(req,res))
 router.put('/saleTask/update',validateToken,(req,res)=> saleController.updateSaleTask(req,res))
 router.delete('/saleTask/delete/:id',validateToken,(req,res)=> saleController.deleteTask(req,res))
+
+router.get('/saleCollaborator/all',validateToken,(req,res)=> saleCollaboratorController.findAll(req,res))
+router.post('/saleCollaborator/create',validateToken,(req,res)=> saleCollaboratorController.create(req,res))
+router.delete('/saleCollaborator/delete/:id',validateToken,(req,res)=> saleCollaboratorController.delete(req,res))
 
 export default router

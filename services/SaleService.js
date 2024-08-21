@@ -1,6 +1,7 @@
 import CostCenter from "../models/costCenter.model.js";
 import Costumer from "../models/costumer.model.js";
 import Sale from "../models/sale.model.js";
+import SaleCollaborator from "../models/saleCollaborator.model.js";
 import SaleTask from "../models/saleTask.model.js";
 import User from "../models/user.model.js";
 import UserCostumer from "../models/userCostumer.model.js";
@@ -146,6 +147,17 @@ export default class SaleService{
                 model:Costumer,
                 where:{deleted_at:null},
                 required:false
+            }
+            include.push(includeModel)
+        }
+        if(models.includes('saleCollaborator')){
+            const includeModel = {
+                model:SaleCollaborator,
+                include:[
+                    {
+                        model:User
+                    }
+                ]
             }
             include.push(includeModel)
         }
