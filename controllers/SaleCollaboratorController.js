@@ -141,4 +141,40 @@ export default class SaleCollaboratorController {
         }
     }
 
+    async createMultiple(req,res){
+        if('collaborators' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Se deben enviar los datos de los colaboradores'
+            })
+        }   
+        
+        try {
+            const saleCollaborators = []
+            const collaboratorsErros = []
+
+            req.body['collaborators'].forEach(async(co) => {
+                const newCollaborator = await this.saleCollaboratorService.create(co)
+                if(newCollaborator){
+                    saleCollaborators.push(newCollaborator)
+                }else{
+                    collaboratorsErros.push(co)
+                }
+            });
+
+            return res.json({
+                ok:true,
+                message:'Agregados correctamente',
+                saleCollaborators,
+                collaboratorsErros
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
+
 };
