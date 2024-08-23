@@ -40,7 +40,7 @@ export default class SaleCollaboratorController {
     async delete(req,res) {
         try {
 
-            await this.saleCollaboratorService.delete({id:req.params['id']})
+            await this.saleCollaboratorService.delete(req.params['id'])
             return res.json({
                 ok:true,
                 message:'Eliminado correctamente'
@@ -151,26 +151,22 @@ export default class SaleCollaboratorController {
         
         try {
             const saleCollaborators = []
-            const collaboratorsErrors = []
+            const collaboratorsErros = []
 
-            for (const co of req.body['collaborators']) {
-                try {
-                    const newCollaborator = await this.saleCollaboratorService.create(co);
-                    if (newCollaborator) {
-                        saleCollaborators.push(newCollaborator);
-                    } else {
-                        collaboratorsErrors.push(co);
-                    }
-                } catch (err) {
-                    collaboratorsErrors.push(co);
+            req.body['collaborators'].forEach(async(co) => {
+                const newCollaborator = await this.saleCollaboratorService.create(co)
+                if(newCollaborator){
+                    saleCollaborators.push(newCollaborator)
+                }else{
+                    collaboratorsErros.push(co)
                 }
-            }
+            });
 
             return res.json({
                 ok:true,
                 message:'Agregados correctamente',
                 saleCollaborators,
-                collaboratorsErrors
+                collaboratorsErros
             })
         } catch (error) {
             return res.json({
