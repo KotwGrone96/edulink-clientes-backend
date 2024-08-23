@@ -25,7 +25,7 @@ router.delete('/saleTask/delete/:id',validateToken,(req,res)=> saleController.de
 
 router.get('/saleCollaborator/all',validateToken,(req,res)=> saleCollaboratorController.findAll(req,res))
 router.post('/saleCollaborator/create',validateToken,(req,res)=> saleCollaboratorController.create(req,res))
-router.post('/saleCollaborator/bulkCreate',validateToken,(req,res)=> saleCollaboratorController.createMultiple(req,res))
+router.post('/saleCollaborator/bulkCreate',validateToken,(req,res)=> saleCollaboratorController.create(req,res))
 router.delete('/saleCollaborator/delete/:id',validateToken,(req,res)=> saleCollaboratorController.delete(req,res))
 
 export default router

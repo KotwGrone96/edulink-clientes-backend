@@ -40,11 +40,10 @@ export default class UserCostumerService {
 		return userCostumer;
 	}
 
-	async assignUserCostumer(user_id, costumer_id,hasDriveAccess) {
+	async assignUserCostumer(user_id, costumer_id) {
 		const userCostumer = UserCostumer.build({
 			user_id,
 			costumer_id,
-			hasDriveAccess,
 			created_at: timeZoneLima(),
 		});
 
@@ -63,7 +62,7 @@ export default class UserCostumerService {
 		return userCostumerDel;
 	}
 
-	async updateOrCreateUserCostumer(user_id, costumer_id, hasDriveAccess) {
+	async updateOrCreateUserCostumer(user_id, costumer_id) {
 		const exist = await UserCostumer.findOne({
 			where: { user_id, costumer_id },
 		});
@@ -71,8 +70,7 @@ export default class UserCostumerService {
 
 		const new_userCostumer = await this.assignUserCostumer(
 			user_id,
-			costumer_id,
-			hasDriveAccess
+			costumer_id
 		);
 		return new_userCostumer;
 	}
