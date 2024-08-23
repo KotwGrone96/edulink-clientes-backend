@@ -664,10 +664,11 @@ export default class CostumerController {
 		try {
 			const data = req.body['usersCostumers'];
 			data.forEach(async (d) => {
-				const { user_id, costumer_id } = d;
+				const { user_id, costumer_id, hasDriveAccess } = d;
 				await this.userCostumerService.updateOrCreateUserCostumer(
 					user_id,
-					costumer_id
+					costumer_id,
+					hasDriveAccess
 				);
 			});
 			return res.json({
