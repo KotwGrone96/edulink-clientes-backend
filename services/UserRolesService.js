@@ -88,4 +88,9 @@ export default class UserRolesService {
 		const new_rol = await this.assignRole(user_id, rol_id);
 		return new_rol;
 	}
+
+	async delete(where) {
+		const delUserRole = await UserRoles.destroy({where})
+		return delUserRole
+	}
 }

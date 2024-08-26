@@ -51,11 +51,17 @@ router.post(
 router.post('/users/validate', validateToken, (req, res) =>
 	userController.validateUser(req, res)
 );
+router.post('/users/createUserRole', validateToken, (req, res) =>
+	userController.createUserRole(req, res)
+);
 router.put('/users/updateRol', validateToken, (req, res) =>
 	userController.updateRole(req, res)
 );
 router.delete('/users/delete/:id', validateToken, (req, res) =>
 	userController.delete(req, res)
+);
+router.delete('/users/removeUserRole', validateToken, (req, res) =>
+	userController.removeUserRole(req, res)
 );
 
 export default router
