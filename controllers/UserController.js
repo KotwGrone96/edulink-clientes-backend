@@ -480,4 +480,82 @@ export default class UserController {
 			})
 		}
 	}
+
+	async createUserRole(req, res) {
+		if('rolname' in req.body == false){
+			return res.json({
+				ok:false,
+				message:'Debe enviar el nombre del rol'
+			})
+		}
+		if('user_id' in req.body == false){
+			return res.json({
+				ok:false,
+				message:'Debe enviar el ID del usuario'
+			})
+		}
+		const rol = await this.userRolesService.getRoleByName(req.body.rolname);
+		if (!rol) {
+			return res.json({
+				ok: false,
+				message: 'No se encontró el rol',
+			});
+		}
+
+		const userRoles = await this.userRolesService.getRoles(req.body['user_id'])
+		const userRolesArr = userRoles.map(usr=>usr.dataValues)
+
+		let alreadyHasRole = false;
+
+		for (const usr of userRolesArr) {
+			if(`${usr['user_id']}` == `${req.body['user_id']}` && `${usr['rol_id'] }`== `${rol['id']}`) {
+				alreadyHasRole = true
+				break
+			}
+		}
+		if (alreadyHasRole) {
+			return res.json({
+				ok: false,
+				message: 'El usuario ya tiene asignado este rol',
+			});
+		}
+		const userRole = await this.userRolesService.assignRole(req.body['user_id'],rol['id'])
+		return res.json({
+			ok:true,
+			message:'Agregado correctamente',
+			userRole
+		})
+	}
+
+	async removeUserRole(req, res) {
+		if('rolname' in req.body == false){
+			return res.json({
+				ok:false,
+				message:'Debe enviar el nombre del rol'
+			})
+		}
+		if('user_id' in req.body == false){
+			return res.json({
+				ok:false,
+				message:'Debe enviar el ID del usuario'
+			})
+		}
+		const rol = await this.userRolesService.getRoleByName(req.body.rolname);
+		if (!rol) {
+			return res.json({
+				ok: false,
+				message: 'No se encontró el rol',
+			});
+		}
+
+		await this.userRolesService.delete({
+			user_id : req.body['user_id'],
+			rol_id : rol['id']
+		})
+
+		return res.json({
+			ok: true,
+			message: 'Rol removido',
+		});
+	}
 }
