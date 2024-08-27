@@ -225,17 +225,9 @@ export const loadModels = async (sequelize) => {
 			},
 			user_id: {
 				type: DataTypes.INTEGER,
-				references: {
-					model: User,
-					key: 'id',
-				},
 			},
 			rol_id: {
 				type: DataTypes.INTEGER,
-				references: {
-					model: Roles,
-					key: 'id',
-				},
 			},
 			created_at: {
 				type: DataTypes.DATE,
