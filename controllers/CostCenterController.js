@@ -51,16 +51,23 @@ export default class CostCenterController {
             }
         }
 
-        if(user_exist['UserRoles'][0]['Role']['name'] === 'ADMIN'){
+        const userRoleNames = user_exist['UserRoles'].map(usr=>usr['Role']['name'])
+
+        if(userRoleNames.includes('ADMIN') || userRoleNames.includes('BILLER')){
             return{
                 ok:true
             }
         }
-        if(user_exist['UserRoles'][0]['Role']['name'] === 'BILLER'){
-            return{
-                ok:true
-            }
-        }
+        // if(user_exist['UserRoles'][0]['Role']['name'] === 'ADMIN'){
+        //     return{
+        //         ok:true
+        //     }
+        // }
+        // if(user_exist['UserRoles'][0]['Role']['name'] === 'BILLER'){
+        //     return{
+        //         ok:true
+        //     }
+        // }
 
         let isManager = false;
 
