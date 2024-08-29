@@ -45,11 +45,19 @@ export default class SaleController{
             }
         }
 
-        if(user_exist['UserRoles'][0]['Role']['name'] === 'ADMIN'){
+        const userRoleNames = user_exist['UserRoles'].map(usr=>usr['Role']['name'])
+
+        if(userRoleNames.includes('ADMIN')){
             return{
                 ok:true
             }
         }
+
+        // if(user_exist['UserRoles'][0]['Role']['name'] === 'ADMIN'){
+        //     return{
+        //         ok:true
+        //     }
+        // }
 
         let isManager = false;
 
