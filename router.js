@@ -10,6 +10,7 @@ import RouteRouter from './routes/RoutesRouter.js'
 import InvoiceRouter from './routes/InvoicesRouter.js'
 import FinanceRouter from './routes/FinanceRouter.js'
 import PaymentRouter from './routes/PaymentRouter.js'
+import LogisticTaskRouter from './routes/LogisticTaskRouter.js'
 
 const router = Router();
 
@@ -48,6 +49,9 @@ router.use('/api',PaymentRouter)
 
 // FINANZAS
 router.use('/api',FinanceRouter)
+
+// TAREAS DE LOGISTICA
+router.use('/api',LogisticTaskRouter)
 
 // // OPORTUNITIES
 // router.get('/api/oportunity/all', validateToken, (req, res) =>
