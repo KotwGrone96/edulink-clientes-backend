@@ -30,6 +30,10 @@ router.get('/contactInfo/allOfCostumer/:id', validateToken, (req, res) =>
 	contactInfoController.findAllOfCostumer(req, res)
 );
 
+router.get('/contactInfo/csvAllData', validateToken, (req, res) =>
+	contactInfoController.csvAllData(req, res)
+);
+
 router.post('/contactInfo/create', validateToken, (req, res) =>
 	contactInfoController.create(req, res)
 );
