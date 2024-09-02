@@ -3,6 +3,7 @@ import { timeZoneLima } from '../timezone.js';
 import { createReadStream } from 'fs';
 import csv from 'csv-parser';
 import Costumer from '../models/costumer.model.js';
+import User from '../models/user.model.js';
 
 export default class ContactInfoService {
 	async create(contact_info) {
@@ -32,6 +33,14 @@ export default class ContactInfoService {
 			include: [
 				{
 					model: Costumer,
+					where:{
+						deleted_at:null
+					},
+					include:[
+						{
+							model:User
+						}
+					]
 				},
 			],
 		});

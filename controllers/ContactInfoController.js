@@ -2,6 +2,8 @@ import fs from 'fs';
 import { Worker } from 'worker_threads';
 import { join } from 'path';
 import { cwd } from 'process';
+import { Parser } from '@json2csv/plainjs/index.js';
+import {Readable} from 'stream'
 
 export default class ContactInfoController {
 	contactInfoService;
@@ -296,5 +298,53 @@ export default class ContactInfoController {
 				error,
 			});
 		}
+	}
+
+	async csvAllData(req, res){
+		const where = {
+			deleted_at:null
+		}
+
+		const contacts = await this.contactInfoService.findAll(where)
+		const arrayContacts = contacts.map(c=>c.dataValues)
+
+		const translates = {
+			CORPORATE:'Corporativo',
+			EDUCATIONAL:'Educativo',
+			NATURAL_PERSON:'Persona natural'
+		}
+
+		const filterData = arrayContacts.map(c=>{
+			const contactFilter = {
+				'Cliente':c.Costumer.name,
+				'Documento':c.Costumer.ruc,
+				'Dominio':c.Costumer.domain,
+				'Sector':c.Costumer.sector?translates[c.Costumer.sector]:"",
+				'Contacto':`${c.name} ${c.lastname}`,
+				'Teléfono':c.phone,
+				'Correo':c.email,
+				'Cargo':c.rol,
+				'Encargado comercial':`${c.Costumer.User.name} ${c.Costumer.User.lastname}`
+			}
+			
+			return contactFilter
+		})
+
+		try {
+			const opts = {};
+			const parser = new Parser(opts);
+			const csv = parser.parse(filterData);
+			res.set({
+                'Content-Type':'text/csv',
+                'Content-Disposition':`attachment; filename="contactos.csv"`
+            })
+			const readStream = new Readable({encoding:'utf-8'})
+			readStream.push(csv,'utf-8')
+			readStream.push(null)
+			
+			readStream.pipe(res)
+		  } catch (err) {
+			console.error(err);
+		  }
 	}
 }

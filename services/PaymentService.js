@@ -77,10 +77,8 @@ export default class PaymentService {
     }
 
     async delete(id){
-        const updt_payment = await Payment.update({
-            deleted_at:timeZoneLima()
-        },{ where:{ id } });
-        return updt_payment;
+        const del_payment = await Payment.destroy({ where:{ id } })
+        return del_payment
     }
 
 };

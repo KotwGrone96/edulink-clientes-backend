@@ -9,6 +9,7 @@ import EmailRouter from './routes/EmailRouter.js'
 import RouteRouter from './routes/RoutesRouter.js'
 import InvoiceRouter from './routes/InvoicesRouter.js'
 import FinanceRouter from './routes/FinanceRouter.js'
+import PaymentRouter from './routes/PaymentRouter.js'
 
 const router = Router();
 
@@ -41,6 +42,9 @@ router.use('/api',RouteRouter)
 
 //FACTURAS
 router.use('/api',InvoiceRouter)
+
+//PAGOS
+router.use('/api',PaymentRouter)
 
 // FINANZAS
 router.use('/api',FinanceRouter)

@@ -1,3 +1,7 @@
+import fs from 'fs'
+import { join, extname } from 'path'
+import { cwd } from 'process';
+
 export default class PaymentController {
     
     paymentService
@@ -139,6 +143,8 @@ export default class PaymentController {
     async delete(req,res){
         try {
             await this.paymentService.delete(req.params['id']);
+            const filepathToDelete = join(cwd(),'storage','payments',req.body.ruc, req.body.filename)
+            fs.unlinkSync(filepathToDelete)
             return res.json({
                 ok:true,
                 message:'Eliminado correctamente'
@@ -150,6 +156,98 @@ export default class PaymentController {
                 error
             })
         }
+    }
+
+    async uploadPayment(req,res){
+        if (!req.file) {
+			return res.status(400).json({
+				ok: false,
+				message: 'No se ha proporcionado ningún archivo',
+			});
+		}
+        
+        if('name' in req.body == false){
+            fs.unlinkSync(req.file['path']);
+            return res.json({
+            	ok:false,
+            	message:'Debe proporcionar un nombre para el archivo'
+            })
+        }
+
+        if('ruc' in req.body == false){
+            fs.unlinkSync(req.file['path']);
+            return res.json({
+            	ok:false,
+            		message:'Debe proporcionar el RUC/DNI del cliente'
+            })
+        }
+
+        const costumerPath = join(cwd(), 'storage', 'payments',`${req.body.ruc}`);
+
+        if(!fs.existsSync(costumerPath)){
+            fs.mkdirSync(costumerPath);
+        }
+
+        const newFilename = join(costumerPath,`${req.body.name}${extname(req.file['originalname'])}`);
+
+        if(fs.existsSync(newFilename)){
+            fs.unlinkSync(req.file['path']);
+            return res.json({
+                ok:false,
+                message:'El nombre de archivo ya existe'
+            })
+        }
+
+        fs.renameSync(req.file['path'],newFilename);
+
+        const body = {
+            currency:req.body.currency,
+            ammount:req.body.ammount,
+            filename: `${req.body.name}${extname(req.file['originalname'])}`,
+            payment_date: req.body.payment_date,
+            cost_center_id: req.body.cost_center_id,
+            sale_id: req.body.sale_id,
+            costumer_id: req.body.costumer_id
+        }
+
+        try {
+            const payment = await this.paymentService.create(body);
+
+            return res.json({
+                ok:true,
+                message:'Cargada correctamente',
+                payment
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
+
+    async findPaymentFile(req,res){
+        const { filename } = req.params;
+        const { ruc } = req.query;
+
+        if(!ruc){
+            return res.status(404).json({
+                ok:false,
+                message:'Debe enviar el RUC/DNI del cliente'
+            })
+        }
+
+        const filePath = join(cwd(),'storage','payments', ruc, filename)
+
+        if(!fs.existsSync(filePath)){
+            return res.status(404).json({
+                ok:false,
+                message:'El archivo no existe'
+            })
+        }
+
+        res.sendFile(filePath)
     }
 
 };
