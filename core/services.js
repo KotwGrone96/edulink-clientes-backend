@@ -18,6 +18,7 @@ import PaymentService from "../services/PaymentService.js"
 import FinanceSectionService from "../services/FinanceSectionService.js";
 import FinanceService from "../services/FinanceService.js";
 import SaleCollaboratorService from "../services/SaleCollaboratorService.js"
+import LogisticTaskService from "../services/LogisticTaskService.js";
 
 const areaService = new AreaService()
 const userService = new UserService()
@@ -39,6 +40,7 @@ const paymentService = new PaymentService()
 const financeSectionService = new FinanceSectionService()
 const financeService = new FinanceService()
 const saleCollaboratorService = new SaleCollaboratorService()
+const logisticTaskService = new LogisticTaskService()
 
 export {
     areaService,
@@ -60,5 +62,6 @@ export {
     paymentService,
     financeSectionService,
     financeService,
-    saleCollaboratorService
+    saleCollaboratorService,
+    logisticTaskService
 }

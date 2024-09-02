@@ -24,6 +24,7 @@ import Payment from './models/payment.model.js';
 import Finance from './models/finance.model.js';
 import FinanceSection from './models/financeSection.model.js';
 import SaleCollaborator from './models/saleCollaborator.model.js';
+import LogisticTasks from './models/logisticTask.model.js';
 
 
 export const loadModels = async (sequelize) => {
@@ -1166,6 +1167,62 @@ export const loadModels = async (sequelize) => {
 
 	},{ sequelize, tableName:'sales_collaborators' })
 
+	//*** TAREAS DE LOGÍSTICA ***//
+	LogisticTasks.init(
+		{
+			id:{
+				type: DataTypes.UUID,
+				defaultValue:DataTypes.UUIDV4,
+				unique: true,
+				primaryKey: true,
+			},
+			costumer_id:{
+				type:DataTypes.INTEGER,
+				allowNull:false
+			},
+			name:{
+				type:DataTypes.STRING,
+				allowNull:false
+			},
+			description:{
+				type:DataTypes.STRING,
+			},
+			state:{
+				type:DataTypes.STRING,
+				allowNull:false
+			},
+			execution_date:{
+				type:DataTypes.STRING,
+				allowNull:false
+			},
+			success_date:{
+				type:DataTypes.STRING
+			},
+			created_by:{
+				type:DataTypes.INTEGER,
+				allowNull:false
+			},
+			designated_user:{
+				type:DataTypes.INTEGER,
+				allowNull:false
+			},
+			commentary:{
+				type:DataTypes.STRING,
+			},
+			created_at: {
+				type: DataTypes.DATE,
+				allowNull:false
+			},
+			updated_at: {
+				type: DataTypes.DATE
+			},
+			deleted_at: {
+				type: DataTypes.DATE
+			}
+		},{ sequelize, tableName:'logistic_tasks' }
+	)
+
+
 	//*** RELACIONES DE TABLAS ***//
 
 	Area.hasMany(UserArea, { foreignKey: 'area_id' });
@@ -1323,6 +1380,15 @@ export const loadModels = async (sequelize) => {
 	User.hasMany(SaleCollaborator,{ foreignKey:'user_id' })
 	SaleCollaborator.belongsTo(User,{ foreignKey:'user_id' })
 
+	//*** TAREAS DE LOGISTICA - RELACIONES ***/
+	Costumer.hasMany(LogisticTasks,{ foreignKey:'costumer_id' })
+	LogisticTasks.belongsTo(Costumer,{ foreignKey:'costumer_id' })
+
+	User.hasMany(LogisticTasks,{ foreignKey:'created_by' })
+	LogisticTasks.belongsTo(User,{ foreignKey:'created_by' })
+
+	User.hasMany(LogisticTasks,{ foreignKey:'designated_user' })
+	LogisticTasks.belongsTo(User,{ foreignKey:'designated_user' })
 
 	// if (process.env.NODE_ENV !== 'production') {
 	// 	console.log('Sincronizando BD de desarrollo');
