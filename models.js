@@ -25,6 +25,7 @@ import Finance from './models/finance.model.js';
 import FinanceSection from './models/financeSection.model.js';
 import SaleCollaborator from './models/saleCollaborator.model.js';
 import LogisticTasks from './models/logisticTask.model.js';
+import LogisticTaskFile from './models/logisticTaskFile.model.js';
 
 
 export const loadModels = async (sequelize) => {
@@ -1222,6 +1223,24 @@ export const loadModels = async (sequelize) => {
 		},{ sequelize, tableName:'logistic_tasks' }
 	)
 
+	//*** ARCHIVOS DE LOGÍSTICA ***//
+	LogisticTaskFile.init({
+		id:{
+			type: DataTypes.UUID,
+			defaultValue:DataTypes.UUIDV4,
+			unique: true,
+			primaryKey: true,
+		},
+		logistic_task_id:{
+			type:DataTypes.UUID,
+			allowNull:false
+		},
+		filename:{
+			type:DataTypes.STRING,
+			allowNull:false
+		}
+	},{ sequelize, tableName:'logistic_task_files' })
+
 
 	//*** RELACIONES DE TABLAS ***//
 
@@ -1387,6 +1406,11 @@ export const loadModels = async (sequelize) => {
 	User.hasMany(LogisticTasks,{ foreignKey:"designated_user" })
 	LogisticTasks.belongsTo(User,{ as:"CreatedBy",foreignKey:"created_by" })
 	LogisticTasks.belongsTo(User,{ as:"DesignatedUser",foreignKey:"designated_user" })
+
+	//*** ARCHIVOS DE LOGISTICA - RELACIONES ***/
+	LogisticTasks.hasMany(LogisticTaskFile,{ foreignKey:'logistic_task_id' })
+	LogisticTaskFile.belongsTo(LogisticTasks,{foreignKey:'logistic_task_id'})
+
 
 	// User.hasMany(LogisticTasks,{ foreignKey:{field:"designated_user",name:"DesignatedUser"} })
 	// LogisticTasks.belongsTo(User,{ foreignKey:{field:"designated_user",name:"DesignatedUser"} })
