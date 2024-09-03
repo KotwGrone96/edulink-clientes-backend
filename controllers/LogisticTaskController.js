@@ -24,8 +24,9 @@ export default class LogisticTaskController {
     }
 
     async update(req,res){
+        const where = {id: req.body['id']}
         try {
-            await this.logisticTaskService.update(req.body)
+            await this.logisticTaskService.update(req.body,where)
             return res.json({
                 ok:true,
                 message:'Actualizado correctamente'
@@ -56,6 +57,7 @@ export default class LogisticTaskController {
         }
 
         const attributes = [
+            'id',
             'costumer_id',
             'description',
             'name',
@@ -69,8 +71,19 @@ export default class LogisticTaskController {
             'updated_at'
         ]
 
+        let limit = undefined;
+        let offset = undefined;
+
+        if('limit' in req.query){   
+            limit = Number(req.query['limit'])
+        }
+
+        if('offset' in req.query){   
+            offset = Number(req.query['offset'])
+        }
+
         try {
-            const logisticTasks = await this.logisticTaskService.findAll(where,attributes)
+            const logisticTasks = await this.logisticTaskService.findAll(where,attributes,limit,offset)
             return res.json({
                 ok:true,
                 message:'Todas las tareas de logística',
@@ -93,6 +106,7 @@ export default class LogisticTaskController {
         }
 
         const attributes = [
+            'id',
             'costumer_id',
             'description',
             'name',
@@ -137,5 +151,35 @@ export default class LogisticTaskController {
             })
         }
     }
+
+    async countAll(req, res) {
+		const where = { deleted_at:null }
+		if('costumer_id' in req.query){
+			where['id'] = req.query['costumer_id'];
+		}
+        
+        if('created_by' in req.query){
+            where['created_by'] = req.query['created_by']
+        }
+
+        if('designated_user' in req.query){
+            where['designated_user'] = req.query['designated_user']
+        }
+
+		try {
+            const totalItems = await this.logisticTaskService.countAll(where)
+            return res.json({
+                ok:true,
+                message:'Todos las tareas',
+                totalItems
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error al solicitar las tareas',
+                error
+            })
+        }
+	}
 
 };

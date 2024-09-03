@@ -8,6 +8,7 @@ const logisticTaskController = new LogisticTaskController(logisticTaskService)
 const router = Router()
 
 router.get('/logisticTask/all',validateToken,(req,res)=> logisticTaskController.findAll(req,res))
+router.get('/logisticTask/countAll', validateToken, (req, res) => logisticTaskController.countAll(req, res));
 router.get('/logisticTask/:id',validateToken,(req,res)=> logisticTaskController.findOne(req,res))
 router.post('/logisticTask/create',validateToken,(req,res)=> logisticTaskController.create(req,res))
 router.put('/logisticTask/update',validateToken,(req,res)=> logisticTaskController.update(req,res))
