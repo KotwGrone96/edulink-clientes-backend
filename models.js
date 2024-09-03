@@ -1384,11 +1384,12 @@ export const loadModels = async (sequelize) => {
 	Costumer.hasMany(LogisticTasks,{ foreignKey:'costumer_id' })
 	LogisticTasks.belongsTo(Costumer,{ foreignKey:'costumer_id' })
 
-	User.hasMany(LogisticTasks,{ foreignKey:'created_by' })
-	LogisticTasks.belongsTo(User,{ foreignKey:'created_by' })
+	User.hasMany(LogisticTasks,{ foreignKey:"designated_user" })
+	LogisticTasks.belongsTo(User,{ as:"CreatedBy",foreignKey:"created_by" })
+	LogisticTasks.belongsTo(User,{ as:"DesignatedUser",foreignKey:"designated_user" })
 
-	User.hasMany(LogisticTasks,{ foreignKey:'designated_user' })
-	LogisticTasks.belongsTo(User,{ foreignKey:'designated_user' })
+	// User.hasMany(LogisticTasks,{ foreignKey:{field:"designated_user",name:"DesignatedUser"} })
+	// LogisticTasks.belongsTo(User,{ foreignKey:{field:"designated_user",name:"DesignatedUser"} })
 
 	// if (process.env.NODE_ENV !== 'production') {
 	// 	console.log('Sincronizando BD de desarrollo');

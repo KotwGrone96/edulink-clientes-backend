@@ -66,13 +66,21 @@ export default class LogisticTaskService {
         return updtLogisticTask;
     }
 
-    async findAll(where,attributes){
+    async findAll(where,attributes,limit=undefined,offset=undefined){
         const logisticTasks = await LogisticTasks.findAll({
             where,
             attributes,
+            limit,
+            offset,
+			order:[['created_at','DESC']],
             include:[
                 {
-                    model:User
+                    model:User,
+                    as:"CreatedBy"
+                },
+                {
+                    model:User,
+                    as:"DesignatedUser"
                 },
                 {
                     model:Costumer
@@ -106,4 +114,9 @@ export default class LogisticTaskService {
         },{ where: {id} })
         return delLogisticTask
     } 
+
+    async countAll(where){
+        const logisticTasks = await LogisticTasks.count({where})
+        return logisticTasks;
+    }
 };
