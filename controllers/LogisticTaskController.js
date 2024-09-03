@@ -1,3 +1,6 @@
+import fs from 'fs'
+import { cwd } from 'process'
+import { join } from 'path'
 export default class LogisticTaskController {
     
     logisticTaskService
@@ -181,5 +184,92 @@ export default class LogisticTaskController {
             })
         }
 	}
+
+    async uploadFile(req,res){
+        if (!req.files) {
+			return res.status(400).json({
+				ok: false,
+				message: 'No se ha proporcionado ningún archivo',
+			});
+		}
+        
+        if('name' in req.body == false){
+            fs.unlinkSync(req.file['path']);
+            return res.json({
+            	ok:false,
+            	message:'Debe proporcionar un nombre para el archivo'
+            })
+        }
+
+        if('ruc' in req.body == false){
+            fs.unlinkSync(req.file['path']);
+            return res.json({
+            	ok:false,
+            	message:'Debe proporcionar el RUC/DNI del cliente'
+            })
+        }
+
+        const costumerPath = join(cwd(), 'storage', 'logistic',`${req.body.ruc}`);
+
+        if(!fs.existsSync(costumerPath)){
+            fs.mkdirSync(costumerPath);
+        }
+
+        const newFilename = join(costumerPath,`${req.body.name}${extname(req.file['originalname'])}`);
+
+        // if(fs.existsSync(newFilename)){
+        //     fs.unlinkSync(req.file['path']);
+        //     return res.json({
+        //         ok:false,
+        //         message:'El nombre de archivo ya existe'
+        //     })
+        // }
+
+        fs.renameSync(req.file['path'],newFilename);
+
+        const body = {
+            logistic_task_id:`${req.body['logistic_task_id']}`,
+            filename: `${req.body.name}${extname(req.file['originalname'])}`,
+        }
+
+        try {
+            const logisticTaskFile = await this.logisticTaskService.createLogisticTaskFile(body);
+
+            return res.json({
+                ok:true,
+                message:'Cargada correctamente',
+                logisticTaskFile
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
+
+    async findLogisticFile(req,res){
+        const { filename } = req.params;
+        const { ruc } = req.query;
+
+        if(!ruc){
+            return res.status(404).json({
+                ok:false,
+                message:'Debe enviar el RUC/DNI del cliente'
+            })
+        }
+
+        const filePath = join(cwd(),'storage','logistic', ruc, filename)
+
+        if(!fs.existsSync(filePath)){
+            return res.status(404).json({
+                ok:false,
+                message:'El archivo no existe'
+            })
+        }
+
+        res.sendFile(filePath)
+    }
 
 };

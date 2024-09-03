@@ -2,6 +2,7 @@ import LogisticTasks from "../models/logisticTask.model.js";
 import Costumer from "../models/costumer.model.js";
 import User from "../models/user.model.js";
 import { timeZoneLima } from "../timezone.js";
+import LogisticTaskFile from "../models/logisticTaskFile.model.js";
 
 export default class LogisticTaskService {
     
@@ -84,6 +85,9 @@ export default class LogisticTaskService {
                 },
                 {
                     model:Costumer
+                },
+                {
+                    model:LogisticTaskFile
                 }
             ]
         })
@@ -118,5 +122,16 @@ export default class LogisticTaskService {
     async countAll(where){
         const logisticTasks = await LogisticTasks.count({where})
         return logisticTasks;
+    }
+
+    async createLogisticTaskFile(logisticTaskFile){
+        const {logistic_task_id, filename} = logisticTaskFile;
+        const newLogisticTaskFile = LogisticTaskFile.build({
+            logistic_task_id,
+            file
+        })
+
+        const n_logisticTaskFile = await newLogisticTaskFile.save()
+        return n_logisticTaskFile
     }
 };
