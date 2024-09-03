@@ -6,6 +6,7 @@
 import moment from "moment";
 import { Parser } from '@json2csv/plainjs/index.js';
 import {Readable} from 'stream'
+import { Op } from "sequelize";
 export default class CostCenterController {
 
     costCenterService;
@@ -275,6 +276,12 @@ export default class CostCenterController {
 			where['sale_id'] = req.query['sale_id'];
 		}
 
+        if('task' in req.query){
+			where['tasks'] = {
+                [Op.like]: `%${req.query['task']}%`
+            }
+		}
+
         const attributes = [
             'id',
             'user_id',
@@ -353,6 +360,11 @@ export default class CostCenterController {
 		}
         if('sale_id' in req.query){
 			where['sale_id'] = req.query['sale_id'];
+		}
+        if('task' in req.query){
+			where['tasks'] = {
+                [Op.like]: `%${req.query['task']}%`
+            }
 		}
 
         try {
