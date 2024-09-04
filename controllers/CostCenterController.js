@@ -775,4 +775,141 @@ export default class CostCenterController {
             console.error(err);
           }
     }
+
+    async createTaskItem(req,res){
+        if('name' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar un nombre'
+            })
+        }
+        try {
+            const costCenterTaskItem = await this.costCenterService.createTaskItem(req.body)
+            return res.json({
+                ok:true,
+                message:'Creado correctamente',
+                costCenterTaskItem
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
+
+    async updateTaskItem(req,res){
+        if('id' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe enviar el ID del item'
+            })
+        }
+        if('name' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar un nombre'
+            })
+        }
+        try {
+            const where = {
+                id:req.body['id']
+            }
+            await this.costCenterService.updateTaskItem(req.body,where)
+            return res.json({
+                ok:true,
+                message:'Actualizado correctamente',
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
+
+    async findAllTaskItem(req,res){
+        try {
+            const where = {}
+            const attributes = [
+                'id',
+                'name'
+            ]
+            const costCenterTaskItems = await this.costCenterService.findAllTaskItem(where,attributes)
+            return res.json({
+                ok:true,
+                message:'Todas las tareas de CC',
+                costCenterTaskItems
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
+
+    async deleteTaskItem(req,res){
+        try {
+            await this.costCenterService.deleteTaskItem(req.params['id'])
+            return res.json({
+                ok:true,
+                message:'Eliminado correctamente'
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
+
+    async createTaskUserItem(req,res){
+        if('user_id' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar ID del usuario'
+            })
+        }
+        if('cost_center_task_item_id' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar ID del item'
+            })
+        }
+        try {
+            const costCenterTaskUserItem = await this.costCenterService.createTaskUserItem(req.body)
+            return res.json({
+                ok:true,
+                message:'Creado correctamente',
+                costCenterTaskUserItem
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
+
+    async deleteTaskUserItem(req,res){
+        try {
+            await this.costCenterService.deleteTaskUserItem(req.params['id'])
+            return res.json({
+                ok:true,
+                message:'Eliminado correctamente'
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
 }

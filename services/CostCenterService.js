@@ -7,6 +7,8 @@ import { timeZoneLima } from "../timezone.js";
 import CostCenterApprovals from "../models/costCenterApprovals.model.js";
 import Invoice from "../models/invoice.model.js";
 import Payment from '../models/payment.model.js'
+import CostCenterTaskItem from "../models/costCenterTaskItem.js";
+import CostCenterTaskUserItem from "../models/costCenterTaskUserItem.js";
 
 export default class CostCenterService{
 
@@ -260,5 +262,60 @@ export default class CostCenterService{
     async countAll(where){
         const costCenters = await CostCenter.count({where})
         return costCenters;
+    }
+
+    async createTaskItem(taskItem){
+        const { name } = taskItem
+        const newTaskItem = CostCenterTaskItem.build({
+            name
+        })
+        const n_taskItem = await newTaskItem.save()
+        return n_taskItem
+    }
+
+    async updateTaskItem(taskItem,where){
+        const { name } = taskItem
+        const updtTaskItem = await CostCenterTaskItem.update({
+            name
+        },{where})
+        return updtTaskItem
+    }
+
+    async findAllTaskItem(where,attributes){
+        const costCenterTaskItems = await CostCenterTaskItem.findAll({
+            where,
+            attributes,
+            include:[
+                {
+                    model:CostCenterTaskUserItem,
+                    include:[
+                        {
+                            model:User
+                        }
+                    ]
+                }
+            ]
+        })
+        return costCenterTaskItems
+    }
+
+    async deleteTaskItem(id){
+        const delTaskItem = await CostCenterTaskItem.destroy({where:{id}})
+        return delTaskItem
+    }
+
+    async createTaskUserItem(taskUserItem){
+        const { user_id, cost_center_task_item_id } = taskUserItem
+        const newTaskUserItem = CostCenterTaskUserItem.build({
+            user_id,
+            cost_center_task_item_id
+        })
+        const n_taskUserItem = await newTaskUserItem.save()
+        return n_taskUserItem
+    }
+
+    async deleteTaskUserItem(id){
+        const delTaskItem = await CostCenterTaskUserItem.destroy({where:{id}})
+        return delTaskItem
     }
 }

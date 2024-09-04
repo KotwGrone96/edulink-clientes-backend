@@ -26,6 +26,9 @@ import FinanceSection from './models/financeSection.model.js';
 import SaleCollaborator from './models/saleCollaborator.model.js';
 import LogisticTasks from './models/logisticTask.model.js';
 import LogisticTaskFile from './models/logisticTaskFile.model.js';
+import CostCenterTaskItem from './models/costCenterTaskItem.js';
+import CostCenterTaskUserItem from './models/costCenterTaskUserItem.js';
+import CostCenterTasks from './models/costCenterTasks.js';
 
 
 export const loadModels = async (sequelize) => {
@@ -1240,6 +1243,69 @@ export const loadModels = async (sequelize) => {
 			allowNull:false
 		}
 	},{ sequelize, tableName:'logistic_task_files' })
+
+	//*** ITEMS DE TAREAS DE CC ***//
+	CostCenterTaskItem.init({
+		id:{
+			type: DataTypes.INTEGER,
+			primaryKey: true,
+			autoIncrement:true
+		},
+		name:{
+			type:DataTypes.STRING,
+			allowNull:false
+		},
+	},{ sequelize, tableName:'cost_center_tasks_items' })
+
+	//*** USUARIOS DE TAREAS DE CC ***//
+	CostCenterTaskUserItem.init({
+		id:{
+			type: DataTypes.UUID,
+			defaultValue:DataTypes.UUIDV4,
+			unique: true,
+			primaryKey: true,
+		},
+		user_id:{
+			type:DataTypes.INTEGER,
+			allowNull:false
+		},
+		cost_center_task_item_id:{
+			type:DataTypes.INTEGER,
+			allowNull:false
+		}
+	},{ sequelize, tableName:'cost_center_tasks_users_items' })
+
+	//*** TAREAS DENTRO DEL CC ***//
+	CostCenterTasks.init({
+		id:{
+			type: DataTypes.UUID,
+			defaultValue:DataTypes.UUIDV4,
+			unique: true,
+			primaryKey: true,
+		},
+		cost_center_id:{
+			type:DataTypes.UUID,
+			allowNull:false
+		},
+		cost_center_task_item_id:{
+			type:DataTypes.INTEGER,
+			allowNull:false
+		}
+	},{ sequelize, tableName:'cost_center_tasks' })
+
+	//*** RELACIONES DE TAREAS DE CC ***//
+	User.hasMany(CostCenterTaskUserItem,{ foreignKey:'user_id' })
+	CostCenterTaskUserItem.belongsTo(User,{ foreignKey:'user_id' })
+
+	CostCenterTaskItem.hasMany(CostCenterTaskUserItem,{ foreignKey:'cost_center_task_item_id' })
+	CostCenterTaskUserItem.belongsTo(CostCenterTaskItem,{ foreignKey:'cost_center_task_item_id' })
+
+	// CostCenter.hasMany(CostCenterTasks,{ foreignKey:'cost_center_id' })
+	// CostCenterTasks.belongsTo(CostCenter,{ foreignKey:'cost_center_id' })
+
+	// CostCenterTaskItem.hasMany(CostCenterTasks,{ foreignKey:'cost_center_task_item_id' })
+	// CostCenterTasks.belongsTo(CostCenterTaskItem,{ foreignKey:'cost_center_task_item_id' })
+
 
 
 	//*** RELACIONES DE TABLAS ***//
