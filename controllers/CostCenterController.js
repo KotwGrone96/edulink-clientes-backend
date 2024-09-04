@@ -122,10 +122,22 @@ export default class CostCenterController {
             
             const costCenter = await this.costCenterService.create(req.body);
 
-            req.body['products'].forEach(async(pd)=>{
+            // req.body['products'].forEach(async(pd)=>{
+            //     pd['cost_center_id'] = costCenter['id'];
+            //     await this.productSelledService.create(pd);
+            // })
+
+            for (const pd of req.body['products']) {
                 pd['cost_center_id'] = costCenter['id'];
                 await this.productSelledService.create(pd);
-            })
+            }
+
+            if(req.body['costCenterTasks']){
+                for (const cct of req.body['costCenterTasks']) {
+                    cct['cost_center_id'] = costCenter['id'];
+                    await this.costCenterService.createCostCenterTask(cct);
+                }
+            }
 
             const costCenterHistory = {
                 costumer_id:costCenter['costumer_id'],
@@ -869,6 +881,18 @@ export default class CostCenterController {
     }
 
     async createTaskUserItem(req,res){
+        if('index' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar índice del item'
+            })
+        }
+        if('name' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar el nombre del item'
+            })
+        }
         if('user_id' in req.body == false){
             return res.json({
                 ok:false,
@@ -878,7 +902,7 @@ export default class CostCenterController {
         if('cost_center_task_item_id' in req.body == false){
             return res.json({
                 ok:false,
-                message:'Debe proporcionar ID del item'
+                message:'Debe proporcionar ID del proceso'
             })
         }
         try {
@@ -887,6 +911,123 @@ export default class CostCenterController {
                 ok:true,
                 message:'Creado correctamente',
                 costCenterTaskUserItem
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
+
+    async createMultipleTaskUserItem(req,res){
+        if('taskUserItems' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar los items a crear'
+            })
+        }
+
+        if('cost_center_task_item_id' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar ID del proceso'
+            })
+        }
+
+        let messageError = null
+
+        for (const body of req.body['taskUserItems']) {
+            if('index' in body == false){
+                messageError = 'Debe proporcionar índice en todos los items'
+                break
+            }
+            if('name' in body == false){
+                messageError = 'Debe proporcionar el nombre en todos los items'
+                break
+            }
+            if('user_id' in body == false){
+                messageError = 'Debe proporcionar ID del usuario en todos los items'
+                break
+            }
+            if('cost_center_task_item_id' in body == false){
+                messageError = 'Debe proporcionar ID del proceso en todos los items'
+                break
+            }
+        }
+
+        if(messageError){
+            return res.json({
+                ok:false,
+                message:messageError
+            })
+        }
+
+        try {
+
+            await this.costCenterService.deleteMultipleTaskUserItem({
+                cost_center_task_item_id:req.body['cost_center_task_item_id']
+            })
+
+            const costCenterTaskUserItems = []
+            for (const body of req.body['taskUserItems']){
+                const costCenterTaskUserItem = await this.costCenterService.createTaskUserItem(body)
+                costCenterTaskUserItems.push(costCenterTaskUserItem)
+            }
+            return res.json({
+                ok:true,
+                message:'Guardado correctamente',
+                costCenterTaskUserItems
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
+
+    async updateTaskUserItem(req,res){
+        if('id' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar ID del item'
+            })
+        }
+        if('index' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar índice del item'
+            })
+        }
+        if('name' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar el nombre del item'
+            })
+        }
+        if('user_id' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar ID del usuario'
+            })
+        }
+        if('cost_center_task_item_id' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar ID del proceso'
+            })
+        }
+
+        const where = { id:req.body['id'] }
+
+        try {
+            await this.costCenterService.updateTaskUserItem(req.body,where)
+            return res.json({
+                ok:true,
+                message:'Actualizado correctamente',
             })
         } catch (error) {
             return res.json({

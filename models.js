@@ -1265,6 +1265,14 @@ export const loadModels = async (sequelize) => {
 			unique: true,
 			primaryKey: true,
 		},
+		index:{
+			type:DataTypes.INTEGER,
+			allowNull:false
+		},
+		name:{
+			type:DataTypes.STRING,
+			allowNull:false
+		},
 		user_id:{
 			type:DataTypes.INTEGER,
 			allowNull:false
@@ -1300,11 +1308,11 @@ export const loadModels = async (sequelize) => {
 	CostCenterTaskItem.hasMany(CostCenterTaskUserItem,{ foreignKey:'cost_center_task_item_id' })
 	CostCenterTaskUserItem.belongsTo(CostCenterTaskItem,{ foreignKey:'cost_center_task_item_id' })
 
-	// CostCenter.hasMany(CostCenterTasks,{ foreignKey:'cost_center_id' })
-	// CostCenterTasks.belongsTo(CostCenter,{ foreignKey:'cost_center_id' })
+	CostCenter.hasMany(CostCenterTasks,{ foreignKey:'cost_center_id' })
+	CostCenterTasks.belongsTo(CostCenter,{ foreignKey:'cost_center_id' })
 
-	// CostCenterTaskItem.hasMany(CostCenterTasks,{ foreignKey:'cost_center_task_item_id' })
-	// CostCenterTasks.belongsTo(CostCenterTaskItem,{ foreignKey:'cost_center_task_item_id' })
+	CostCenterTaskItem.hasMany(CostCenterTasks,{ foreignKey:'cost_center_task_item_id' })
+	CostCenterTasks.belongsTo(CostCenterTaskItem,{ foreignKey:'cost_center_task_item_id' })
 
 
 

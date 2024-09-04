@@ -9,6 +9,7 @@ import Invoice from "../models/invoice.model.js";
 import Payment from '../models/payment.model.js'
 import CostCenterTaskItem from "../models/costCenterTaskItem.js";
 import CostCenterTaskUserItem from "../models/costCenterTaskUserItem.js";
+import CostCenterTasks from "../models/costCenterTasks.js";
 
 export default class CostCenterService{
 
@@ -206,6 +207,9 @@ export default class CostCenterService{
                     model:Payment,
                     where:{deleted_at:null},
                     required:false
+                },
+                {
+                    model:CostCenterTasks
                 }
             ],
             order:[['created_at','DESC']]
@@ -244,6 +248,9 @@ export default class CostCenterService{
                 },
                 {
                     model:CostCenterApprovals
+                },
+                {
+                    model:CostCenterTasks
                 }
             ]
         });
@@ -293,6 +300,9 @@ export default class CostCenterService{
                             model:User
                         }
                     ]
+                },
+                {
+                    model:CostCenterTasks
                 }
             ]
         })
@@ -305,8 +315,10 @@ export default class CostCenterService{
     }
 
     async createTaskUserItem(taskUserItem){
-        const { user_id, cost_center_task_item_id } = taskUserItem
+        const { index, name, user_id, cost_center_task_item_id } = taskUserItem
         const newTaskUserItem = CostCenterTaskUserItem.build({
+            index,
+            name,
             user_id,
             cost_center_task_item_id
         })
@@ -314,8 +326,35 @@ export default class CostCenterService{
         return n_taskUserItem
     }
 
+    async updateTaskUserItem(taskUserItem,where){
+        const { index, name, user_id, cost_center_task_item_id } = taskUserItem
+        const updtTaskUserItem = await CostCenterTaskUserItem.update({
+            index,
+            name,
+            user_id,
+            cost_center_task_item_id
+        },{where})
+        
+        return updtTaskUserItem
+    }
+
     async deleteTaskUserItem(id){
         const delTaskItem = await CostCenterTaskUserItem.destroy({where:{id}})
         return delTaskItem
+    }
+
+    async deleteMultipleTaskUserItem(where){
+        const delTaskItem = await CostCenterTaskUserItem.destroy({where})
+        return delTaskItem
+    }
+
+    async createCostCenterTask(costCenterTask){
+        const { cost_center_id, cost_center_task_item_id } = costCenterTask
+        const newCostCenterTaskI = CostCenterTasks.build({
+            cost_center_id, 
+            cost_center_task_item_id
+        })
+        const n_costCentertask = await newCostCenterTaskI.save()
+        return n_costCentertask
     }
 }
