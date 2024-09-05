@@ -357,4 +357,8 @@ export default class CostCenterService{
         const n_costCentertask = await newCostCenterTaskI.save()
         return n_costCentertask
     }
+    async deleteCostCenterTask(where){
+        const delCostCenterTask = await CostCenterTasks.destroy({where})
+        return delCostCenterTask
+    }
 }

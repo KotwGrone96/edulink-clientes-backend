@@ -224,6 +224,18 @@ export default class CostCenterController {
 
             await this.costCenterService.update(req.body,{deleted_at:null,id:req.body['id']})
 
+            if(req.body['newCostCenterTasks'] && req.body['newCostCenterTasks'].length > 0){
+                for (const costCenterTask of req.body['newCostCenterTasks']) {
+                    await this.costCenterService.createCostCenterTask(costCenterTask)
+                }
+            }
+
+            if(req.body['delCostCenterTasks'] && req.body['delCostCenterTasks'].length > 0){
+                for (const costCenterTask of req.body['delCostCenterTasks']) {
+                    await this.costCenterService.deleteCostCenterTask({id:costCenterTask['id']})
+                }
+            }
+
             if(req.body['state'] != 'DRAFT' && req.body['state'] != 'SEND' && req.body['CostCenterApproval']){
                 await this.costCenterApprovalsService.updateOrCreate(req.body['CostCenterApproval'])
 

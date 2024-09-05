@@ -29,6 +29,8 @@ import LogisticTaskFile from './models/logisticTaskFile.model.js';
 import CostCenterTaskItem from './models/costCenterTaskItem.js';
 import CostCenterTaskUserItem from './models/costCenterTaskUserItem.js';
 import CostCenterTasks from './models/costCenterTasks.js';
+import CostCenterProcess from './models/costCenterProcess.model.js';
+import CostCenterProcessUserTask from './models/costCenterProcessUserTask.model.js';
 
 
 export const loadModels = async (sequelize) => {
@@ -1301,6 +1303,108 @@ export const loadModels = async (sequelize) => {
 		}
 	},{ sequelize, tableName:'cost_center_tasks' })
 
+	//*** PROCESOS DEL CC ***//
+	CostCenterProcess.init({
+		id:{
+			type: DataTypes.UUID,
+			defaultValue:DataTypes.UUIDV4,
+			unique: true,
+			primaryKey: true,
+		},
+		costumer_id:{
+			type:DataTypes.INTEGER,
+			allowNull:false
+		},
+		sale_id:{
+			type:DataTypes.UUID,
+			allowNull:false
+		},
+		cost_center_id:{
+			type:DataTypes.UUID,
+			allowNull:false
+		},
+		cost_center_task_item_id:{
+			type:DataTypes.INTEGER,
+			allowNull:false
+		},
+		was_started:{
+			type:DataTypes.STRING(10),
+		},
+		index:{
+			type:DataTypes.INTEGER
+		},
+		start_date:{
+			type:DataTypes.STRING
+		},
+		end_date:{
+			type:DataTypes.STRING
+		},
+		created_at:{
+			type:DataTypes.DATE,
+			allowNull:false
+		},
+		updated_at:{
+			type:DataTypes.DATE,
+			allowNull:false
+		},
+		deleted_at:{
+			type:DataTypes.DATE,
+		},
+
+	},{ sequelize, tableName:'cost_center_processes' })
+
+	CostCenterProcessUserTask.init({
+		id:{
+			type: DataTypes.UUID,
+			defaultValue:DataTypes.UUIDV4,
+			unique: true,
+			primaryKey: true,
+		},
+		cost_center_id:{
+			type:DataTypes.UUID,
+			allowNull:false
+		},
+		cost_center_process_id:{
+			type:DataTypes.UUID,
+			allowNull:false
+		},
+		index:{
+			type:DataTypes.INTEGER,
+			allowNull:false
+		},
+		name:{
+			type:DataTypes.STRING,
+			allowNull:false
+		},
+		user_id:{
+			type:DataTypes.INTEGER,
+			allowNull:false
+		},
+		start_date:{
+			type:DataTypes.STRING,
+			allowNull:false
+		},
+		end_date:{
+			type:DataTypes.STRING,
+			allowNull:false
+		},
+		state:{
+			type:DataTypes.STRING(50),
+			allowNull:false
+		},
+		commentary:{
+			type:DataTypes.STRING
+		},
+		created_at:{
+			type:DataTypes.DATE,
+			allowNull:false
+		},
+		updated_at:{
+			type:DataTypes.DATE,
+			allowNull:false
+		},
+	},{ sequelize, tableName:'cost_center_process_users_tasks' })
+
 	//*** RELACIONES DE TAREAS DE CC ***//
 	User.hasMany(CostCenterTaskUserItem,{ foreignKey:'user_id' })
 	CostCenterTaskUserItem.belongsTo(User,{ foreignKey:'user_id' })
@@ -1314,7 +1418,14 @@ export const loadModels = async (sequelize) => {
 	CostCenterTaskItem.hasMany(CostCenterTasks,{ foreignKey:'cost_center_task_item_id' })
 	CostCenterTasks.belongsTo(CostCenterTaskItem,{ foreignKey:'cost_center_task_item_id' })
 
+	//*** RELACIONES DE PROCESOS DE CC ***//
+	CostCenter.hasMany(CostCenterProcess,{ foreignKey:'cost_center_id' })
+	CostCenterProcess.belongsTo(CostCenter,{ foreignKey:'cost_center_id' })
 
+	CostCenterProcess.hasMany(CostCenterProcessUserTask,{ foreignKey:'cost_center_process_id' })
+	CostCenterProcessUserTask.belongsTo(CostCenterProcess,{ foreignKey:'cost_center_process_id' })
+
+	CostCenterProcess.hasOne(CostCenterTaskItem,{ foreignKey:'cost_center_task_item_id' })
 
 	//*** RELACIONES DE TABLAS ***//
 
