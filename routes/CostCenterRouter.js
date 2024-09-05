@@ -11,6 +11,7 @@ const router = Router();
 router.get('/costCenter/all',validateToken,(req,res)=> costCenterController.findAll(req,res))
 router.get('/costCenter/countAll',validateToken,(req,res)=> costCenterController.countAll(req,res))
 router.get('/costCenter/findAllTaskItem',validateToken,(req,res)=> costCenterController.findAllTaskItem(req,res))
+router.get('/costCenter/findAllCostCenterProcess',validateToken,(req,res)=> costCenterController.findAllCostCenterProcess(req,res))
 router.get('/costCenter/:id',validateToken,(req,res)=> costCenterController.findOne(req,res))
 router.get('/costCenter/csv/data',validateToken,(req,res)=> costCenterController.csvAllData(req,res))
 router.post('/costCenter/create',validateToken,(req,res)=> costCenterController.create(req,res))

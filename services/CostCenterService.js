@@ -10,6 +10,7 @@ import Payment from '../models/payment.model.js'
 import CostCenterTaskItem from "../models/costCenterTaskItem.js";
 import CostCenterTaskUserItem from "../models/costCenterTaskUserItem.js";
 import CostCenterTasks from "../models/costCenterTasks.js";
+import CostCenterProcess from "../models/costCenterProcess.model.js";
 
 export default class CostCenterService{
 
@@ -210,6 +211,9 @@ export default class CostCenterService{
                 },
                 {
                     model:CostCenterTasks
+                },{
+                    model:CostCenterProcess,
+                    as: 'CostCenterProcesses'
                 }
             ],
             order:[['created_at','DESC']]
@@ -357,8 +361,62 @@ export default class CostCenterService{
         const n_costCentertask = await newCostCenterTaskI.save()
         return n_costCentertask
     }
+
     async deleteCostCenterTask(where){
         const delCostCenterTask = await CostCenterTasks.destroy({where})
         return delCostCenterTask
+    }
+
+    async createCostCenterProcess(costCenterProcess){
+        const {
+            costumer_id,
+            sale_id,
+            cost_center_id,
+            cost_center_task_item_id,
+        } = costCenterProcess;
+
+        const time = timeZoneLima()
+
+        const newCostCenterProcess = CostCenterProcess.build({
+            costumer_id,
+            sale_id,
+            cost_center_id,
+            cost_center_task_item_id,
+            created_at:time,
+            updated_at:time
+        })
+
+        const n_costCenterProcess = await newCostCenterProcess.save()
+        return n_costCenterProcess
+    }
+
+    async findAllCostCenterProcess(where){
+        const costCenterProcesses = await CostCenterProcess.findAll({
+            where,
+            include:[
+                {
+                    model:Costumer
+                },{
+                    model:CostCenter
+                },
+                {
+                    model:Sale
+                },
+                {
+                    model:CostCenterTaskItem,
+                    include:[
+                        {
+                            model:CostCenterTaskUserItem,
+                            include:[
+                                {
+                                    model:User
+                                }
+                            ]
+                        }
+                    ]
+                },
+            ]
+        });
+        return costCenterProcesses
     }
 }

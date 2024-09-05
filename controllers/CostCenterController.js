@@ -249,6 +249,13 @@ export default class CostCenterController {
                     commentary:req.body['CostCenterApproval']['body']
                 }
                 await this.costCenterApprovalHistoryService.create(costCenterApprovalHistory)
+
+                if(req.body['costCenterProcessesToCreate'] && req.body['costCenterProcessesToCreate'].length > 0){
+                    for (const costCenterProcess of req.body['costCenterProcessesToCreate']) {
+                        await this.costCenterService.createCostCenterProcess(costCenterProcess)
+                    }
+                }
+
             }
 
             let action_by = '';
@@ -1056,6 +1063,42 @@ export default class CostCenterController {
             return res.json({
                 ok:true,
                 message:'Eliminado correctamente'
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
+
+    async findAllCostCenterProcess(req,res){
+        const where = {}
+
+        if('cost_center_id' in req.query){
+            where['cost_center_id'] = req.query['cost_center_id']
+        }
+        if('cost_center_task_item_id' in req.query){
+            where['cost_center_task_item_id'] = req.query['cost_center_task_item_id']
+        }
+        if('costumer_id' in req.query){
+            where['costumer_id'] = req.query['costumer_id']
+        }
+        if('sale_id' in req.query){
+            where['sale_id'] = req.query['sale_id']
+        }
+        if('was_started' in req.query){
+            where['was_started'] = req.query['was_started']
+        }
+
+        try {
+            const costCenterProcesses = await this.costCenterService.findAllCostCenterProcess(where)
+
+            return res.json({
+                ok:true,
+                message:'Todos los procesos',
+                costCenterProcesses
             })
         } catch (error) {
             return res.json({

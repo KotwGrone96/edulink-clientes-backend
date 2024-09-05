@@ -1419,13 +1419,21 @@ export const loadModels = async (sequelize) => {
 	CostCenterTasks.belongsTo(CostCenterTaskItem,{ foreignKey:'cost_center_task_item_id' })
 
 	//*** RELACIONES DE PROCESOS DE CC ***//
-	CostCenter.hasMany(CostCenterProcess,{ foreignKey:'cost_center_id' })
+	CostCenter.hasMany(CostCenterProcess,{ as:'CostCenterProcesses', foreignKey:'cost_center_id' })
 	CostCenterProcess.belongsTo(CostCenter,{ foreignKey:'cost_center_id' })
 
 	CostCenterProcess.hasMany(CostCenterProcessUserTask,{ foreignKey:'cost_center_process_id' })
 	CostCenterProcessUserTask.belongsTo(CostCenterProcess,{ foreignKey:'cost_center_process_id' })
 
-	CostCenterProcess.hasOne(CostCenterTaskItem,{ foreignKey:'cost_center_task_item_id' })
+	CostCenterTaskItem.hasMany(CostCenterProcess,{ foreignKey:'cost_center_task_item_id' })
+	CostCenterProcess.belongsTo(CostCenterTaskItem,{ foreignKey:'cost_center_task_item_id' })
+
+	Costumer.hasMany(CostCenterProcess,{ foreignKey:'costumer_id' })
+	CostCenterProcess.belongsTo(Costumer,{ foreignKey:'costumer_id' })
+
+	Sale.hasMany(CostCenterProcess,{ foreignKey:'sale_id' })
+	CostCenterProcess.belongsTo(Sale,{ foreignKey:'sale_id' })
+
 
 	//*** RELACIONES DE TABLAS ***//
 
