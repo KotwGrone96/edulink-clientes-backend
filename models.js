@@ -1330,6 +1330,9 @@ export const loadModels = async (sequelize) => {
 		was_started:{
 			type:DataTypes.STRING(10),
 		},
+		with_settings:{
+			type:DataTypes.STRING(10),
+		},
 		index:{
 			type:DataTypes.INTEGER
 		},
@@ -1384,9 +1387,12 @@ export const loadModels = async (sequelize) => {
 			type:DataTypes.STRING,
 			allowNull:false
 		},
-		end_date:{
+		deadline:{
 			type:DataTypes.STRING,
 			allowNull:false
+		},
+		end_date:{
+			type:DataTypes.STRING,
 		},
 		state:{
 			type:DataTypes.STRING(50),

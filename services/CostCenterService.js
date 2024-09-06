@@ -11,6 +11,7 @@ import CostCenterTaskItem from "../models/costCenterTaskItem.js";
 import CostCenterTaskUserItem from "../models/costCenterTaskUserItem.js";
 import CostCenterTasks from "../models/costCenterTasks.js";
 import CostCenterProcess from "../models/costCenterProcess.model.js";
+import CostCenterProcessUserTask from "../models/costCenterProcessUserTask.model.js";
 
 export default class CostCenterService{
 
@@ -169,7 +170,7 @@ export default class CostCenterService{
         return updt_costCenter;
     }
 
-    async findAll(where,attributes,limit=undefined,offset=undefined){
+    async findAll(where,attributes,limit=undefined,offset=undefined,requiredInvoices=undefined){
         const costsCenters = await CostCenter.findAll({ where,
             attributes,
             limit,
@@ -184,8 +185,6 @@ export default class CostCenterService{
                 },
                 {
                     model:ProductSelled,
-                    where:{ deleted_at:null },
-                    required:false
                 },
 
                 {
@@ -201,13 +200,10 @@ export default class CostCenterService{
                 },
                 {
                     model:Invoice,
-                    where:{deleted_at:null},
-                    required:false
+                    required:requiredInvoices
                 },
                 {
                     model:Payment,
-                    where:{deleted_at:null},
-                    required:false
                 },
                 {
                     model:CostCenterTasks
@@ -216,7 +212,22 @@ export default class CostCenterService{
                     as: 'CostCenterProcesses'
                 }
             ],
-            order:[['created_at','DESC']]
+            order:[['created_at','DESC']],
+        });
+
+        return costsCenters;
+    }
+
+    async findAllSimple(where,attributes){
+        const costsCenters = await CostCenter.findAll({ 
+            where,
+            attributes,
+            include:[
+                {
+                    model:Invoice
+                }
+            ],
+            order:[['created_at','DESC']],
         });
 
         return costsCenters;
@@ -270,8 +281,15 @@ export default class CostCenterService{
         return updt_costCenter;
     }
 
-    async countAll(where){
-        const costCenters = await CostCenter.count({where})
+    async countAll(where,requiredInvoices=undefined){
+        const costCenters = await CostCenter.count({where,
+            include:[
+                {
+                    model:Invoice,
+                    required:requiredInvoices
+                },
+            ]
+        })
         return costCenters;
     }
 
@@ -390,6 +408,37 @@ export default class CostCenterService{
         return n_costCenterProcess
     }
 
+    async updateCostCenterProcess(costCenterProcess,where){
+        const {
+            costumer_id,
+            sale_id,
+            cost_center_id,
+            cost_center_task_item_id,
+            was_started,
+            with_settings,
+            index,
+            start_date,
+            end_date
+        } = costCenterProcess;
+
+        const time = timeZoneLima()
+
+        const updtCostCenterProcess = await CostCenterProcess.update({
+            costumer_id,
+            sale_id,
+            cost_center_id,
+            cost_center_task_item_id,
+            was_started,
+            with_settings,
+            index,
+            start_date,
+            end_date,
+            updated_at:time
+        },{ where })
+
+        return updtCostCenterProcess
+    }
+
     async findAllCostCenterProcess(where){
         const costCenterProcesses = await CostCenterProcess.findAll({
             where,
@@ -415,8 +464,47 @@ export default class CostCenterService{
                         }
                     ]
                 },
+                {
+                    model:CostCenterProcessUserTask
+                }
             ]
         });
         return costCenterProcesses
     }
+
+    async createCostCenterProcessUserTask(costCenterProcessUserTask){
+        const {
+            cost_center_id,
+            cost_center_process_id,
+            index,
+            name,
+            user_id,
+            start_date,
+            deadline,
+            end_date,
+            state,
+            commentary,
+        } = costCenterProcessUserTask;
+
+        const time = timeZoneLima()
+
+        const newCostCenterProcessUserTask = CostCenterProcessUserTask.build({
+            cost_center_id,
+            cost_center_process_id,
+            index,
+            name,
+            user_id,
+            start_date,
+            deadline,
+            end_date,
+            state,
+            commentary,
+            created_at:time,
+            updated_at:time
+        })
+
+        const n_costCenterProcessUserTask = await newCostCenterProcessUserTask.save()
+        return n_costCenterProcessUserTask
+    }
+
 }

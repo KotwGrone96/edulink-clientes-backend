@@ -101,10 +101,7 @@ export default class ProductSelledService{
     }
 
     async delete(id){
-        const updt_productSelled = await ProductSelled.update({
-            deleted_at:timeZoneLima()
-        },{ where:{ id } });
-
-        return updt_productSelled;
+        const del_productSelled = await ProductSelled.destroy({ where:{ id } });
+        return del_productSelled;
     }
 }
