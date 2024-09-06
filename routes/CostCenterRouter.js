@@ -18,6 +18,7 @@ router.post('/costCenter/create',validateToken,(req,res)=> costCenterController.
 router.post('/costCenter/createTaskItem',validateToken,(req,res)=> costCenterController.createTaskItem(req,res))
 router.post('/costCenter/createTaskUserItem',validateToken,(req,res)=> costCenterController.createTaskUserItem(req,res))
 router.post('/costCenter/createMultipleTaskUserItem',validateToken,(req,res)=> costCenterController.createMultipleTaskUserItem(req,res))
+router.post('/costCenter/createMultipleCostCenterProcessUserTask',validateToken,(req,res)=> costCenterController.createMultipleCostCenterProcessUserTask(req,res))
 router.post('/costCenter/generatePDF',validateToken,(req,res)=> costCenterController.generatePDF(req,res))
 router.put('/costCenter/update',validateToken,(req,res)=> costCenterController.update(req,res))
 router.put('/costCenter/updateTaskItem',validateToken,(req,res)=> costCenterController.updateTaskItem(req,res))

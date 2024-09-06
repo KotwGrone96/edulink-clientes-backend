@@ -361,9 +361,23 @@ export default class CostCenterController {
         if('offset' in req.query){   
             offset = Number(req.query['offset'])
         }
-
+        let requiredInvoices = undefined;
+        if('invoices' in req.query){
+			if(req.query['invoices'] === 'Y'){
+                requiredInvoices = true;
+            }
+            if(req.query['invoices'] === 'N'){
+                const allCostsCenters = await this.costCenterService.findAllSimple(where,['id']);
+                const arrayCostsCenters = allCostsCenters.map(acc=>acc.dataValues)
+                const costCenterFilter = arrayCostsCenters.filter(acc=>acc.Invoices.length === 0);
+                const costCenterIds = costCenterFilter.map(acc=>acc['id'])
+                where['id'] = {
+                    [Op.in]: costCenterIds
+                }
+            }
+		}
         try {
-            const costsCenters = await this.costCenterService.findAll(where,attributes,limit,offset)
+            const costsCenters = await this.costCenterService.findAll(where,attributes,limit,offset,requiredInvoices)
             return res.json({
                 ok:true,
                 message:'Todos los centros de costos',
@@ -398,8 +412,18 @@ export default class CostCenterController {
             }
 		}
 
+        let requiredInvoices = undefined;
+        if('invoices' in req.query){
+			if(req.query['invoices'] === 'Y'){
+                requiredInvoices = true;
+            }
+            if(req.query['invoices'] === 'N'){
+                where['$Invoices.id$'] = null;
+            }
+		}
+
         try {
-            const totalItems = await this.costCenterService.countAll(where)
+            const totalItems = await this.costCenterService.countAll(where,requiredInvoices)
             return res.json({
                 ok:true,
                 message:'Todos los centros de costos',
@@ -1099,6 +1123,152 @@ export default class CostCenterController {
                 ok:true,
                 message:'Todos los procesos',
                 costCenterProcesses
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
+
+    async createCostCenterProcessUserTask(req,res){
+        if('cost_center_id' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar el ID del centro de costos'
+            })
+        }
+        if('cost_center_process_id' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar el ID del proceso'
+            })
+        }
+        if('index' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar el índice de la tarea'
+            })
+        }
+        if('name' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar el nombre de  la tarea'
+            })
+        }
+        if('user_id' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar el ID del usuario designado'
+            })
+        }
+        if('start_date' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar la fecha de inicio de la tarea'
+            })
+        }
+        if('deadline' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar la fecha límite de la tarea'
+            })
+        }
+        if('state' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar el estado de la tarea'
+            })
+        }
+
+        try {
+            const costCenterProcessUserTask = await this.costCenterService.createCostCenterProcessUserTask(req.body)
+            return res.json({
+                ok:true,
+                message:'Creado correctamente',
+                costCenterProcessUserTask
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
+
+    async createMultipleCostCenterProcessUserTask(req,res) {
+        if('processUserTasks' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar las tareas a crear'
+            })
+        }
+
+        if('cost_center_process_id' in req.body == false){
+            return res.json({
+                ok:false,
+                message:'Debe proporcionar el ID del proceso'
+            })
+        }
+
+        let messageError = null
+
+        for (const body of req.body['processUserTasks']) {
+            if('cost_center_id' in body == false){
+                messageError = 'Debe proporcionar en todas las tareas el ID del centro de costos'
+                break;
+            }
+            if('cost_center_process_id' in body == false){
+                messageError = 'Debe proporcionar en todas las tareas el ID del proceso'
+                break;
+            }
+            if('index' in body == false){
+                messageError = 'Debe proporcionar en todas las tareas el índice de la tarea'
+                break;
+            }
+            if('name' in body == false){
+                messageError = 'Debe proporcionar en todas las tareas el nombre de  la tarea'
+                break;
+            }
+            if('user_id' in body == false){
+                messageError = 'Debe proporcionar en todas las tareas el ID del usuario designado'
+                break;
+            }
+            if('start_date' in body == false){
+                messageError = 'Debe proporcionar en todas las tareas la fecha de inicio de la tarea'
+                break;
+            }
+            if('deadline' in body == false){
+                messageError = 'Debe proporcionar en todas las tareas la fecha límite de la tarea'
+                break;
+            }
+            if('state' in body == false){
+                messageError = 'Debe proporcionar en todas las tareas el estado de la tarea'
+                break;
+            }
+        }
+
+        if(messageError){
+            return res.json({
+                ok:false,
+                message:messageError
+            })
+        }
+
+        try {
+            const costCenterProcessUserTasks = []
+            for (const body of req.body['processUserTasks']){
+                const costCenterProcessUserTask = await this.costCenterService.createCostCenterProcessUserTask(body)
+                costCenterProcessUserTasks.push(costCenterProcessUserTask)
+            }
+            await this.costCenterService.updateCostCenterProcess({with_settings:'Y'},{id:req.body['cost_center_process_id']})
+            return res.json({
+                ok:true,
+                message:'Guardado correctamente',
+                costCenterProcessUserTasks
             })
         } catch (error) {
             return res.json({
