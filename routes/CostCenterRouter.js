@@ -25,6 +25,7 @@ router.put('/costCenter/updateTaskItem',validateToken,(req,res)=> costCenterCont
 router.put('/costCenter/updateTaskUserItem',validateToken,(req,res)=> costCenterController.updateTaskUserItem(req,res))
 router.put('/costCenter/update/GmailThread',validateToken,(req,res)=> costCenterController.updateSimpleAttribute(req,res))
 router.put('/costCenter/update/adminUpdate',validateToken,(req,res)=> costCenterController.adminUpdate(req,res))
+router.put('/costCenter/updateMultipleCostCenterProcessUserTask',validateToken,(req,res)=> costCenterController.updateMultipleCostCenterProcessUserTask(req,res))
 router.delete('/costCenter/delete/:id',validateToken,(req,res)=> costCenterController.delete(req,res))
 router.delete('/costCenter/deleteTaskItem/:id',validateToken,(req,res)=> costCenterController.deleteTaskItem(req,res))
 router.delete('/costCenter/deleteTaskUserItem/:id',validateToken,(req,res)=> costCenterController.deleteTaskUserItem(req,res))

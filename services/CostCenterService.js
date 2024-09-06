@@ -507,4 +507,41 @@ export default class CostCenterService{
         return n_costCenterProcessUserTask
     }
 
+    async updateCostCenterProcessUserTask(costCenterProcessUserTask,where){
+        const {
+            cost_center_id,
+            cost_center_process_id,
+            index,
+            name,
+            user_id,
+            start_date,
+            deadline,
+            end_date,
+            state,
+            commentary,
+        } = costCenterProcessUserTask;
+
+        const time = timeZoneLima()
+
+        const updtCostCenterProcessUserTask = await CostCenterProcessUserTask.update({
+            cost_center_id,
+            cost_center_process_id,
+            index,
+            name,
+            user_id,
+            start_date,
+            deadline,
+            end_date,
+            state,
+            commentary,
+            updated_at:time
+        },{ where })
+        return updtCostCenterProcessUserTask
+    }
+
+    async destroyCostCenterProcessUserTask(where){
+        const delCostCenterProcessUserTask = await CostCenterProcessUserTask.destroy({ where })
+        return delCostCenterProcessUserTask
+    }
+
 }
