@@ -1278,4 +1278,65 @@ export default class CostCenterController {
             })
         }
     }
+
+    async updateMultipleCostCenterProcessUserTask(req,res){
+        try {
+            if('processSettingsToDelete' in req.body && req.body['processSettingsToDelete'].length > 0){
+                for (const id of req.body['processSettingsToDelete']) {
+                    await this.costCenterService.destroyCostCenterProcessUserTask({id})
+                }
+            }
+    
+            if('processUserTasksToUpdate' in req.body && req.body['processUserTasksToUpdate'].length > 0){
+                for (const processUserTaskToUpdate of req.body['processUserTasksToUpdate']) {
+                    const { where, index, name, start_date, deadline } = processUserTaskToUpdate;
+                    const item = {
+                        index,
+                        name,
+                        start_date,
+                        deadline 
+                    }
+                    await this.costCenterService.updateCostCenterProcessUserTask(item,where)
+                }
+            }
+    
+            if('newProcessUserTasks' in req.body && req.body['newProcessUserTasks'].length > 0){
+                for (const processUserTaskNew of req.body['newProcessUserTasks']) {
+                    const {
+                        cost_center_id,
+                        cost_center_process_id,
+                        index,
+                        name,
+                        user_id,
+                        start_date,
+                        deadline,
+                        state
+                    } = processUserTaskNew;
+                    const item = {
+                        cost_center_id,
+                        cost_center_process_id,
+                        index,
+                        name,
+                        user_id,
+                        start_date,
+                        deadline,
+                        state
+                    }
+                    await this.costCenterService.createCostCenterProcessUserTask(item)
+                }
+            }
+
+            return res.json({
+                ok:true,
+                message:'Actualizado correctamente'
+            })
+
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
 }
