@@ -1281,8 +1281,8 @@ export default class CostCenterController {
 
     async updateMultipleCostCenterProcessUserTask(req,res){
         try {
-            if('processSettingsToDelete' in req.body && req.body['processSettingsToDelete'].length > 0){
-                for (const id of req.body['processSettingsToDelete']) {
+            if('processUserTaskToDelete' in req.body && req.body['processUserTaskToDelete'].length > 0){
+                for (const id of req.body['processUserTaskToDelete']) {
                     await this.costCenterService.destroyCostCenterProcessUserTask({id})
                 }
             }
@@ -1339,4 +1339,150 @@ export default class CostCenterController {
             })
         }
     }
+
+    async updateCostCenterProcess(req,res){
+
+        const where = {
+            id: req.params['id']
+        }
+
+        try {
+            await this.costCenterService.updateCostCenterProcess(req.body,where)
+
+            if(req.body['init_process'] && req.body['firstTasks']){
+                // ACTUALIZAR TAREAS
+                for (const task of req.body['firstTasks']) {
+                    await this.costCenterService.updateCostCenterProcessUserTask({state:'PENDING'},{id:task['id']})
+                }
+
+                return res.json({
+                    ok:true,
+                    message:'Proceso iniciado correctamente'
+                })
+            }
+
+            return res.json({
+                ok:true,
+                message:'Actualizado correctamente'
+            })
+
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
+
+    async findAllCostCenterProcessUserTask(req,res){
+        const where = {}
+
+        const attributes = undefined
+
+        let limit = undefined
+        let offset = undefined
+
+        if('costumer_id' in req.query){
+            where['costumer_id'] = req.query['costumer_id']
+        }
+        if('sale_id' in req.query){
+            where['sale_id'] = req.query['sale_id']
+        }
+        if('user_id' in req.query){
+            where['user_id'] = req.query['user_id']
+        }
+
+        if('limit' in req.query){
+            limit = Number(req.query['limit'])
+        }
+        if('offset' in req.query){
+            offset = Number(req.query['offset'])
+        }
+
+        try {
+            const costCenterProcessUserTasks = await this.costCenterService.findAllCostCenterProcessUserTask(where,attributes,limit,offset)
+            return res.json({
+                ok:true,
+                message:'Todas las tareas',
+                costCenterProcessUserTasks
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+
+    }
+
+    async countAllCostCenterProcessUserTask(req,res){
+        const where = {}
+
+        if('costumer_id' in req.query){
+            where['costumer_id'] = req.query['costumer_id']
+        }
+        if('sale_id' in req.query){
+            where['sale_id'] = req.query['sale_id']
+        }
+        if('user_id' in req.query){
+            where['user_id'] = req.query['user_id']
+        }
+
+        try {
+            const totalItems = await this.costCenterService.countAllCostCenterProcessUserTask(where)
+            return res.json({
+                ok:true,
+                message:'Todas las tareas',
+                totalItems
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
+
+    async updateCostCenterProcessUserTask(req,res){
+        try {
+            const where = {
+                id:req.params['id']
+            }
+
+            await this.costCenterService.updateCostCenterProcessUserTask(req.body,where)        
+
+            if('state' in req.body && req.body['state'] === 'SUCCESS'){
+                const nextUserTask = await this.costCenterService.findOneCostCenterProcessUserTask({
+                    cost_center_process_id:req.body['cost_center_process_id'],
+                    index:req.body['nextIndex']
+                },['id'])
+                if(nextUserTask){
+                    const {id} = nextUserTask.dataValues;
+                    await this.costCenterService.updateCostCenterProcessUserTask({state:'PENDING'},{id})
+                }
+                if('forAllUsers' in req.body){
+                    await this.costCenterService.updateCostCenterProcessUserTask({state:'SUCCESS',end_date:req.body['end_date']},{
+                        cost_center_process_id:req.body['cost_center_process_id'],
+                        index:Number(req.body['nextIndex']) - 1
+                    })
+                }
+            }
+
+            return res.json({
+                ok:true,
+                message:'Actualizado correctamente'
+            })
+
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
+
 }

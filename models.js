@@ -1363,6 +1363,14 @@ export const loadModels = async (sequelize) => {
 			unique: true,
 			primaryKey: true,
 		},
+		costumer_id:{
+			type:DataTypes.INTEGER,
+			allowNull:false
+		},
+		sale_id:{
+			type:DataTypes.UUID,
+			allowNull:false
+		},
 		cost_center_id:{
 			type:DataTypes.UUID,
 			allowNull:false
@@ -1425,8 +1433,14 @@ export const loadModels = async (sequelize) => {
 	CostCenterTasks.belongsTo(CostCenterTaskItem,{ foreignKey:'cost_center_task_item_id' })
 
 	//*** RELACIONES DE PROCESOS DE CC ***//
+	User.hasMany(CostCenterProcessUserTask,{ foreignKey:'user_id' })
+	CostCenterProcessUserTask.belongsTo(User,{ foreignKey:'user_id' })
+
 	CostCenter.hasMany(CostCenterProcess,{ as:'CostCenterProcesses', foreignKey:'cost_center_id' })
 	CostCenterProcess.belongsTo(CostCenter,{ foreignKey:'cost_center_id' })
+
+	CostCenter.hasMany(CostCenterProcessUserTask,{ foreignKey:'cost_center_id' })
+	CostCenterProcessUserTask.belongsTo(CostCenter,{ foreignKey:'cost_center_id' })
 
 	CostCenterProcess.hasMany(CostCenterProcessUserTask,{ foreignKey:'cost_center_process_id' })
 	CostCenterProcessUserTask.belongsTo(CostCenterProcess,{ foreignKey:'cost_center_process_id' })
