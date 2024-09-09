@@ -465,7 +465,12 @@ export default class CostCenterService{
                     ]
                 },
                 {
-                    model:CostCenterProcessUserTask
+                    model:CostCenterProcessUserTask,
+                    include:[
+                        {
+                            model:User
+                        }
+                    ]
                 }
             ]
         });
