@@ -474,6 +474,8 @@ export default class CostCenterService{
 
     async createCostCenterProcessUserTask(costCenterProcessUserTask){
         const {
+            costumer_id,
+            sale_id,
             cost_center_id,
             cost_center_process_id,
             index,
@@ -489,6 +491,8 @@ export default class CostCenterService{
         const time = timeZoneLima()
 
         const newCostCenterProcessUserTask = CostCenterProcessUserTask.build({
+            costumer_id,
+            sale_id,
             cost_center_id,
             cost_center_process_id,
             index,
@@ -509,6 +513,8 @@ export default class CostCenterService{
 
     async updateCostCenterProcessUserTask(costCenterProcessUserTask,where){
         const {
+            costumer_id,
+            sale_id,
             cost_center_id,
             cost_center_process_id,
             index,
@@ -524,6 +530,8 @@ export default class CostCenterService{
         const time = timeZoneLima()
 
         const updtCostCenterProcessUserTask = await CostCenterProcessUserTask.update({
+            costumer_id,
+            sale_id,
             cost_center_id,
             cost_center_process_id,
             index,
@@ -542,6 +550,79 @@ export default class CostCenterService{
     async destroyCostCenterProcessUserTask(where){
         const delCostCenterProcessUserTask = await CostCenterProcessUserTask.destroy({ where })
         return delCostCenterProcessUserTask
+    }
+
+    async findAllCostCenterProcessUserTask(where,attributes,limit=undefined,offset=undefined){
+        const costCenterProcessUserTasks = await CostCenterProcessUserTask.findAll({
+            where,
+            attributes,
+            limit,
+            offset,
+            include:[
+                {
+                    model:CostCenter,
+                    where:{deleted_at:null},
+                    required:true,
+                    include:[
+                        {
+                            model:Costumer
+                        },
+                        {
+                            model:Sale
+                        },
+                        {
+                            model:User
+                        },
+                        {
+                            model:ProductSelled
+                        }
+                    ]
+                },
+                {
+                    model:User
+                }
+            ]
+        })
+
+        return costCenterProcessUserTasks
+    }
+
+    async findOneCostCenterProcessUserTask(where,attributes){
+        const costCenterProcessUserTask = await CostCenterProcessUserTask.findOne({
+            where,
+            attributes,
+            include:[
+                {
+                    model:CostCenter,
+                    where:{deleted_at:null},
+                    required:true,
+                    include:[
+                        {
+                            model:Costumer
+                        },
+                        {
+                            model:Sale
+                        },
+                        {
+                            model:User
+                        },
+                        {
+                            model:ProductSelled
+                        }
+                    ]
+                },
+                {
+                    model:User
+                }
+            ]
+        })
+
+        return costCenterProcessUserTask
+    }
+
+    async countAllCostCenterProcessUserTask(where){
+        const costCenterProcessUserTasks = await CostCenterProcessUserTask.count({ where })
+        return costCenterProcessUserTasks
     }
 
 }
