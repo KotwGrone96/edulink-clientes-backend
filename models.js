@@ -672,6 +672,9 @@ export const loadModels = async (sequelize) => {
 			plus_to:{
 				type: DataTypes.STRING,
 			},
+			commentary:{
+				type: DataTypes.STRING,
+			},
 			created_at: {
 				type: DataTypes.DATE,
 				allowNull: false,
