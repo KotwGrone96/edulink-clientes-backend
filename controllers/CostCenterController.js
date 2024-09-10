@@ -1392,7 +1392,12 @@ export default class CostCenterController {
         if('user_id' in req.query){
             where['user_id'] = req.query['user_id']
         }
-
+        if('index' in req.query){
+            where['index'] = Number(req.query['index'])
+        }
+        if('cost_center_process_id' in req.query){
+            where['cost_center_process_id'] = req.query['cost_center_process_id']
+        }
         if('limit' in req.query){
             limit = Number(req.query['limit'])
         }
@@ -1455,19 +1460,27 @@ export default class CostCenterController {
             await this.costCenterService.updateCostCenterProcessUserTask(req.body,where)        
 
             if('state' in req.body && req.body['state'] === 'SUCCESS'){
-                const nextUserTask = await this.costCenterService.findOneCostCenterProcessUserTask({
+                const nextUserTasks = await this.costCenterService.findAllCostCenterProcessUserTask({
                     cost_center_process_id:req.body['cost_center_process_id'],
                     index:req.body['nextIndex']
                 },['id'])
-                if(nextUserTask){
-                    const {id} = nextUserTask.dataValues;
-                    await this.costCenterService.updateCostCenterProcessUserTask({state:'PENDING'},{id})
+
+                const nextUserTasksValues = nextUserTasks.map(n=>n.dataValues)
+                for (const ut of nextUserTasksValues) {
+                    await this.costCenterService.updateCostCenterProcessUserTask({state:'PENDING'},{id:ut['id']})
                 }
+                // if(nextUserTask){
+                //     const {id} = nextUserTask.dataValues;
+                //     await this.costCenterService.updateCostCenterProcessUserTask({state:'PENDING'},{id})
+                // }
                 if('forAllUsers' in req.body){
-                    await this.costCenterService.updateCostCenterProcessUserTask({state:'SUCCESS',end_date:req.body['end_date']},{
-                        cost_center_process_id:req.body['cost_center_process_id'],
-                        index:Number(req.body['nextIndex']) - 1
-                    })
+                    for (const user of req.body['usersWithNotSucessTasks']) {
+                        await this.costCenterService.updateCostCenterProcessUserTask({state:'SUCCESS',end_date:req.body['end_date']},{
+                            cost_center_process_id:req.body['cost_center_process_id'],
+                            index:Number(req.body['nextIndex']) - 1,
+                            user_id:user['id']
+                        })
+                    }
                 }
             }
 
