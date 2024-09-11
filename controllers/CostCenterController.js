@@ -1395,6 +1395,9 @@ export default class CostCenterController {
         if('index' in req.query){
             where['index'] = Number(req.query['index'])
         }
+        if('state' in req.query){
+            where['state'] = req.query['state']
+        }
         if('cost_center_process_id' in req.query){
             where['cost_center_process_id'] = req.query['cost_center_process_id']
         }
@@ -1433,6 +1436,9 @@ export default class CostCenterController {
         }
         if('user_id' in req.query){
             where['user_id'] = req.query['user_id']
+        }
+        if('state' in req.query){
+            where['state'] = req.query['state']
         }
 
         try {

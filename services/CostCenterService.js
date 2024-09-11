@@ -586,7 +586,8 @@ export default class CostCenterService{
                 {
                     model:User
                 }
-            ]
+            ],
+            order:[['start_date','DESC']],
         })
 
         return costCenterProcessUserTasks
