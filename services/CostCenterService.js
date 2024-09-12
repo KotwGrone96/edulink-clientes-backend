@@ -337,24 +337,28 @@ export default class CostCenterService{
     }
 
     async createTaskUserItem(taskUserItem){
-        const { index, name, user_id, cost_center_task_item_id } = taskUserItem
+        const { index, name, user_id, cost_center_task_item_id, execution_value, execution_type } = taskUserItem
         const newTaskUserItem = CostCenterTaskUserItem.build({
             index,
             name,
             user_id,
-            cost_center_task_item_id
+            cost_center_task_item_id,
+            execution_value,
+            execution_type
         })
         const n_taskUserItem = await newTaskUserItem.save()
         return n_taskUserItem
     }
 
     async updateTaskUserItem(taskUserItem,where){
-        const { index, name, user_id, cost_center_task_item_id } = taskUserItem
+        const { index, name, user_id, cost_center_task_item_id, execution_value, execution_type } = taskUserItem
         const updtTaskUserItem = await CostCenterTaskUserItem.update({
             index,
             name,
             user_id,
-            cost_center_task_item_id
+            cost_center_task_item_id,
+            execution_value,
+            execution_type
         },{where})
         
         return updtTaskUserItem

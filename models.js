@@ -1285,6 +1285,12 @@ export const loadModels = async (sequelize) => {
 		cost_center_task_item_id:{
 			type:DataTypes.INTEGER,
 			allowNull:false
+		},
+		execution_value:{
+			type:DataTypes.STRING,
+		},
+		execution_type:{
+			type:DataTypes.STRING
 		}
 	},{ sequelize, tableName:'cost_center_tasks_users_items' })
 
