@@ -252,7 +252,13 @@ export default class CostCenterController {
 
                 if(req.body['costCenterProcessesToCreate'] && req.body['costCenterProcessesToCreate'].length > 0){
                     for (const costCenterProcess of req.body['costCenterProcessesToCreate']) {
-                        await this.costCenterService.createCostCenterProcess(costCenterProcess)
+                       const newCcProcess = await this.costCenterService.createCostCenterProcess(costCenterProcess)
+                       console.log(newCcProcess)
+                        for (const usersTask of costCenterProcess['usersTasks']) {
+                            const cost_center_process_id = newCcProcess['id']
+                            usersTask['cost_center_process_id'] = cost_center_process_id
+                            await this.costCenterService.createCostCenterProcessUserTask(usersTask)
+                        }
                     }
                 }
 

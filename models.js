@@ -1418,6 +1418,12 @@ export const loadModels = async (sequelize) => {
 		commentary:{
 			type:DataTypes.STRING
 		},
+		execution_value:{
+			type:DataTypes.STRING,
+		},
+		execution_type:{
+			type:DataTypes.STRING
+		},
 		created_at:{
 			type:DataTypes.DATE,
 			allowNull:false

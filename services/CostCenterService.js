@@ -265,7 +265,17 @@ export default class CostCenterService{
                     model:CostCenterApprovals
                 },
                 {
-                    model:CostCenterTasks
+                    model:CostCenterTasks,
+                    include:[
+                        {
+                            model:CostCenterTaskItem,
+                            include:[
+                                {
+                                    model:CostCenterTaskUserItem
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         });
@@ -495,6 +505,8 @@ export default class CostCenterService{
             end_date,
             state,
             commentary,
+            execution_type,
+            execution_value,
         } = costCenterProcessUserTask;
 
         const time = timeZoneLima()
@@ -512,6 +524,8 @@ export default class CostCenterService{
             end_date,
             state,
             commentary,
+            execution_type,
+            execution_value,
             created_at:time,
             updated_at:time
         })
