@@ -373,7 +373,7 @@ export default class CostCenterController {
                 requiredInvoices = true;
             }
             if(req.query['invoices'] === 'N'){
-                const allCostsCenters = await this.costCenterService.findAllSimple(where,['id']);
+                const allCostsCenters = await this.costCenterService.findAllSimple(where,['id'],['invoice']);
                 const arrayCostsCenters = allCostsCenters.map(acc=>acc.dataValues)
                 const costCenterFilter = arrayCostsCenters.filter(acc=>acc.Invoices.length === 0);
                 const costCenterIds = costCenterFilter.map(acc=>acc['id'])
