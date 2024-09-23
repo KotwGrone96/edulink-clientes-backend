@@ -218,16 +218,22 @@ export default class CostCenterService{
         return costsCenters;
     }
 
-    async findAllSimple(where,attributes){
+    async findAllSimple(where,attributes,models=[]){
+        let include = []
+        if(models.includes('invoice')){
+            include.push({
+                model:Invoice
+            })
+        }
+        if(models.includes('costCenterApproval')){
+            include.push({
+                model:CostCenterApprovals
+            })
+        }
         const costsCenters = await CostCenter.findAll({ 
             where,
             attributes,
-            include:[
-                {
-                    model:Invoice
-                }
-            ],
-            order:[['created_at','DESC']],
+            include,
         });
 
         return costsCenters;
@@ -603,6 +609,16 @@ export default class CostCenterService{
                 },
                 {
                     model:User
+                },
+                {
+                    model:CostCenterProcess,
+                    attributes:['id'],
+                    include:[
+                        {
+                            model:CostCenterProcessUserTask,
+                            attributes:['id','name','index']
+                        }
+                    ]
                 }
             ],
             order:[['start_date','DESC']],
