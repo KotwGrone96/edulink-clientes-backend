@@ -7,6 +7,7 @@ const costCenterController = new CostCenterController(costCenterService,saleServ
 
 const router = Router();
 
+router.get('/costCenter/addIndex',validateToken,(req,res)=> costCenterController.addIndex(req,res))
 
 router.get('/costCenter/all',validateToken,(req,res)=> costCenterController.findAll(req,res))
 router.get('/costCenter/countAll',validateToken,(req,res)=> costCenterController.countAll(req,res))

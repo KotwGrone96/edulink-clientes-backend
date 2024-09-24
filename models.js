@@ -675,6 +675,15 @@ export const loadModels = async (sequelize) => {
 			commentary:{
 				type: DataTypes.STRING,
 			},
+			admin_commentary:{
+				type: DataTypes.STRING,
+			},
+			hide_index:{
+				type: DataTypes.STRING
+			},
+			public_index:{
+				type: DataTypes.STRING
+			},
 			created_at: {
 				type: DataTypes.DATE,
 				allowNull: false,

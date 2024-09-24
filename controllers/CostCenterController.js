@@ -27,6 +27,13 @@ export default class CostCenterController {
         this.costCenterApprovalHistoryService = costCenterApprovalHistoryService
     }
 
+    async addIndex(req,res){
+        const data = await this.productSelledService.addIndex()
+        return res.json({
+            data
+        })
+    }
+
     async validatePermission(payload){
         const sale_exist = await this.saleSerivce.findOne({
             deleted_at:null,
