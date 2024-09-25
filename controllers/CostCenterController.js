@@ -34,6 +34,13 @@ export default class CostCenterController {
         })
     }
 
+    async updateProductPlusTo(req,res){
+        const data = await this.productSelledService.updateProductPlusTo()
+        return res.json({
+            data
+        })
+    }
+
     async validatePermission(payload){
         const sale_exist = await this.saleSerivce.findOne({
             deleted_at:null,
