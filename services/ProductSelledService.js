@@ -184,4 +184,43 @@ export default class ProductSelledService{
         return `Filas afectadas ${rowsAffected}`
 
     }
+
+    async updateProductPlusTo(){
+        const allCCs = await CostCenter.findAll({
+            where:{
+                deleted_at:null
+            },
+            include:[
+                {
+                    model:ProductSelled
+                }
+            ]
+        })
+
+        const arrayCCs = allCCs.map(c=>c.dataValues)
+
+        let rowsAffected = 0
+
+        for (const cc of arrayCCs) {
+            const { ProductSelleds } = cc
+            
+            const psToUpdate = ProductSelleds.filter(ps=>{
+                if(!ps.plus_to || ps.plus_to.trim().length === 0) return false
+                return true
+            })
+            
+            for (const pstu of psToUpdate) {
+                const findedProduct = ProductSelleds.find(p=>p.part_number === pstu.plus_to)
+                if(findedProduct){
+                    // const updt = await ProductSelled.update({
+                    //     plus_to:findedProduct.id
+                    // },{where:{id:pstu.id}})
+
+                    // rowsAffected += updt[0]
+                }
+            }
+        }
+
+        return `${rowsAffected} fueron afectadas`
+    }
 }
