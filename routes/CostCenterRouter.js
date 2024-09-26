@@ -33,6 +33,7 @@ router.put('/costCenter/update/adminUpdate',validateToken,(req,res)=> costCenter
 router.put('/costCenter/updateMultipleCostCenterProcessUserTask',validateToken,(req,res)=> costCenterController.updateMultipleCostCenterProcessUserTask(req,res))
 router.put('/costCenter/updateCostCenterProcess/:id',validateToken,(req,res)=> costCenterController.updateCostCenterProcess(req,res))
 router.put('/costCenter/updateCostCenterProcessUserTask/:id',validateToken,(req,res)=> costCenterController.updateCostCenterProcessUserTask(req,res))
+router.put('/costCenter/updateProductSelled/:id',validateToken,(req,res)=> costCenterController.updateProductSelled(req,res))
 router.delete('/costCenter/delete/:id',validateToken,(req,res)=> costCenterController.delete(req,res))
 router.delete('/costCenter/deleteTaskItem/:id',validateToken,(req,res)=> costCenterController.deleteTaskItem(req,res))
 router.delete('/costCenter/deleteTaskUserItem/:id',validateToken,(req,res)=> costCenterController.deleteTaskUserItem(req,res))

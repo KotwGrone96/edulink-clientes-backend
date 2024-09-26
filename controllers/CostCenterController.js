@@ -1524,4 +1524,20 @@ export default class CostCenterController {
         }
     }
 
+    async updateProductSelled(req,res){
+        try {
+            await this.productSelledService.update(req.body,{id:req.params['id']})
+            return res.json({
+                ok:true,
+                message:'Comentario guardado',
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+    }
+
 }
