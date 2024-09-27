@@ -212,7 +212,7 @@ export default class CostCenterService{
                     as: 'CostCenterProcesses'
                 }
             ],
-            order:[['created_at','DESC']],
+            order:[['date_of_send','DESC']],
         });
 
         return costsCenters;
@@ -661,7 +661,16 @@ export default class CostCenterService{
     }
 
     async countAllCostCenterProcessUserTask(where){
-        const costCenterProcessUserTasks = await CostCenterProcessUserTask.count({ where })
+        const costCenterProcessUserTasks = await CostCenterProcessUserTask.count({ 
+            where,
+            include:[
+                {
+                    model:CostCenter,
+                    where:{deleted_at:null},
+                    required:true
+                }
+            ]
+         })
         return costCenterProcessUserTasks
     }
 
