@@ -170,7 +170,7 @@ export default class CostCenterService{
         return updt_costCenter;
     }
 
-    async findAll(where,attributes,limit=undefined,offset=undefined,requiredInvoices=undefined){
+    async findAll(where,attributes,limit=undefined,offset=undefined,requiredInvoices=undefined,order=undefined){
         const costsCenters = await CostCenter.findAll({ where,
             attributes,
             limit,
@@ -212,7 +212,7 @@ export default class CostCenterService{
                     as: 'CostCenterProcesses'
                 }
             ],
-            order:[['date_of_send','DESC']],
+            order:order?order:[['created_at','DESC']],
         });
 
         return costsCenters;
