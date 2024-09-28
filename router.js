@@ -11,6 +11,7 @@ import InvoiceRouter from './routes/InvoicesRouter.js'
 import FinanceRouter from './routes/FinanceRouter.js'
 import PaymentRouter from './routes/PaymentRouter.js'
 import LogisticTaskRouter from './routes/LogisticTaskRouter.js'
+import ProductSelledRouter from './routes/ProductSelledRouter.js'
 
 const router = Router();
 
@@ -52,6 +53,9 @@ router.use('/api',FinanceRouter)
 
 // TAREAS DE LOGISTICA
 router.use('/api',LogisticTaskRouter)
+
+// PRODUCTOS
+router.use('/api',ProductSelledRouter)
 
 // // OPORTUNITIES
 // router.get('/api/oportunity/all', validateToken, (req, res) =>

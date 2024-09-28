@@ -185,8 +185,7 @@ export default class CostCenterController {
             'id' in req.body === false||
             'user_id' in req.body === false||
             'sale_id' in req.body === false||
-            'currency' in req.body === false||
-            'type_of_payment' in req.body === false
+            'currency' in req.body === false
         ){
             return res.json({
                 ok:false,
@@ -208,12 +207,12 @@ export default class CostCenterController {
                 })
             }
             const productsToUpdate = req.body['products'].filter(p=> ('id' in p)===true )
-            const productsToCreate= req.body['products'].filter(p=> ('id' in p)===false)
+            // const productsToCreate= req.body['products'].filter(p=> ('id' in p)===false)
     
-            productsToCreate.forEach(async(pd)=>{
-                pd['cost_center_id'] = req.body['id'];
-                await this.productSelledService.create(pd);
-            })
+            // productsToCreate.forEach(async(pd)=>{
+            //     pd['cost_center_id'] = req.body['id'];
+            //     await this.productSelledService.create(pd);
+            // })
     
             productsToUpdate.forEach(async(pd)=>{
                 await this.productSelledService.update(pd,{deleted_at:null,id:pd.id});
@@ -397,7 +396,14 @@ export default class CostCenterController {
             }
 		}
         try {
-            const costsCenters = await this.costCenterService.findAll(where,attributes,limit,offset,requiredInvoices)
+
+            let order = undefined
+
+            if('orderBy' in req.query){
+                order = [[req.query['orderBy'],'DESC']]
+            }
+
+            const costsCenters = await this.costCenterService.findAll(where,attributes,limit,offset,requiredInvoices,order)
             return res.json({
                 ok:true,
                 message:'Todos los centros de costos',
