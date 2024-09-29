@@ -550,13 +550,13 @@ export const loadModels = async (sequelize) => {
 				allowNull:false
 			},
 			date_of_send: {
-				type: DataTypes.DATE,
+				type: DataTypes.STRING(100),
 			},
 			max_date_of_costumer_attention:{
-				type: DataTypes.DATE
+				type: DataTypes.STRING(100),
 			},
 			max_date_of_provider_attention:{
-				type: DataTypes.DATE
+				type: DataTypes.STRING(100),
 			},
 			destiny_person:{
 				type:DataTypes.STRING(100)
