@@ -367,7 +367,8 @@ export default class CostCenterController {
             'biller_email',
             'biller_manager',
             'tasks',
-            'payments_months'
+            'payments_months',
+            'product_selled_drive_folder'
         ]
 
         let limit = undefined;
@@ -505,7 +506,8 @@ export default class CostCenterController {
                     'biller_email',
                     'biller_manager',
                     'tasks',
-                    'payments_months'
+                    'payments_months',
+                    'product_selled_drive_folder'
                 ])
             return res.json({
                 ok:true,
