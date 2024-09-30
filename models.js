@@ -31,6 +31,7 @@ import CostCenterTaskUserItem from './models/costCenterTaskUserItem.js';
 import CostCenterTasks from './models/costCenterTasks.js';
 import CostCenterProcess from './models/costCenterProcess.model.js';
 import CostCenterProcessUserTask from './models/costCenterProcessUserTask.model.js';
+import ProductSelledDriveFile from './models/productSelledDriveFile.model.js';
 
 
 export const loadModels = async (sequelize) => {
@@ -606,6 +607,9 @@ export const loadModels = async (sequelize) => {
 			payments_months:{
 				type:DataTypes.STRING
 			},
+			product_selled_drive_folder:{
+				type:DataTypes.STRING
+			},
 			created_at: {
 				type: DataTypes.DATE,
 				allowNull: false,
@@ -699,6 +703,45 @@ export const loadModels = async (sequelize) => {
 		},
 		{ sequelize, tableName: 'products_selled' }
 	);
+
+	// ARCHIVOS DRIVE POR PRODUCTO
+	ProductSelledDriveFile.init({
+		id: {
+			type: DataTypes.UUID,
+			defaultValue:DataTypes.UUIDV4,
+			unique: true,
+			primaryKey: true,
+		},
+		owner_id:{
+			type: DataTypes.INTEGER,
+			allowNull:false
+		},
+		costumer_id:{
+			type: DataTypes.INTEGER,
+			allowNull:false
+		},
+		sale_id:{
+			type: DataTypes.UUID,
+			allowNull:false
+		},
+		cost_center_id:{
+			type: DataTypes.UUID,
+			allowNull:false
+		},
+		product_selled_id:{
+			type: DataTypes.UUID,
+			allowNull:false
+		},
+		drive_id:{
+			type: DataTypes.STRING,
+			allowNull:false
+		},
+		name:{
+			type: DataTypes.STRING,
+			allowNull:false
+		}
+
+	},{sequelize,tableName:'products_selled_drive_files'})
 
 	// CORREOS AUTOMÁTICOS
 	Email.init(
@@ -1534,6 +1577,9 @@ export const loadModels = async (sequelize) => {
 	//TODO *** PRODUCTOS ***/
 	CostCenter.hasMany(ProductSelled, { foreignKey: 'cost_center_id' });
 	ProductSelled.belongsTo(CostCenter, { foreignKey: 'cost_center_id' });
+
+	ProductSelled.hasMany(ProductSelledDriveFile, { foreignKey: 'product_selled_id' });
+	ProductSelledDriveFile.belongsTo(ProductSelled, { foreignKey: 'product_selled_id' });
 
 	User.hasOne(Email, { foreignKey: 'user_id' });
 	Email.belongsTo(User, { foreignKey: 'user_id' });

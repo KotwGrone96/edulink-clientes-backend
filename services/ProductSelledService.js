@@ -1,6 +1,7 @@
 import CostCenter from "../models/costCenter.model.js";
 import ProductSelled from "../models/productSelled.model.js";
 import { timeZoneLima } from "../timezone.js";
+import ProductSelledDriveFile from "../models/productSelledDriveFile.model.js";
 
 export default class ProductSelledService{
 
@@ -119,6 +120,76 @@ export default class ProductSelledService{
     async delete(id){
         const del_productSelled = await ProductSelled.destroy({ where:{ id } });
         return del_productSelled;
+    }
+
+    async createProductSelledDriveFile(productSelledDriveFile){
+        const {
+            owner_id,
+            costumer_id,
+            sale_id,
+            cost_center_id,
+            product_selled_id,
+            drive_id,
+            name
+        } = productSelledDriveFile;
+
+        const newDriveFile = ProductSelledDriveFile.build({
+            owner_id,
+            costumer_id,
+            sale_id,
+            cost_center_id,
+            product_selled_id,
+            drive_id,
+            name
+        })
+
+        const n_driveFile = await newDriveFile.save()
+        return n_driveFile
+    }
+
+    async findAllProductSelledDriveFile(where,attributes=undefined){
+        const productSelledDriveFiles = await ProductSelledDriveFile.findAll({
+            where,
+            attributes
+        })
+        return productSelledDriveFiles
+    }
+
+    async updateProductSelledDriveFile(productSelledDriveFile,where){
+        const {
+            owner_id,
+            costumer_id,
+            sale_id,
+            cost_center_id,
+            product_selled_id,
+            drive_id,
+            name
+        } = productSelledDriveFile;
+
+        const updtDriveFile = await ProductSelledDriveFile.update({
+            owner_id,
+            costumer_id,
+            sale_id,
+            cost_center_id,
+            product_selled_id,
+            drive_id,
+            name
+        },{where})
+
+        return updtDriveFile
+    }
+
+    async updateCostCenterProductsFolder(costCenter,where){
+        const { product_selled_drive_folder } = costCenter;
+        const updtCC = await CostCenter.update({
+            product_selled_drive_folder
+        },{where})
+        return updtCC
+    }
+
+    async deleteProductSelledDriveFile(where){
+        const delDriveFile = await ProductSelledDriveFile.destroy({where})
+        return delDriveFile
     }
 
     async addIndex(){
