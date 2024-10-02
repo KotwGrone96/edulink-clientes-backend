@@ -3,12 +3,15 @@ import Costumer from "../models/costumer.model.js";
 import User from "../models/user.model.js";
 import { timeZoneLima } from "../timezone.js";
 import LogisticTaskFile from "../models/logisticTaskFile.model.js";
+import ProductByLogisticTask from "../models/productByLogisticTask.model.js";
 
 export default class LogisticTaskService {
     
     async create(logisticTask){
         const { 
             costumer_id,
+            sale_id,
+            cost_center_id,
             name,
             description,
             state,
@@ -21,6 +24,8 @@ export default class LogisticTaskService {
 
         const newLogisticTask = LogisticTasks.build({
             costumer_id,
+            sale_id,
+            cost_center_id,
             name,
             description,
             state,
@@ -41,6 +46,8 @@ export default class LogisticTaskService {
     async update(logisticTask,where){
         const { 
             costumer_id,
+            sale_id,
+            cost_center_id,
             name,
             description,
             state,
@@ -53,6 +60,8 @@ export default class LogisticTaskService {
 
         const updtLogisticTask = await LogisticTasks.update({
             costumer_id,
+            sale_id,
+            cost_center_id,
             name,
             description,
             state,
@@ -128,10 +137,25 @@ export default class LogisticTaskService {
         const {logistic_task_id, filename} = logisticTaskFile;
         const newLogisticTaskFile = LogisticTaskFile.build({
             logistic_task_id,
-            file
+            filename
         })
 
         const n_logisticTaskFile = await newLogisticTaskFile.save()
         return n_logisticTaskFile
+    }
+
+    async createProductByLogisticTask(productByLogisticTask){
+        const { logistic_task_id, product_selled_id } = productByLogisticTask
+        const newProductByLogisticTask = ProductByLogisticTask.build({
+            logistic_task_id,
+            product_selled_id
+        })
+        const n_productByLogisticTask = await newProductByLogisticTask.save()
+        return n_productByLogisticTask
+    }
+
+    async deleteProductByLogisticTask(where){
+        const delProductByLogisticTask = ProductByLogisticTask.destroy({where})
+        return delProductByLogisticTask
     }
 };

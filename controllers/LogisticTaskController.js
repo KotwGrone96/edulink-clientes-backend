@@ -12,10 +12,44 @@ export default class LogisticTaskController {
     async create(req,res){
         try {
             const logisticTask = await this.logisticTaskService.create(req.body)
+
+            if('product_selled_id' in req.body){
+                await this.logisticTaskService.createProductByLogisticTask({
+                    logistic_task_id:logisticTask.dataValues.id,
+                    product_selled_id:req.body['product_selled_id']
+                })
+            }
+
+            if('products' in req.body){
+                for (const product of req.body['products']) {
+                    await this.logisticTaskService.createProductByLogisticTask({
+                        logistic_task_id:logisticTask.dataValues.id,
+                        product_selled_id:product
+                    })
+                }
+                
+            }
+
+            if(req.files && req.files.length > 0){
+                const costumerPath = join(cwd(), 'storage', 'tasks',`${req.body['costumer_id']}`);
+                if(!fs.existsSync(costumerPath)){
+                    fs.mkdirSync(costumerPath);
+                }
+                for (const file of req.files) {
+                    const newFilename = join(costumerPath,file['originalname']);
+                    fs.renameSync(file['path'],newFilename);
+
+                    const body = {
+                        logistic_task_id:logisticTask.dataValues.id,
+                        filename: file['originalname'],
+                    }
+                    await this.logisticTaskService.createLogisticTaskFile(body);
+                }
+            }
+
             return res.json({
                 ok:true,
-                message:'Creado correctamente',
-                logisticTask
+                message:'Creado correctamente'
             })
         } catch (error) {
             return res.json({

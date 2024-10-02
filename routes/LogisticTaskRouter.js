@@ -10,10 +10,10 @@ const logisticTaskController = new LogisticTaskController(logisticTaskService)
 
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
-		cb(null, join(cwd(), 'storage', 'logistic'));
+		cb(null, join(cwd(), 'storage', 'tasks'));
 	},
 	filename: (req, file, cb) => {
-		cb(null, Date.now() + extname(file.originalname));
+		cb(null, `${Date.now()}-${file.originalname}`);
 	},
 });
 
@@ -25,12 +25,8 @@ router.get('/logisticTask/all',validateToken,(req,res)=> logisticTaskController.
 router.get('/logisticTask/countAll', validateToken, (req, res) => logisticTaskController.countAll(req, res));
 router.get('/logisticTask/files/:filename',validateToken,(req,res)=>logisticTaskController.findLogisticFile(req,res))
 router.get('/logisticTask/:id',validateToken,(req,res)=> logisticTaskController.findOne(req,res))
-router.post('/logisticTask/create',validateToken,(req,res)=> logisticTaskController.create(req,res))
-router.post(
-	'/logisticTask/uploadFile',
-	validateToken,
-	upload,
-	(req,res)=>logisticTaskController.uploadFile(req,res))
+router.post('/logisticTask/create',validateToken,upload,(req,res)=> logisticTaskController.create(req,res))
+router.post('/logisticTask/uploadFile',validateToken,upload,(req,res)=>logisticTaskController.uploadFile(req,res))
 router.put('/logisticTask/update',validateToken,(req,res)=> logisticTaskController.update(req,res))
 router.delete('/logisticTask/delete',validateToken,(req,res)=> logisticTaskController.delete(req,res))
 
