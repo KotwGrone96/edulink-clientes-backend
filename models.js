@@ -32,7 +32,7 @@ import CostCenterTasks from './models/costCenterTasks.js';
 import CostCenterProcess from './models/costCenterProcess.model.js';
 import CostCenterProcessUserTask from './models/costCenterProcessUserTask.model.js';
 import ProductSelledDriveFile from './models/productSelledDriveFile.model.js';
-
+import ProductByLogisticTask from './models/productByLogisticTask.model.js'
 
 export const loadModels = async (sequelize) => {
 	//AREA
@@ -1241,6 +1241,14 @@ export const loadModels = async (sequelize) => {
 				type:DataTypes.INTEGER,
 				allowNull:false
 			},
+			sale_id:{
+				type:DataTypes.UUID,
+				allowNull:false
+			},
+			cost_center_id:{
+				type:DataTypes.UUID,
+				allowNull:false
+			},
 			name:{
 				type:DataTypes.STRING,
 				allowNull:false
@@ -1300,6 +1308,24 @@ export const loadModels = async (sequelize) => {
 			allowNull:false
 		}
 	},{ sequelize, tableName:'logistic_task_files' })
+
+	//*** PRODUCTOS EN TAREAS ***//
+	ProductByLogisticTask.init({
+		id:{
+			type: DataTypes.UUID,
+			defaultValue:DataTypes.UUIDV4,
+			unique: true,
+			primaryKey: true,
+		},
+		logistic_task_id:{
+			type:DataTypes.UUID,
+			allowNull:false
+		},
+		product_selled_id:{
+			type:DataTypes.UUID,
+			allowNull:false
+		}
+	},{ sequelize, tableName:'products_by_logistic_tasks' })
 
 	//*** ITEMS DE TAREAS DE CC ***//
 	CostCenterTaskItem.init({
@@ -1693,6 +1719,11 @@ export const loadModels = async (sequelize) => {
 	//*** ARCHIVOS DE LOGISTICA - RELACIONES ***/
 	LogisticTasks.hasMany(LogisticTaskFile,{ foreignKey:'logistic_task_id' })
 	LogisticTaskFile.belongsTo(LogisticTasks,{foreignKey:'logistic_task_id'})
+
+	//*** PRODUCTOS DE TAREAS DE LOGISTICA - RELACIONES ***/
+	LogisticTasks.hasMany(ProductByLogisticTask,{ foreignKey:'logistic_task_id' })
+	ProductByLogisticTask.belongsTo(LogisticTasks,{foreignKey:'logistic_task_id'})
+	ProductByLogisticTask.belongsTo(ProductSelled,{foreignKey:'product_selled_id'})
 
 
 	// User.hasMany(LogisticTasks,{ foreignKey:{field:"designated_user",name:"DesignatedUser"} })

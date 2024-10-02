@@ -12,6 +12,7 @@ import CostCenterTaskUserItem from "../models/costCenterTaskUserItem.js";
 import CostCenterTasks from "../models/costCenterTasks.js";
 import CostCenterProcess from "../models/costCenterProcess.model.js";
 import CostCenterProcessUserTask from "../models/costCenterProcessUserTask.model.js";
+import ProductSelledDriveFile from "../models/productSelledDriveFile.model.js";
 
 export default class CostCenterService{
 
@@ -262,7 +263,14 @@ export default class CostCenterService{
                 {
                     model:ProductSelled,
                     where:{deleted_at:null},
-                    required:false
+                    required:false,
+                    include:[
+                        {
+                            model:ProductSelledDriveFile,
+                            attributes:['id'],
+                            required:false
+                        }
+                    ]
                 },
                 {
                     model:Costumer
