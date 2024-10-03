@@ -1278,6 +1278,9 @@ export const loadModels = async (sequelize) => {
 			commentary:{
 				type:DataTypes.STRING,
 			},
+			g_calendar_event_id:{
+				type:DataTypes.STRING
+			},
 			created_at: {
 				type: DataTypes.DATE,
 				allowNull:false
