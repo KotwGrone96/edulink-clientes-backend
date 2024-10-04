@@ -24,7 +24,7 @@ export const createWebServer = () => {
 	const io = new Server(httpServer,{
 		path:'/ws',
 		cors:{
-			origin:['https://clientes.edulink.la','http://edulink.clientes-dev.com','https://dev-clientes.edulink.la']
+			origin:['https://clientes.edulink.la','http://edulink.clientes-dev.com','https://dev-clientes.edulink.la','https://localhost:80']
 		}
 	})
 
