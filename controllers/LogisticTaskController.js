@@ -105,6 +105,7 @@ export default class LogisticTaskController {
             'designated_user',
             'commentary',
             'g_calendar_event_id',
+            'g_calendar_event_link',
             'created_at',
             'updated_at'
         ]
@@ -155,6 +156,7 @@ export default class LogisticTaskController {
             'designated_user',
             'commentary',
             'g_calendar_event_id',
+            'g_calendar_event_link',
             'created_at',
             'updated_at'
         ]

@@ -20,7 +20,8 @@ export default class LogisticTaskService {
             created_by,
             designated_user,
             commentary,
-            g_calendar_event_id
+            g_calendar_event_id,
+            g_calendar_event_link
         } = logisticTask;
 
         const newLogisticTask = LogisticTasks.build({
@@ -36,6 +37,7 @@ export default class LogisticTaskService {
             designated_user,
             commentary,
             g_calendar_event_id,
+            g_calendar_event_link,
             created_at:timeZoneLima(),
             updated_at:timeZoneLima()
         })
@@ -58,7 +60,8 @@ export default class LogisticTaskService {
             created_by,
             designated_user,
             commentary,
-            g_calendar_event_id
+            g_calendar_event_id,
+            g_calendar_event_link
         } = logisticTask;
 
         const updtLogisticTask = await LogisticTasks.update({
@@ -74,6 +77,7 @@ export default class LogisticTaskService {
             designated_user,
             commentary,
             g_calendar_event_id,
+            g_calendar_event_link,
             updated_at:timeZoneLima()
         },{ where })
 

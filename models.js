@@ -1281,6 +1281,9 @@ export const loadModels = async (sequelize) => {
 			g_calendar_event_id:{
 				type:DataTypes.STRING
 			},
+			g_calendar_event_link:{
+				type:DataTypes.STRING
+			},
 			created_at: {
 				type: DataTypes.DATE,
 				allowNull:false
@@ -1726,6 +1729,7 @@ export const loadModels = async (sequelize) => {
 	//*** PRODUCTOS DE TAREAS DE LOGISTICA - RELACIONES ***/
 	LogisticTasks.hasMany(ProductByLogisticTask,{ foreignKey:'logistic_task_id' })
 	ProductByLogisticTask.belongsTo(LogisticTasks,{foreignKey:'logistic_task_id'})
+	ProductSelled.hasMany(ProductByLogisticTask,{ foreignKey:'product_selled_id' })
 	ProductByLogisticTask.belongsTo(ProductSelled,{foreignKey:'product_selled_id'})
 
 
