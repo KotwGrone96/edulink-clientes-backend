@@ -5,6 +5,7 @@ import { timeZoneLima } from "../timezone.js";
 import LogisticTaskFile from "../models/logisticTaskFile.model.js";
 import ProductByLogisticTask from "../models/productByLogisticTask.model.js";
 import CostCenter from "../models/costCenter.model.js";
+import ProductSelled from "../models/productSelled.model.js";
 
 export default class LogisticTaskService {
     
@@ -110,13 +111,10 @@ export default class LogisticTaskService {
                     attributes:['id','name']
                 },
                 {
-                    model:LogisticTaskFile
-                },
-                {
                     model:CostCenter,
                     where:{deleted_at:null},
                     required:true,
-                    attributes:['id']
+                    attributes:['id','currency']
                 }
             ]
         })
@@ -130,11 +128,33 @@ export default class LogisticTaskService {
             attributes,
             include:[
                 {
-                    model:User
+                    model:User,
+                    as:"CreatedBy",
+                    attributes:['id','name','lastname']
+                },
+                {
+                    model:User,
+                    as:"DesignatedUser",
+                    attributes:['id','name','lastname']
                 },
                 {
                     model:Costumer
-                }
+                },
+                {
+                    model:ProductByLogisticTask,
+                    include:[
+                        {
+                            model:ProductSelled
+                        }
+                    ]
+                },
+                {
+                    model:CostCenter,
+                    attributes:['currency']
+                },
+                {
+                    model:LogisticTaskFile
+                },
             ]
         })
 
