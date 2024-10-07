@@ -1721,6 +1721,7 @@ export const loadModels = async (sequelize) => {
 	User.hasMany(LogisticTasks,{ foreignKey:"designated_user" })
 	LogisticTasks.belongsTo(User,{ as:"CreatedBy",foreignKey:"created_by" })
 	LogisticTasks.belongsTo(User,{ as:"DesignatedUser",foreignKey:"designated_user" })
+	LogisticTasks.belongsTo(CostCenter,{ foreignKey:"cost_center_id" })
 
 	//*** ARCHIVOS DE LOGISTICA - RELACIONES ***/
 	LogisticTasks.hasMany(LogisticTaskFile,{ foreignKey:'logistic_task_id' })
