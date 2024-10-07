@@ -1,6 +1,7 @@
 import fs from 'fs'
 import { cwd } from 'process'
 import { join } from 'path'
+import sequelize from 'sequelize'
 export default class LogisticTaskController {
     
     logisticTaskService
@@ -94,6 +95,13 @@ export default class LogisticTaskController {
             where['designated_user'] = req.query['designated_user']
         }
 
+        if('execution_date' in req.query){
+            where['execution_date'] = {
+                [sequelize.Op.between] : req.query['execution_date'].split('|')
+            }
+        }
+       
+
         const attributes = [
             'id',
             'costumer_id',
@@ -150,10 +158,12 @@ export default class LogisticTaskController {
         const attributes = [
             'id',
             'costumer_id',
-            'description',
+            'sale_id',
+            'cost_center_id',
             'name',
+            'description',
             'state',
-            'execute_date',
+            'execution_date',
             'success_date',
             'created_by',
             'designated_user',
@@ -210,6 +220,12 @@ export default class LogisticTaskController {
             where['designated_user'] = req.query['designated_user']
         }
 
+        if('execution_date' in req.query){
+            where['execution_date'] = {
+                [sequelize.Op.between] : req.query['execution_date'].split('|')
+            }
+        }
+
 		try {
             const totalItems = await this.logisticTaskService.countAll(where)
             return res.json({
@@ -234,52 +250,48 @@ export default class LogisticTaskController {
 			});
 		}
         
-        if('name' in req.body == false){
-            fs.unlinkSync(req.file['path']);
+        if('costumer_id' in req.body == false){
+            for (const file of req.files){
+                fs.unlinkSync(file['path']);
+            }
             return res.json({
             	ok:false,
-            	message:'Debe proporcionar un nombre para el archivo'
+            	message:'Debe proporcionar el ID del cliente'
             })
         }
 
-        if('ruc' in req.body == false){
-            fs.unlinkSync(req.file['path']);
+        if('logistic_task_id' in req.body == false){
+            for (const file of req.files){
+                fs.unlinkSync(file['path']);
+            }
             return res.json({
             	ok:false,
-            	message:'Debe proporcionar el RUC/DNI del cliente'
+            	message:'Debe proporcionar el ID de la tarea'
             })
         }
 
-        const costumerPath = join(cwd(), 'storage', 'logistic',`${req.body.ruc}`);
+        const costumerPath = join(cwd(), 'storage', 'tasks',`${req.body['costumer_id']}`);
 
         if(!fs.existsSync(costumerPath)){
             fs.mkdirSync(costumerPath);
         }
 
-        const newFilename = join(costumerPath,`${req.body.name}${extname(req.file['originalname'])}`);
-
-        // if(fs.existsSync(newFilename)){
-        //     fs.unlinkSync(req.file['path']);
-        //     return res.json({
-        //         ok:false,
-        //         message:'El nombre de archivo ya existe'
-        //     })
-        // }
-
-        fs.renameSync(req.file['path'],newFilename);
-
-        const body = {
-            logistic_task_id:`${req.body['logistic_task_id']}`,
-            filename: `${req.body.name}${extname(req.file['originalname'])}`,
-        }
-
+        
         try {
-            const logisticTaskFile = await this.logisticTaskService.createLogisticTaskFile(body);
+            for (const file of req.files) {
+                const newFilename = join(costumerPath,file['originalname']);
+                fs.renameSync(file['path'],newFilename);
+    
+                const body = {
+                    logistic_task_id:req.body['logistic_task_id'],
+                    filename: file['originalname'],
+                }
+                await this.logisticTaskService.createLogisticTaskFile(body);
+            }
 
             return res.json({
                 ok:true,
-                message:'Cargada correctamente',
-                logisticTaskFile
+                message:'Cargado correctamente',
             })
         } catch (error) {
             return res.json({
@@ -292,16 +304,16 @@ export default class LogisticTaskController {
 
     async findLogisticFile(req,res){
         const { filename } = req.params;
-        const { ruc } = req.query;
+        const { costumer_id } = req.query;
 
-        if(!ruc){
+        if(!costumer_id){
             return res.status(404).json({
                 ok:false,
-                message:'Debe enviar el RUC/DNI del cliente'
+                message:'Debe enviar el ID del cliente'
             })
         }
 
-        const filePath = join(cwd(),'storage','logistic', ruc, filename)
+        const filePath = join(cwd(),'storage','tasks', costumer_id, filename)
 
         if(!fs.existsSync(filePath)){
             return res.status(404).json({
