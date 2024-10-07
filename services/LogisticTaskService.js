@@ -4,6 +4,7 @@ import User from "../models/user.model.js";
 import { timeZoneLima } from "../timezone.js";
 import LogisticTaskFile from "../models/logisticTaskFile.model.js";
 import ProductByLogisticTask from "../models/productByLogisticTask.model.js";
+import CostCenter from "../models/costCenter.model.js";
 
 export default class LogisticTaskService {
     
@@ -90,21 +91,32 @@ export default class LogisticTaskService {
             attributes,
             limit,
             offset,
-			order:[['created_at','DESC']],
+			order:[['execution_date','DESC']],
             include:[
                 {
                     model:User,
-                    as:"CreatedBy"
+                    as:"CreatedBy",
+                    attributes:['id','name','lastname']
                 },
                 {
                     model:User,
-                    as:"DesignatedUser"
+                    as:"DesignatedUser",
+                    attributes:['id','name','lastname']
                 },
                 {
-                    model:Costumer
+                    model:Costumer,
+                    where:{deleted_at:null},
+                    required:true,
+                    attributes:['id','name']
                 },
                 {
                     model:LogisticTaskFile
+                },
+                {
+                    model:CostCenter,
+                    where:{deleted_at:null},
+                    required:true,
+                    attributes:['id']
                 }
             ]
         })

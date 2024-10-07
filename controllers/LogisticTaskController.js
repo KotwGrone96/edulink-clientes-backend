@@ -49,7 +49,8 @@ export default class LogisticTaskController {
 
             return res.json({
                 ok:true,
-                message:'Creado correctamente'
+                message:'Creado correctamente',
+                logisticTask
             })
         } catch (error) {
             return res.json({
@@ -96,8 +97,10 @@ export default class LogisticTaskController {
         const attributes = [
             'id',
             'costumer_id',
-            'description',
+            'sale_id',
+            'cost_center_id',
             'name',
+            'description',
             'state',
             'execution_date',
             'success_date',
@@ -196,7 +199,7 @@ export default class LogisticTaskController {
     async countAll(req, res) {
 		const where = { deleted_at:null }
 		if('costumer_id' in req.query){
-			where['id'] = req.query['costumer_id'];
+			where['costumer_id'] = req.query['costumer_id'];
 		}
         
         if('created_by' in req.query){
