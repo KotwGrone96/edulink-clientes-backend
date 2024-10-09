@@ -22,6 +22,7 @@ const upload = multer({ storage: storage }).array('logisticTaskFiles')
 const router = Router()
 
 router.get('/logisticTask/all',validateToken,(req,res)=> logisticTaskController.findAll(req,res))
+router.get('/logisticTask/findAllProductByLogisticTask',validateToken,(req,res)=> logisticTaskController.findAllProductByLogisticTask(req,res))
 router.get('/logisticTask/countAll', validateToken, (req, res) => logisticTaskController.countAll(req, res));
 router.get('/logisticTask/files/:filename',validateToken,(req,res)=>logisticTaskController.findLogisticFile(req,res))
 router.get('/logisticTask/:id',validateToken,(req,res)=> logisticTaskController.findOne(req,res))

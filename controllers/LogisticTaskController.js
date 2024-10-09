@@ -351,4 +351,32 @@ export default class LogisticTaskController {
         res.sendFile(filePath)
     }
 
+    async findAllProductByLogisticTask(req,res){
+       const where = {}
+
+       if('product_selled_id' in req.query){
+        where['product_selled_id'] = req.query['product_selled_id']
+       }
+       if('logistic_task_id' in req.query){
+        where['logistic_task_id'] = req.query['logistic_task_id']
+       }
+
+       try {
+        const productByLogisticTasks = await this.logisticTaskService.findAllProductByLogisticTask(where)
+        return res.json({
+            ok:true,
+            message:'Todas las tareas de productos',
+            productByLogisticTasks
+        })
+       
+       } catch (error) {
+        return res.json({
+            ok:false,
+            message:'Error en el servidor',
+            error
+        })
+       }
+
+    }
+
 };

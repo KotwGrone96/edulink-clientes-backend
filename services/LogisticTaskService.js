@@ -206,4 +206,36 @@ export default class LogisticTaskService {
         const delProductByLogisticTask = await ProductByLogisticTask.destroy({where})
         return delProductByLogisticTask
     }
+
+    async findAllProductByLogisticTask(where,attributes=undefined,limit=undefined,offset=undefined){
+        const productByLogisticTasks = await ProductByLogisticTask.findAll({
+            where,
+            attributes,
+            limit,
+            offset,
+            include:[
+                {
+                    model:ProductSelled,
+                    where:{deleted_at:null},
+                    required:true
+                },
+                {
+                    model:LogisticTasks,
+                    where:{deleted_at:null},
+                    required:true,
+                    include:[
+                        {
+                            model:User,
+                            as:"DesignatedUser",
+                            attributes:['id','name','lastname']
+                        },
+                        {
+                            model:LogisticTaskFile
+                        }
+                    ]
+                }
+            ]
+        })
+        return productByLogisticTasks
+    }
 };
