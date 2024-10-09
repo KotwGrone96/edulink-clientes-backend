@@ -51,7 +51,8 @@ export default class CostCenterService{
             biller_email,
             biller_manager,
             tasks,
-            payments_months
+            payments_months,
+            admin_commentary
         } = costCenter;
 
         const newCostCenter = CostCenter.build({
@@ -88,6 +89,7 @@ export default class CostCenterService{
             biller_manager,
             tasks,
             payments_months,
+            admin_commentary,
             created_at:timeZoneLima()
         });
 
@@ -129,7 +131,8 @@ export default class CostCenterService{
             biller_email,
             biller_manager,
             tasks,
-            payments_months
+            payments_months,
+            admin_commentary
         } = costCenter;
 
         const updt_costCenter = await CostCenter.update({
@@ -166,6 +169,7 @@ export default class CostCenterService{
             biller_manager,
             tasks,
             payments_months,
+            admin_commentary,
             updated_at:timeZoneLima()
         },{ where })
         

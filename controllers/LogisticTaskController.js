@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { cwd } from 'process'
 import { join } from 'path'
-import sequelize from 'sequelize'
+import sequelize, { where } from 'sequelize'
 export default class LogisticTaskController {
     
     logisticTaskService
@@ -191,8 +191,34 @@ export default class LogisticTaskController {
     }
 
     async delete(req,res){
+
+        if('costumer_id' in req.query === false){
+            return res.json({
+                ok:false,
+                message:'Debe enviar el ID del cliente'
+            })
+        }
+
+        const logistic_task_id = req.params['id']
+        const costumer_id = req.query['costumer_id']
+        const where = {logistic_task_id}
+        const logisticTaskFolderPath = join(cwd(),'storage','tasks',costumer_id)
+
         try {
-            await this.logisticTaskService.delete(req.params['id'])
+            // ELIMINACIÓN DE ARCHIVOS DE LA TAREA
+            const logisticTaskFiles = await this.logisticTaskService.findAllLogisticTaskFile(where,undefined)
+            const logisticTaskFilesArray = logisticTaskFiles.map(ltf=>ltf.dataValues)
+
+            for (const file of logisticTaskFilesArray) {
+                const filepath = join(logisticTaskFolderPath,file['filename'])
+                if(fs.existsSync(filepath)){
+                    fs.unlinkSync(filepath)
+                }
+            }
+            await this.logisticTaskService.deleteLogisticTaskFile(where)
+            // **********************************
+            await this.logisticTaskService.deleteProductByLogisticTask(where)
+            await this.logisticTaskService.delete(logistic_task_id)
             return res.json({
                 ok:true,
                 message:'Eliminado correctamente',
