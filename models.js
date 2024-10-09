@@ -610,6 +610,9 @@ export const loadModels = async (sequelize) => {
 			product_selled_drive_folder:{
 				type:DataTypes.STRING
 			},
+			admin_commentary:{
+				type:DataTypes.TEXT
+			},
 			created_at: {
 				type: DataTypes.DATE,
 				allowNull: false,

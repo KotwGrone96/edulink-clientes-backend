@@ -162,9 +162,7 @@ export default class LogisticTaskService {
     }
 
     async delete(id){
-        const delLogisticTask = await LogisticTasks.update({
-            deleted_at:timeZoneLima()
-        },{ where: {id} })
+        const delLogisticTask = await LogisticTasks.destroy({ where: {id} })
         return delLogisticTask
     } 
 
@@ -184,6 +182,16 @@ export default class LogisticTaskService {
         return n_logisticTaskFile
     }
 
+    async deleteLogisticTaskFile(where){
+        const delProductByLogisticTask = await LogisticTaskFile.destroy({where})
+        return delProductByLogisticTask
+    }
+
+    async findAllLogisticTaskFile(where){
+        const logisticTaskFiles = await LogisticTaskFile.findAll({where})
+        return logisticTaskFiles
+    }
+
     async createProductByLogisticTask(productByLogisticTask){
         const { logistic_task_id, product_selled_id } = productByLogisticTask
         const newProductByLogisticTask = ProductByLogisticTask.build({
@@ -195,7 +203,7 @@ export default class LogisticTaskService {
     }
 
     async deleteProductByLogisticTask(where){
-        const delProductByLogisticTask = ProductByLogisticTask.destroy({where})
+        const delProductByLogisticTask = await ProductByLogisticTask.destroy({where})
         return delProductByLogisticTask
     }
 };
