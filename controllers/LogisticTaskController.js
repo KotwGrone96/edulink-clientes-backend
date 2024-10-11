@@ -32,9 +32,9 @@ export default class LogisticTaskController {
             }
 
             if(req.files && req.files.length > 0){
-                const costumerPath = join(cwd(), 'storage', 'tasks',`${req.body['costumer_id']}`);
+                const costumerPath = join(cwd(), 'storage', 'tasks',`${req.body['costumer_id']}`,`${req.body['sale_id']}`,`${req.body['cost_center_id']}`);
                 if(!fs.existsSync(costumerPath)){
-                    fs.mkdirSync(costumerPath);
+                    fs.mkdirSync(costumerPath,{recursive:true});
                 }
                 for (const file of req.files) {
                     const newFilename = join(costumerPath,file['originalname']);
@@ -198,11 +198,25 @@ export default class LogisticTaskController {
                 message:'Debe enviar el ID del cliente'
             })
         }
+        if('sale_id' in req.query === false){
+            return res.json({
+                ok:false,
+                message:'Debe enviar el ID de la venta'
+            })
+        }
+        if('cost_center_id' in req.query === false){
+            return res.json({
+                ok:false,
+                message:'Debe enviar el ID del centro de costos'
+            })
+        }
 
         const logistic_task_id = req.params['id']
         const costumer_id = req.query['costumer_id']
+        const sale_id = req.query['sale_id']
+        const cost_center_id = req.query['cost_center_id']
         const where = {logistic_task_id}
-        const logisticTaskFolderPath = join(cwd(),'storage','tasks',costumer_id)
+        const logisticTaskFolderPath = join(cwd(),'storage','tasks',costumer_id,sale_id,cost_center_id)
 
         try {
             // ELIMINACIÓN DE ARCHIVOS DE LA TAREA
@@ -285,6 +299,24 @@ export default class LogisticTaskController {
             	message:'Debe proporcionar el ID del cliente'
             })
         }
+        if('sale_id' in req.body == false){
+            for (const file of req.files){
+                fs.unlinkSync(file['path']);
+            }
+            return res.json({
+            	ok:false,
+            	message:'Debe proporcionar el ID de la venta'
+            })
+        }
+        if('cost_center_id' in req.body == false){
+            for (const file of req.files){
+                fs.unlinkSync(file['path']);
+            }
+            return res.json({
+            	ok:false,
+            	message:'Debe proporcionar el ID del centro de costos'
+            })
+        }
 
         if('logistic_task_id' in req.body == false){
             for (const file of req.files){
@@ -296,7 +328,7 @@ export default class LogisticTaskController {
             })
         }
 
-        const costumerPath = join(cwd(), 'storage', 'tasks',`${req.body['costumer_id']}`);
+        const costumerPath = join(cwd(), 'storage', 'tasks',`${req.body['costumer_id']}`,`${req.body['sale_id']}`,`${req.body['cost_center_id']}`);
 
         if(!fs.existsSync(costumerPath)){
             fs.mkdirSync(costumerPath);
@@ -330,7 +362,7 @@ export default class LogisticTaskController {
 
     async findLogisticFile(req,res){
         const { filename } = req.params;
-        const { costumer_id } = req.query;
+        const { costumer_id, sale_id, cost_center_id } = req.query;
 
         if(!costumer_id){
             return res.status(404).json({
@@ -338,8 +370,20 @@ export default class LogisticTaskController {
                 message:'Debe enviar el ID del cliente'
             })
         }
+        if(!sale_id){
+            return res.status(404).json({
+                ok:false,
+                message:'Debe enviar el ID de la venta'
+            })
+        }
+        if(!cost_center_id){
+            return res.status(404).json({
+                ok:false,
+                message:'Debe enviar el ID del centro de costos'
+            })
+        }
 
-        const filePath = join(cwd(),'storage','tasks', costumer_id, filename)
+        const filePath = join(cwd(),'storage','tasks', costumer_id, sale_id, cost_center_id, filename)
 
         if(!fs.existsSync(filePath)){
             return res.status(404).json({

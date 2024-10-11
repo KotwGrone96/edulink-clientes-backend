@@ -332,6 +332,17 @@ export default class CostCenterController {
             }
 		}
 
+        if('admin_commentary' in req.query){
+            if(req.query['admin_commentary']==="Y"){
+                where['admin_commentary'] = {
+                    [Op.not]: null
+                }
+            }
+            if(req.query['admin_commentary']==="N"){
+                where['admin_commentary'] = null;
+            }
+		}
+
         const attributes = [
             'id',
             'user_id',
@@ -447,6 +458,17 @@ export default class CostCenterController {
             }
             if(req.query['invoices'] === 'N'){
                 where['$Invoices.id$'] = null;
+            }
+		}
+
+        if('admin_commentary' in req.query){
+            if(req.query['admin_commentary']==="Y"){
+                where['admin_commentary'] = {
+                    [Op.not]: null
+                }
+            }
+            if(req.query['admin_commentary']==="N"){
+                where['admin_commentary'] = null;
             }
 		}
 

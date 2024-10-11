@@ -231,6 +231,16 @@ export default class LogisticTaskService {
                         },
                         {
                             model:LogisticTaskFile
+                        },
+                        {
+                            model:ProductByLogisticTask,
+                            attributes:['id'],
+                            include:[
+                                {
+                                    model:ProductSelled,
+                                    attributes:['id','name']
+                                }
+                            ]
                         }
                     ]
                 }

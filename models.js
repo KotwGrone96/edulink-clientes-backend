@@ -1257,7 +1257,7 @@ export const loadModels = async (sequelize) => {
 				allowNull:false
 			},
 			description:{
-				type:DataTypes.STRING,
+				type:DataTypes.TEXT,
 			},
 			state:{
 				type:DataTypes.STRING,
@@ -1279,7 +1279,7 @@ export const loadModels = async (sequelize) => {
 				allowNull:false
 			},
 			commentary:{
-				type:DataTypes.STRING,
+				type:DataTypes.TEXT,
 			},
 			g_calendar_event_id:{
 				type:DataTypes.STRING
