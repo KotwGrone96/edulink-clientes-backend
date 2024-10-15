@@ -28,7 +28,7 @@ router.get('/logisticTask/files/:filename',validateToken,(req,res)=>logisticTask
 router.get('/logisticTask/:id',validateToken,(req,res)=> logisticTaskController.findOne(req,res))
 router.post('/logisticTask/create',validateToken,upload,(req,res)=> logisticTaskController.create(req,res))
 router.post('/logisticTask/uploadFile',validateToken,upload,(req,res)=>logisticTaskController.uploadFile(req,res))
-router.put('/logisticTask/update',validateToken,(req,res)=> logisticTaskController.update(req,res))
+router.put('/logisticTask/update/:id',validateToken,upload,(req,res)=> logisticTaskController.update(req,res))
 router.delete('/logisticTask/delete/:id',validateToken,(req,res)=> logisticTaskController.delete(req,res))
 
 export default router

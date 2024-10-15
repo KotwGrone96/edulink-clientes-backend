@@ -10,6 +10,12 @@ export default class LogisticTaskController {
         this.logisticTaskService = logisticTaskService
     }
 
+    deleteFiles(files){
+        for (const file of files){
+            fs.unlinkSync(file['path']);
+        }
+    }
+
     async create(req,res){
         try {
             const logisticTask = await this.logisticTaskService.create(req.body)
@@ -63,9 +69,78 @@ export default class LogisticTaskController {
     }
 
     async update(req,res){
-        const where = {id: req.body['id']}
+
+        if('costumer_id' in req.body === false){
+            if(req.files && req.files.length > 0){
+                this.deleteFiles(req.files)
+            }
+            return res.json({
+                ok:false,
+                message:'Debe enviar el ID del cliente'
+            })
+        }
+
+        if('sale_id' in req.body === false){
+            if(req.files && req.files.length > 0){
+                this.deleteFiles(req.files)
+            }
+            return res.json({
+                ok:false,
+                message:'Debe enviar el ID del negocio'
+            })
+        }
+
+        if('cost_center_id' in req.body === false){
+            if(req.files && req.files.length > 0){
+                this.deleteFiles(req.files)
+            }
+            return res.json({
+                ok:false,
+                message:'Debe enviar el ID del centro de costoss'
+            })
+        }
+
+        const where = {id: req.params['id']}
         try {
             await this.logisticTaskService.update(req.body,where)
+
+            if('filesToDelete' in req.body){
+                console.log(Array.isArray(req.body['filesToDelete']))
+                
+                // for (const fileToDelete of req.body['filesToDelete']) {
+                //     const costumerPath = join(cwd(), 'storage', 'tasks',`${req.body['costumer_id']}`,`${req.body['sale_id']}`,`${req.body['cost_center_id']}`,fileToDelete);
+                //     if(fs.existsSync(costumerPath)){
+                //         fs.unlinkSync(costumerPath)
+                //     }
+                //     console.log({
+                //         logistic_task_id:req.params['id'],
+                //         filename:fileToDelete
+                //     })
+                //     await this.logisticTaskService.deleteLogisticTaskFile({
+                //         logistic_task_id:req.params['id'],
+                //         filename:fileToDelete
+                //     })
+                        
+                // }
+            }
+
+            if(req.files && req.files.length > 0){
+                const costumerPath = join(cwd(), 'storage', 'tasks',`${req.body['costumer_id']}`,`${req.body['sale_id']}`,`${req.body['cost_center_id']}`);
+                if(!fs.existsSync(costumerPath)){
+                    fs.mkdirSync(costumerPath,{recursive:true});
+                }
+                for (const file of req.files) {
+                    const newFilename = join(costumerPath,file['originalname']);
+                    fs.renameSync(file['path'],newFilename);
+
+                    const body = {
+                        logistic_task_id:req.params['id'],
+                        filename: file['originalname'],
+                    }
+                    await this.logisticTaskService.createLogisticTaskFile(body);
+                }
+            }
+
             return res.json({
                 ok:true,
                 message:'Actualizado correctamente'
