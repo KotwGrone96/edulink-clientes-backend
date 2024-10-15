@@ -22,7 +22,8 @@ export default class ProductSelledService{
             commentary,
             admin_commentary,
             hide_index,
-            public_index
+            public_index,
+            admin_commentary_color
         } = productSelled;
 
         const newProductSelled = ProductSelled.build({
@@ -42,6 +43,7 @@ export default class ProductSelledService{
             admin_commentary,
             hide_index,
             public_index,
+            admin_commentary_color,
             created_at:timeZoneLima()
         });
         const n_productSelled = await newProductSelled.save();
@@ -66,7 +68,8 @@ export default class ProductSelledService{
             commentary,
             admin_commentary,
             hide_index,
-            public_index
+            public_index,
+            admin_commentary_color
         } = productSelled;
         const updt_productSelled = await ProductSelled.update({
             cost_center_id,
@@ -85,6 +88,7 @@ export default class ProductSelledService{
             admin_commentary,
             hide_index,
             public_index,
+            admin_commentary_color,
             updated_at:timeZoneLima()
         },{ where });
 
