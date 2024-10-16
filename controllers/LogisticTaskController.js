@@ -535,73 +535,49 @@ export default class LogisticTaskController {
                 message:'Debe enviar el ID de la tarea'
             })
         }
-        await this.logisticTaskService.deleteProductByLogisticTask({
-            id:req.params['id']
-        })
+        
+        let deleteCalendar = false;
 
-        const productByLogisticTasks = await this.logisticTaskService.findAllProductByLogisticTask({
-            logistic_task_id:req.query['logistic_task_id']
-        })
-        const productByLogisticTasksValues = productByLogisticTasks.map(p=>p.dataValues)
-        if(productByLogisticTasksValues.length === 0){
-            const logistic_task_id = req.query['logistic_task_id']
-            const costumer_id = req.query['costumer_id']
-            const sale_id = req.query['sale_id']
-            const cost_center_id = req.query['cost_center_id']
-            const logisticTaskFolderPath = join(cwd(),'storage','tasks',costumer_id,sale_id,cost_center_id)
-
-            const logisticTaskFiles = await this.logisticTaskService.findAllLogisticTaskFile({logistic_task_id},undefined)
-            const logisticTaskFilesArray = logisticTaskFiles.map(ltf=>ltf.dataValues)
-            for (const file of logisticTaskFilesArray) {
-                const filepath = join(logisticTaskFolderPath,file['filename'])
-                if(fs.existsSync(filepath)){
-                    fs.unlinkSync(filepath)
+        try {
+            await this.logisticTaskService.deleteProductByLogisticTask({
+                id:req.params['id']
+            })
+    
+            const productByLogisticTasks = await this.logisticTaskService.findAllProductByLogisticTask({
+                logistic_task_id:req.query['logistic_task_id']
+            })
+            const productByLogisticTasksValues = productByLogisticTasks.map(p=>p.dataValues)
+            if(productByLogisticTasksValues.length === 0){
+                const logistic_task_id = req.query['logistic_task_id']
+                const costumer_id = req.query['costumer_id']
+                const sale_id = req.query['sale_id']
+                const cost_center_id = req.query['cost_center_id']
+                const logisticTaskFolderPath = join(cwd(),'storage','tasks',costumer_id,sale_id,cost_center_id)
+    
+                const logisticTaskFiles = await this.logisticTaskService.findAllLogisticTaskFile({logistic_task_id},undefined)
+                const logisticTaskFilesArray = logisticTaskFiles.map(ltf=>ltf.dataValues)
+                for (const file of logisticTaskFilesArray) {
+                    const filepath = join(logisticTaskFolderPath,file['filename'])
+                    if(fs.existsSync(filepath)){
+                        fs.unlinkSync(filepath)
+                    }
                 }
+                await this.logisticTaskService.deleteLogisticTaskFile({logistic_task_id})
+                await this.logisticTaskService.delete(logistic_task_id)
+                deleteCalendar = true
             }
-            await this.logisticTaskService.deleteLogisticTaskFile({logistic_task_id})
+            return res.json({
+                ok:true,
+                message:'Eliminado correctamente',
+                deleteCalendar
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
         }
-        return res.json({
-            ok:true,
-            message:'Eliminado correctamente',
-        })
-
-        // try {
-        //     await this.logisticTaskService.deleteProductByLogisticTask({
-        //         id:req.params['id']
-        //     })
-
-        //     const productByLogisticTasks = await this.logisticTaskService.findAllProductByLogisticTask({
-        //         logistic_task_id:req.query['logistic_task_id']
-        //     })
-        //     const productByLogisticTasksValues = productByLogisticTasks.map(p=>p.dataValues)
-        //     if(productByLogisticTasksValues.length === 0){
-        //         const logistic_task_id = req.params['logistic_task_id']
-        //         const costumer_id = req.query['costumer_id']
-        //         const sale_id = req.query['sale_id']
-        //         const cost_center_id = req.query['cost_center_id']
-        //         const logisticTaskFolderPath = join(cwd(),'storage','tasks',costumer_id,sale_id,cost_center_id)
-
-        //         const logisticTaskFiles = await this.logisticTaskService.findAllLogisticTaskFile({logistic_task_id},undefined)
-        //         const logisticTaskFilesArray = logisticTaskFiles.map(ltf=>ltf.dataValues)
-        //         for (const file of logisticTaskFilesArray) {
-        //             const filepath = join(logisticTaskFolderPath,file['filename'])
-        //             if(fs.existsSync(filepath)){
-        //                 fs.unlinkSync(filepath)
-        //             }
-        //         }
-        //         await this.logisticTaskService.deleteLogisticTaskFile({logistic_task_id})
-        //     }
-        //     return res.json({
-        //         ok:true,
-        //         message:'Eliminado correctamente',
-        //     })
-        // } catch (error) {
-        //     return res.json({
-        //         ok:false,
-        //         message:'Error en el servidor',
-        //         error
-        //     })
-        // }
     }
 
 };
