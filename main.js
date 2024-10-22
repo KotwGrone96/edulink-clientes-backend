@@ -14,7 +14,7 @@ const main = async () => {
 
 		const webServer = createWebServer();
 
-		webServer.listen(port, () => {
+		webServer.listen(port,'0.0.0.0', () => {
 			console.log('ENTORNO ===> ' + process.env.NODE_ENV);
 			console.log('Servidor web abierto en puerto: ' + port);
 		});
