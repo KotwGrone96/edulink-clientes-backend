@@ -613,6 +613,9 @@ export const loadModels = async (sequelize) => {
 			admin_commentary:{
 				type:DataTypes.TEXT
 			},
+			approval_date:{
+				type:DataTypes.STRING(100)
+			},
 			created_at: {
 				type: DataTypes.DATE,
 				allowNull: false,

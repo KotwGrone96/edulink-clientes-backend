@@ -380,7 +380,8 @@ export default class CostCenterController {
             'tasks',
             'payments_months',
             'product_selled_drive_folder',
-            'admin_commentary'
+            'admin_commentary',
+            'approval_date'
         ]
 
         let limit = undefined;
@@ -531,7 +532,8 @@ export default class CostCenterController {
                     'tasks',
                     'payments_months',
                     'product_selled_drive_folder',
-                    'admin_commentary'
+                    'admin_commentary',
+                    'approval_date'
                 ])
             return res.json({
                 ok:true,
@@ -801,7 +803,8 @@ export default class CostCenterController {
             'invoice_manager',
             'biller_email',
             'biller_manager',
-            'tasks'
+            'tasks',
+            'approval_date'
         ]
         const costsCenters = await this.costCenterService.findAll(where,attributes)
         const arrayCCs = costsCenters.map(cc=>cc.dataValues)
