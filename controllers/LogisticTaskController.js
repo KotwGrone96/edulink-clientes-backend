@@ -28,13 +28,19 @@ export default class LogisticTaskController {
             }
 
             if('products' in req.body){
-                for (const product of req.body['products']) {
+                if(Array.isArray(req.body['products'])){
+                    for (const product of req.body['products']) {
+                        await this.logisticTaskService.createProductByLogisticTask({
+                            logistic_task_id:logisticTask.dataValues.id,
+                            product_selled_id:product
+                        })
+                    }
+                }else{
                     await this.logisticTaskService.createProductByLogisticTask({
                         logistic_task_id:logisticTask.dataValues.id,
-                        product_selled_id:product
+                        product_selled_id:req.body['products']
                     })
                 }
-                
             }
 
             if(req.files && req.files.length > 0){
