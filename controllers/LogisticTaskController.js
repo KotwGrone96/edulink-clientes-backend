@@ -187,8 +187,11 @@ export default class LogisticTaskController {
                 [sequelize.Op.between] : req.query['execution_date'].split('|')
             }
         }
-       
 
+        if('state' in req.query){
+            where['state'] = req.query['state']
+        }
+       
         const attributes = [
             'id',
             'costumer_id',
@@ -351,6 +354,10 @@ export default class LogisticTaskController {
             where['execution_date'] = {
                 [sequelize.Op.between] : req.query['execution_date'].split('|')
             }
+        }
+
+        if('state' in req.query){
+            where['state'] = req.query['state']
         }
 
 		try {
@@ -578,6 +585,59 @@ export default class LogisticTaskController {
                 error
             })
         }
+    }
+
+    async deleteLogisticTaskFile(req,res){
+        if('costumer_id' in req.query == false){
+            return res.json({
+            	ok:false,
+            	message:'Debe proporcionar el ID del cliente'
+            })
+        }
+        if('sale_id' in req.query == false){
+            return res.json({
+            	ok:false,
+            	message:'Debe proporcionar el ID de la venta'
+            })
+        }
+        if('cost_center_id' in req.query == false){
+            return res.json({
+            	ok:false,
+            	message:'Debe proporcionar el ID del centro de costos'
+            })
+        }
+        if('filename' in req.query == false){
+            return res.json({
+            	ok:false,
+            	message:'Debe proporcionar el nombre del archivo'
+            })
+        }
+
+        const logistic_file_id = req.params['id']
+        const costumer_id = req.query['costumer_id']
+        const sale_id = req.query['sale_id']
+        const cost_center_id = req.query['cost_center_id']
+        const where = {id:logistic_file_id}
+        const logisticTaskFolderPath = join(cwd(),'storage','tasks',costumer_id,sale_id,cost_center_id)
+        const filepath = join(logisticTaskFolderPath,req.query['filename'])
+        if(fs.existsSync(filepath)){
+            fs.unlinkSync(filepath)
+        }
+
+        try {
+            await this.logisticTaskService.deleteLogisticTaskFile(where)
+            return res.json({
+                ok:true,
+                message:'Eliminado correctamente',
+            })
+        } catch (error) {
+            return res.json({
+                ok:false,
+                message:'Error en el servidor',
+                error
+            })
+        }
+
     }
 
 };
