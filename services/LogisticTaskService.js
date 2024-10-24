@@ -97,12 +97,12 @@ export default class LogisticTaskService {
                 {
                     model:User,
                     as:"CreatedBy",
-                    attributes:['id','name','lastname']
+                    attributes:['id','name','lastname','email']
                 },
                 {
                     model:User,
                     as:"DesignatedUser",
-                    attributes:['id','name','lastname']
+                    attributes:['id','name','lastname','email']
                 },
                 {
                     model:Costumer,
@@ -130,12 +130,12 @@ export default class LogisticTaskService {
                 {
                     model:User,
                     as:"CreatedBy",
-                    attributes:['id','name','lastname']
+                    attributes:['id','name','lastname','email']
                 },
                 {
                     model:User,
                     as:"DesignatedUser",
-                    attributes:['id','name','lastname']
+                    attributes:['id','name','lastname','email']
                 },
                 {
                     model:Costumer
